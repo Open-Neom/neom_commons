@@ -2,16 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:neom_commons/commons/utils/app_utilities.dart';
+import 'package:neom_commons/commons/utils/constants/app_translation_constants.dart';
+import 'package:neom_commons/commons/utils/constants/message_translation_constants.dart';
+import 'package:neom_core/core/app_config.dart';
+import 'package:neom_core/core/data/firestore/constants/app_firestore_constants.dart';
+import 'package:neom_core/core/data/firestore/user_firestore.dart';
+import 'package:neom_core/core/data/implementations/user_controller.dart';
+import 'package:neom_core/core/domain/model/app_user.dart';
+import 'package:neom_core/core/utils/validator.dart';
 
-import '../../../core/data/firestore/constants/app_firestore_constants.dart';
-import '../../../core/data/firestore/user_firestore.dart';
-import '../../../core/data/implementations/user_controller.dart';
-import '../../../core/domain/model/app_user.dart';
-import '../../../core/ui/widgets/custom_loader.dart';
-import '../../../core/utils/app_utilities.dart';
-import '../../../core/utils/constants/app_translation_constants.dart';
-import '../../../core/utils/constants/message_translation_constants.dart';
-import '../../../core/utils/validator.dart';
 import '../../domain/use_cases/signup_service.dart';
 import '../../utils/enums/signed_in_with.dart';
 import '../login/login_controller.dart';
@@ -20,7 +20,6 @@ class SignUpController extends GetxController implements SignUpService {
 
   final loginController = Get.find<LoginController>();
   final userController = Get.find<UserController>();
-  CustomLoader loader = CustomLoader();
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -35,13 +34,13 @@ class SignUpController extends GetxController implements SignUpService {
   @override
   void onInit() async {
     super.onInit();
-    AppUtilities.logger.d("");
+    AppConfig.logger.d("onInit SignUp Controller");
   }
 
   @override
   void onReady() async {
     super.onReady();
-    AppUtilities.logger.d("");
+    AppConfig.logger.d("");
     isLoading.value = false;
   }
 
@@ -58,7 +57,7 @@ class SignUpController extends GetxController implements SignUpService {
 
   @override
   Future<bool> submit(BuildContext context) async {
-    AppUtilities.logger.d("Submitting Sign-up form");
+    AppConfig.logger.d("Submitting Sign-up form");
 
     try {
 
@@ -106,7 +105,7 @@ class SignUpController extends GetxController implements SignUpService {
   }
 
   void setUserFromSignUp() {
-    AppUtilities.logger.d("Getting User Info From Sign-up text fields");
+    AppConfig.logger.d("Getting User Info From Sign-up text fields");
 
     try {
       userController.user =  AppUser(
@@ -120,10 +119,10 @@ class SignUpController extends GetxController implements SignUpService {
         password: passwordController.text.trim(),
       );
     } catch (e) {
-      AppUtilities.logger.e(e.toString());
+      AppConfig.logger.e(e.toString());
     }
 
-    AppUtilities.logger.d("User Info set: ${userController.user.toString()}");
+    AppConfig.logger.d("User Info set: ${userController.user.toString()}");
   }
 
   @override
@@ -171,12 +170,12 @@ class SignUpController extends GetxController implements SignUpService {
 
   @override
   void setTermsAgreement(bool agree) {
-    AppUtilities.logger.d("Bool agreement: $agree");
+    AppConfig.logger.d("Bool agreement: $agree");
 
     try {
       agreeTerms.value = agree;
     } catch (e) {
-      AppUtilities.logger.e(e.toString());
+      AppConfig.logger.e(e.toString());
     }
 
   }

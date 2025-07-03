@@ -2,21 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../core/data/firestore/user_firestore.dart';
-import '../../../core/ui/widgets/custom_loader.dart';
-import '../../../core/utils/app_utilities.dart';
-import '../../../core/utils/constants/app_route_constants.dart';
-import '../../../core/utils/constants/app_translation_constants.dart';
-import '../../../core/utils/validator.dart';
+import 'package:neom_commons/commons/utils/constants/app_translation_constants.dart';
+import 'package:neom_core/core/app_config.dart';
+import 'package:neom_core/core/data/firestore/user_firestore.dart';
+import 'package:neom_core/core/utils/constants/app_route_constants.dart';
+import 'package:neom_core/core/utils/validator.dart';
 import '../../domain/use_cases/forgot_password_service.dart';
-import '../login/login_controller.dart';
 
 
 class ForgotPasswordController extends GetxController implements ForgotPasswordService {
-
-  final loginController = Get.find<LoginController>();
-  CustomLoader loader = CustomLoader();
 
   late FocusNode focusNode;
   final TextEditingController nameController = TextEditingController();
@@ -30,7 +24,7 @@ class ForgotPasswordController extends GetxController implements ForgotPasswordS
   @override
   void onInit() async {
     super.onInit();
-    AppUtilities.logger.d("onInit ForgotPassword Controller");
+    AppConfig.logger.d("onInit ForgotPassword Controller");
     focusNode = FocusNode();
     emailController.text = '';
     focusNode.requestFocus();
@@ -40,7 +34,7 @@ class ForgotPasswordController extends GetxController implements ForgotPasswordS
   @override
   void onReady() async {
     super.onReady();
-    AppUtilities.logger.d("");
+    AppConfig.logger.d("onReady ForgotPassword Controller");
 
     isLoading.value = false;
   }

@@ -1,12 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:neom_commons/commons/ui/theme/app_color.dart';
+import 'package:neom_commons/commons/ui/theme/app_theme.dart';
+import 'package:neom_commons/commons/ui/widgets/slider_model.dart';
+import 'package:neom_commons/commons/utils/constants/app_translation_constants.dart';
+import 'package:neom_core/core/utils/constants/app_route_constants.dart';
 
-import '../../core/ui/widgets/slider_model.dart';
-import '../../core/utils/app_color.dart';
-import '../../core/utils/app_theme.dart';
-import '../../core/utils/constants/app_route_constants.dart';
-import '../../core/utils/constants/app_translation_constants.dart';
 
 class OnGoing extends StatefulWidget {
   const OnGoing({super.key});

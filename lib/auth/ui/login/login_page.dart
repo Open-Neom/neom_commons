@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../core/ui/widgets/app_circular_progress_indicator.dart';
-import '../../../core/ui/widgets/header_intro.dart';
-import '../../../core/utils/app_color.dart';
-import '../../../core/utils/app_theme.dart';
-import '../../../core/utils/constants/app_constants.dart';
-import '../../../core/utils/constants/app_translation_constants.dart';
+import 'package:neom_commons/commons/ui/theme/app_color.dart';
+import 'package:neom_commons/commons/ui/theme/app_theme.dart';
+import 'package:neom_commons/commons/ui/widgets/app_circular_progress_indicator.dart';
+import 'package:neom_commons/commons/ui/widgets/header_intro.dart';
+import 'package:neom_commons/commons/utils/constants/app_translation_constants.dart';
+import 'package:neom_core/core/app_config.dart';
+import 'package:neom_core/core/utils/constants/core_constants.dart';
 import '../widgets/login_widgets.dart';
 import 'login_controller.dart';
 
@@ -34,7 +34,7 @@ class LoginPage extends StatelessWidget {
             ) : Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                HeaderIntro(title: kDebugMode && !kIsWeb && Platform.isAndroid ? AppConstants.dev : "",),
+                HeaderIntro(title: kDebugMode && !kIsWeb && Platform.isAndroid ? CoreConstants.dev : "",),
                 AppTheme.heightSpace20,
                 Text(AppTranslationConstants.signIn.tr,
                   style: const TextStyle(
@@ -52,7 +52,7 @@ class LoginPage extends StatelessWidget {
                     child: Column(
                       children: [
                         buildLoginBtn(_),
-                        (!kIsWeb && ((Platform.isIOS && !_.isIOS13OrHigher) || (!_.appInfo.value.googleLoginEnabled && !kDebugMode)))
+                        (!kIsWeb && ((Platform.isIOS && !_.isIOS13OrHigher) || (!AppConfig.instance.appInfo.googleLoginEnabled && !kDebugMode)))
                             ? const SizedBox.shrink() : Column(
                           children: [
                             buildSignInWithText(),

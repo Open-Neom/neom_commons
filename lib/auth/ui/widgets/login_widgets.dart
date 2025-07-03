@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:neom_commons/commons/ui/theme/app_color.dart';
+import 'package:neom_commons/commons/ui/theme/app_theme.dart';
+import 'package:neom_commons/commons/utils/constants/app_assets.dart';
+import 'package:neom_commons/commons/utils/constants/app_translation_constants.dart';
+import 'package:neom_commons/commons/utils/constants/message_translation_constants.dart';
+import 'package:neom_core/core/app_config.dart';
+import 'package:neom_core/core/utils/constants/app_route_constants.dart';
 
-import '../../../core/utils/app_color.dart';
-import '../../../core/utils/app_theme.dart';
-import '../../../core/utils/app_utilities.dart';
-import '../../../core/utils/constants/app_assets.dart';
-import '../../../core/utils/constants/app_route_constants.dart';
-import '../../../core/utils/constants/app_translation_constants.dart';
-import '../../../core/utils/constants/message_translation_constants.dart';
 import '../../utils/enums/login_method.dart';
 import '../login/login_controller.dart';
 
@@ -106,7 +106,7 @@ import '../login/login_controller.dart';
               activeColor: Colors.white,
               onChanged: (value) {
                 _rememberMe = value!;
-                AppUtilities.logger.e("rememberMe");
+                AppConfig.logger.e('Remember me: $_rememberMe');
               },
             ),
           ),
@@ -180,7 +180,7 @@ import '../login/login_controller.dart';
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
-        mainAxisAlignment: (_.isIOS13OrHigher && _.appInfo.value.googleLoginEnabled)
+        mainAxisAlignment: (_.isIOS13OrHigher && AppConfig.instance.appInfo.googleLoginEnabled)
             ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.center,
         children: <Widget>[
           _.isIOS13OrHigher ? GestureDetector(
@@ -210,7 +210,7 @@ import '../login/login_controller.dart';
                 ),
               )
           ) : const SizedBox.shrink(),
-          (_.appInfo.value.googleLoginEnabled || kDebugMode)
+          (AppConfig.instance.appInfo.googleLoginEnabled || kDebugMode)
               ? TextButton(
             onPressed: () async => {
               if(!_.isButtonDisabled.value) {

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import '../core/ui/static/splash_page.dart';
-import '../core/utils/constants/app_route_constants.dart';
+import 'package:neom_commons/commons/ui/splash_page.dart';
+import 'package:neom_core/core/utils/constants/app_route_constants.dart';
 import 'ui/forgot_password/forgot_password_page.dart';
 import 'ui/login/login_page.dart';
 import 'ui/signup/signup_page.dart';
