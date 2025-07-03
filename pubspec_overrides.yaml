@@ -1,1 +1,3 @@
 dependency_overrides:
+  neom_core:
+    path: ../neom_core
