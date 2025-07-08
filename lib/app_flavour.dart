@@ -330,7 +330,4 @@ class AppFlavour {
     return profileTypes;
   }
 
-
-
-
 }
