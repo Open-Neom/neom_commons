@@ -1,8 +1,3 @@
 dependency_overrides:
   neom_core:
     path: ../neom_core
-<<<<<<< HEAD
-=======
-  neom_commons:
-    path: ../neom_commons
->>>>>>> dc57be83e188e7e470941c3ff1157373b858ad51
