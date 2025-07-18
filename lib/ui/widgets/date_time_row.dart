@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../utils/constants/app_locale_constants.dart';
-import '../../utils/constants/app_translation_constants.dart';
+import '../../utils/constants/translations/app_translation_constants.dart';
 
 class DateTimeRow extends StatelessWidget {
 

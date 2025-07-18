@@ -4,6 +4,7 @@ import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/instrument.dart';
 
 import 'constants/app_constants.dart';
+import 'url_utilities.dart';
 
 class TextUtilities {
 
@@ -116,6 +117,19 @@ class TextUtilities {
       return input;
     }
     return input[0].toUpperCase() + input.substring(1);
+  }
+
+  static String normalizeUrlCaption(String caption) {
+    AppConfig.logger.t("normalizeUrlCaption on String value");
+
+    String urlWithoutQueryParams = '';
+    String url = UrlUtilities.getUrlFromText(caption);
+
+    if(url.isNotEmpty) {
+      urlWithoutQueryParams = UrlUtilities.removeQueryParameters(url);
+    }
+
+    return caption.replaceAll(url, urlWithoutQueryParams);
   }
 
 }

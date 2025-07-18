@@ -23,7 +23,8 @@ import '../ui/theme/app_color.dart';
 import '../ui/theme/app_theme.dart';
 import '../ui/widgets/handled_cached_network_image.dart';
 import 'app_utilities.dart';
-import 'constants/app_translation_constants.dart';
+import 'constants/translations/app_translation_constants.dart';
+import 'constants/translations/common_translation_constants.dart';
 
 class AppAlerts {
 
@@ -57,7 +58,7 @@ class AppAlerts {
       builder: (context) => AlertDialog(
         backgroundColor: AppColor.getMain(),
         title: Text(AppProperties.getAppName().capitalize),
-        content: Text(AppTranslationConstants.wantToCloseApp.tr),
+        content: Text(CommonTranslationConstants.wantToCloseApp.tr),
         actions: <Widget>[
           TextButton(
             child: Text(
@@ -267,7 +268,7 @@ class AppAlerts {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("${AppTranslationConstants.totalToPay.tr.capitalizeFirst}:",
+                Text("${CommonTranslationConstants.totalToPay.tr.capitalizeFirst}:",
                   style: const TextStyle(fontSize: 15),
                 ),
                 Row(
@@ -288,7 +289,7 @@ class AppAlerts {
             onPressed: () async {
               await _.paySubscription(_.selectedPlan, fromRoute);
             },
-            child: Text(AppTranslationConstants.confirmAndProceed.tr,
+            child: Text(CommonTranslationConstants.confirmAndProceed.tr,
               style: const TextStyle(fontSize: 15),
             ),
           ),
@@ -303,14 +304,14 @@ class AppAlerts {
           backgroundColor: AppColor.main50,
           titleStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        title: AppTranslationConstants.blockProfile.tr,
+        title: CommonTranslationConstants.blockProfile.tr,
         content: Column(
           children: [
-            Text(AppTranslationConstants.blockProfileMsg.tr,
+            Text(CommonTranslationConstants.blockProfileMsg.tr,
               style: const TextStyle(fontSize: 15),
             ),
             AppTheme.heightSpace10,
-            Text(AppTranslationConstants.blockProfileMsg2.tr,
+            Text(CommonTranslationConstants.blockProfileMsg2.tr,
               style: const TextStyle(fontSize: 15),
             ),
           ],),
@@ -328,7 +329,7 @@ class AppAlerts {
               await _.block(postOwnerId);
                 Navigator.pop(context);
                 Navigator.pop(context);
-                AppUtilities.showSnackBar(message: AppTranslationConstants.blockedProfileMsg);
+                AppUtilities.showSnackBar(message: CommonTranslationConstants.blockedProfileMsg);
             },
             child: Text(AppTranslationConstants.toBlock.tr,
               style: const TextStyle(fontSize: 15),
@@ -388,7 +389,7 @@ class AppAlerts {
                 _.sendReport(referenceType, referenceId);
                 Navigator.pop(context);
                 Navigator.pop(context);
-                AppUtilities.showSnackBar(message: AppTranslationConstants.hasSentReport);
+                AppUtilities.showSnackBar(message: CommonTranslationConstants.hasSentReport);
               }
             },
             child: Text(AppTranslationConstants.send.tr,

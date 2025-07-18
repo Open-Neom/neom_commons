@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/utils/constants/core_constants.dart';
 
-import 'constants/app_translation_constants.dart';
+import 'constants/translations/app_translation_constants.dart';
 
 
 class DateTimeUtilities {

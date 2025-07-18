@@ -7,7 +7,7 @@ import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/enums/post_type.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'constants/message_translation_constants.dart';
+import 'constants/translations/message_translation_constants.dart';
 import 'file_downloader.dart';
 
 class ShareUtilities {

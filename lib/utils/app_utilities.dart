@@ -1,4 +1,7 @@
 
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -230,6 +233,10 @@ class AppUtilities {
       return null;
     }
 
+  }
+
+  static Uint8List base64Decode(String base64String) {
+    return base64.decode(base64String);
   }
 
 }

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 
 import '../../utils/app_alerts.dart';
-import '../../utils/constants/app_translation_constants.dart';
+import '../../utils/constants/translations/common_translation_constants.dart';
 import '../../utils/external_utilities.dart';
 import 'custom_url_text.dart';
 
@@ -50,7 +50,7 @@ class TitleSubtitleRow extends StatelessWidget {
             if(navigateTo.isNotEmpty) {
               navigateTo != AppRouteConstants.underConstruction ?
               Get.toNamed(navigateTo, arguments: navigateArguments)
-                  : AppAlerts.showAlert(context, title: title, message: AppTranslationConstants.underConstruction.tr);
+                  : AppAlerts.showAlert(context, title: title, message: CommonTranslationConstants.underConstruction.tr);
             } else if(url.isNotEmpty) {
               ExternalUtilities.launchURL(url);
             }

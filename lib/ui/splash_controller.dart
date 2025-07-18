@@ -5,7 +5,7 @@ import 'package:neom_core/domain/use_cases/login_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/auth_status.dart';
 import '../utils/app_utilities.dart';
-import '../utils/constants/app_translation_constants.dart';
+import '../utils/constants/translations/common_translation_constants.dart';
 
 class SplashController extends GetxController {
   
@@ -38,28 +38,28 @@ class SplashController extends GetxController {
           break;
         case AppRouteConstants.accountSettings:
           if(toRoute == AppRouteConstants.accountRemove) {
-            subtitle.value = AppTranslationConstants.removingAccount;
+            subtitle.value = CommonTranslationConstants.removingAccount;
           } else if (toRoute == AppRouteConstants.profileRemove) {
-            subtitle.value = AppTranslationConstants.removingProfile;
+            subtitle.value = CommonTranslationConstants.removingProfile;
           }
           break;
         case AppRouteConstants.forgotPassword:
-          subtitle.value = AppTranslationConstants.sendingPasswordRecovery;
+          subtitle.value = CommonTranslationConstants.sendingPasswordRecovery;
           break;
         case AppRouteConstants.introReason:
-          subtitle.value = AppTranslationConstants.creatingAccount;
+          subtitle.value = CommonTranslationConstants.creatingAccount;
           break;
         case AppRouteConstants.signup:
-          subtitle.value = AppTranslationConstants.creatingAccount;
+          subtitle.value = CommonTranslationConstants.creatingAccount;
           break;
         case AppRouteConstants.paymentGateway:
-          subtitle.value = AppTranslationConstants.paymentProcessing;
+          subtitle.value = CommonTranslationConstants.paymentProcessing;
           break;
         case AppRouteConstants.finishingSpotifySync:
-          subtitle.value = AppTranslationConstants.finishingSpotifySync;
+          subtitle.value = CommonTranslationConstants.finishingSpotifySync;
           break;
-        case AppRouteConstants.postUpload:
-          subtitle.value = AppTranslationConstants.updatingApp;
+        case AppRouteConstants.mediaUpload:
+          subtitle.value = CommonTranslationConstants.updatingApp;
           break;
         case "":
           AppConfig.logger.t("There is no fromRoute");
@@ -94,21 +94,21 @@ class SplashController extends GetxController {
         handleForgotPassword();
         break;
       case AppRouteConstants.introReason:
-        changeSubtitle(AppTranslationConstants.creatingAccount);
+        changeSubtitle(CommonTranslationConstants.creatingAccount);
         userController.createUser();
         break;
       case AppRouteConstants.signup:
-        changeSubtitle(AppTranslationConstants.creatingAccount);
+        changeSubtitle(CommonTranslationConstants.creatingAccount);
         break;
       case AppRouteConstants.createAdditionalProfile:
-        changeSubtitle(AppTranslationConstants.creatingProfile);
+        changeSubtitle(CommonTranslationConstants.creatingProfile);
         userController.createProfile();
         break;
       case AppRouteConstants.paymentGateway:
         handlePaymentGateway();
         break;
       case AppRouteConstants.finishingSpotifySync:
-        AppUtilities.showSnackBar(message: AppTranslationConstants.playlistSynchFinished.tr);
+        AppUtilities.showSnackBar(message: CommonTranslationConstants.playlistSynchFinished.tr);
         Get.offAllNamed(AppRouteConstants.home);
         break;
       case "":
@@ -124,28 +124,28 @@ class SplashController extends GetxController {
   }
 
   Future<void> handlePaymentGateway() async {
-    changeSubtitle(AppTranslationConstants.paymentProcessed);
+    changeSubtitle(CommonTranslationConstants.paymentProcessed);
     update();
     await Get.offAllNamed(AppRouteConstants.home, arguments: [toRoute]);
   }
 
   Future<void> handleAccountSettings() async {
     if(toRoute == AppRouteConstants.accountRemove) {
-      changeSubtitle(AppTranslationConstants.removingAccount);
+      changeSubtitle(CommonTranslationConstants.removingAccount);
       await userController.removeAccount();
     } else if (toRoute == AppRouteConstants.profileRemove) {
-      changeSubtitle(AppTranslationConstants.removingProfile);
+      changeSubtitle(CommonTranslationConstants.removingProfile);
       await userController.removeProfile();
       Get.offAllNamed(AppRouteConstants.home);
     }
   }
 
   Future<void> handleForgotPassword() async {
-    changeSubtitle(AppTranslationConstants.sendingPasswordRecovery);
+    changeSubtitle(CommonTranslationConstants.sendingPasswordRecovery);
     Get.offAllNamed(AppRouteConstants.login);
     Get.snackbar(
-      AppTranslationConstants.passwordReset.tr,
-      AppTranslationConstants.passwordEmailResetSent.tr,
+      CommonTranslationConstants.passwordReset.tr,
+      CommonTranslationConstants.passwordEmailResetSent.tr,
       snackPosition: SnackPosition.bottom,);
   }
 

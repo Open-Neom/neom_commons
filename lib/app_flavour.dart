@@ -7,13 +7,15 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
+import 'package:neom_core/utils/enums/app_locale.dart';
 import 'package:neom_core/utils/enums/profile_type.dart';
 import 'package:neom_core/utils/enums/verification_level.dart';
 
+import 'utils/app_locale_utilities.dart';
 import 'utils/constants/app_assets.dart';
-import 'utils/constants/app_locale_constants.dart';
 import 'utils/constants/app_page_id_constants.dart';
-import 'utils/constants/app_translation_constants.dart';
+import 'utils/constants/translations/app_translation_constants.dart';
+import 'utils/constants/translations/common_translation_constants.dart';
 
 class AppFlavour {
 
@@ -24,6 +26,7 @@ class AppFlavour {
       width: 150,
     );
   }
+
   static IconData getAppItemIcon() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
@@ -198,11 +201,11 @@ class AppFlavour {
       case AppInUse.g:
         return AppTranslationConstants.music;
       case AppInUse.e:
-        return AppTranslationConstants.audioLibrary;
+        return CommonTranslationConstants.audioLibrary;
       case AppInUse.c:
-        return AppTranslationConstants.audioLibrary;
+        return CommonTranslationConstants.audioLibrary;
       default:
-        return AppTranslationConstants.audioLibrary;
+        return CommonTranslationConstants.audioLibrary;
     }
   }
 
@@ -220,11 +223,25 @@ class AppFlavour {
     }
   }
 
+  static String getHomeActionBtnTooltip() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.g:
+        return CommonTranslationConstants.createPost.tr;
+      case AppInUse.e:
+        return CommonTranslationConstants.createPost.tr;
+      case AppInUse.c:
+      case AppInUse.o:
+        return AppTranslationConstants.session.tr;
+      default:
+        return CommonTranslationConstants.createPost.tr;
+    }
+  }
+
   static String getAppLogoPath() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
-        return AppLocaleConstants.languageFromLocale(Get.locale!)
-            == AppTranslationConstants.spanish ? AppAssets.logoSloganSpanish
+        return AppLocaleUtilities.languageFromLocale(Get.locale!)
+            == AppLocale.spanish.name ? AppAssets.logoSloganSpanish
             : AppAssets.logoSloganEnglish;
       case AppInUse.e:
       return AppAssets.logoCompanyWhite;
@@ -257,7 +274,7 @@ class AppFlavour {
       case AppInUse.g:
         return AppTranslationConstants.music.tr;
       default:
-        return AppTranslationConstants.audioLibrary.tr;
+        return CommonTranslationConstants.audioLibrary.tr;
     }
   }
 

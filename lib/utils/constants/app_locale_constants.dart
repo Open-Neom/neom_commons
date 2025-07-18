@@ -15,29 +15,6 @@ class AppLocaleConstants {
 
   static const String es = 'es';
 
-  static String languageFromLocale(Locale locale) {
-    String language = "";
-    switch(locale.languageCode){
-      case 'en':
-        language = "english";
-        break;
-      case 'esp':
-        language = "spanish";
-        break;
-      case 'es':
-        language = "spanish";
-        break;
-      case 'fr':
-        language = "french";
-        break;
-      case 'de':
-        language = "deutsch";
-        break;
-    }
-
-    return language;
-  }
-
 // Listas de países por idioma (normalizadas y en minúsculas)
   static List<String> spanishCountries = [
     'mexico', 'spain', 'argentina', 'colombia', 'peru', 'venezuela',

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../utils/constants/app_assets.dart';
-import '../utils/constants/app_translation_constants.dart';
+import '../utils/constants/translations/common_translation_constants.dart';
 import 'theme/app_color.dart';
 import 'theme/app_theme.dart';
 
@@ -24,7 +24,7 @@ class UnderConstructionPage extends StatelessWidget {
             children: [
               Image.asset(AppAssets.underConstruction, height: 150),
               AppTheme.heightSpace10,
-              Text(AppTranslationConstants.underConstruction.tr,
+              Text(CommonTranslationConstants.underConstruction.tr,
                 style: const TextStyle(fontSize: 15)
               ),
             ]

@@ -3,23 +3,8 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:neom_core/app_config.dart';
-import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/data/implementations/user_controller.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
-
-
-Widget customCachedNetworkImage(mediaUrl) {
-  AppConfig.logger.t("Building widget for image url: $mediaUrl");
-  return mediaUrl == AppProperties.getAppLogoUrl() ? const SizedBox.shrink(): CachedNetworkImage(
-    key: ValueKey(mediaUrl),
-    imageUrl: mediaUrl,
-    fit: BoxFit.fill,
-    errorWidget: (context,url,error) => const Icon(
-      Icons.image_not_supported,
-    ),
-  );
-}
 
 Widget cachedNetworkProfileImage(String profileId, String mediaUrl) {
   return GestureDetector(
@@ -36,20 +21,15 @@ Widget cachedNetworkProfileImage(String profileId, String mediaUrl) {
   );
 }
 
-Widget fileImage(mediaUrl) {
+Widget fileImage(File mediaFile) {
   return GestureDetector(
-    ///DEPRECATED HERO NOT NEEDED AND BAD PERFORMANCE
-      // child: Hero(
-      //   tag: 'img_file_hero_$mediaUrl',
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: Image.file(
-            File(mediaUrl),
+          child: Image.file(mediaFile,
             fit: BoxFit.fitHeight,
           ),
         ),
-      // ),
-      onTap: () => Get.toNamed(AppRouteConstants.mediaFullScreen, arguments: [mediaUrl, false])
+      onTap: () => Get.toNamed(AppRouteConstants.imageFullScreen, arguments: [mediaFile.path, false])
   );
 }
 
@@ -67,26 +47,3 @@ Widget cachedVideoThumbnail({required String thumbnailUrl, required String media
     onTap: () => Get.toNamed(AppRouteConstants.videoFullScreen, arguments: [mediaUrl]),
   );
 }
-
-// Widget cachedNetworkVideoThumbnail({required String thumbnailUrl, required String mediaUrl}) {
-//   return GestureDetector(
-//     ///DEPRECATED HERO NOT NEEDED AND BAD PERFORMANCE
-//     // child: Hero(
-//     //   tag: 'thumbnail_$thumbnailUrl',
-//       child: Stack(
-//         alignment: Alignment.center,
-//       children: [
-//         CachedNetworkImage(
-//           imageUrl: thumbnailUrl,
-//           fit: BoxFit.fitHeight,
-//           errorWidget: (context,url,error) => const Icon(Icons.error,),
-//           height: 300,
-//         ),
-//         VideoPlayButton(controllerFunction: () => Get.to(() => FullScreenVideo(mediaUrl: mediaUrl),
-//             transition: Transition.zoom),)
-//       ],),
-//     // ),
-//     onTap: () => Get.to(() => FullScreenVideo(mediaUrl: mediaUrl),
-//         transition: Transition.zoom),
-//   );
-// }

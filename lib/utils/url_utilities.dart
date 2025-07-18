@@ -11,9 +11,7 @@ class UrlUtilities {
     RegExp regExp = RegExp(
         r'((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?'
     );
-    // RegExp regExp = RegExp(
-    //     r'(?<!music\.)((?:https?:)?\/\/)?((?:www|m)\.)?(youtube\.com|youtu\.be)(\/(?:watch\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?'
-    // );
+
     String? matches = regExp.stringMatch(text);
     if (matches == null) return ''; /// Always returns here while the video URL is in the content parameter
 

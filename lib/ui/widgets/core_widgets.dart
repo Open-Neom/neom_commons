@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../utils/app_utilities.dart';
-import '../../utils/constants/message_translation_constants.dart';
+import '../../utils/constants/translations/common_translation_constants.dart';
+import '../../utils/constants/translations/message_translation_constants.dart';
 import '../theme/app_color.dart';
 import '../theme/app_theme.dart';
 import 'custom_widgets.dart';
@@ -43,7 +44,7 @@ Widget buildActionChip({
     onPressed:() {
       isActive ? controllerFunction(appEnum) :
       AppUtilities.showSnackBar(
-        title: MessageTranslationConstants.underConstruction.tr,
+        title: CommonTranslationConstants.underConstruction.tr,
         message: MessageTranslationConstants.featureAvailableSoon.tr,
       );
     },
@@ -66,7 +67,7 @@ Widget buildTextActionChip({
     onPressed:() {
       isActive ? controllerFunction() :
       AppUtilities.showSnackBar(
-        title: MessageTranslationConstants.underConstruction.tr,
+        title: CommonTranslationConstants.underConstruction.tr,
         message: MessageTranslationConstants.featureAvailableSoon.tr,
       );
     },
@@ -84,7 +85,7 @@ Widget buildIconActionChip({
     onPressed:() {
       isActive ? controllerFunction() :
       AppUtilities.showSnackBar(
-        title: MessageTranslationConstants.underConstruction.tr,
+        title: CommonTranslationConstants.underConstruction.tr,
         message: MessageTranslationConstants.featureAvailableSoon.tr,
       );
     },

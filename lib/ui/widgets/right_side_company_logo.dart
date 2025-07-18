@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:neom_core/app_config.dart';
 import '../../utils/app_alerts.dart';
 import '../../utils/constants/app_assets.dart';
-import '../../utils/constants/app_translation_constants.dart';
+import '../../utils/constants/translations/app_translation_constants.dart';
 
 class RightSideCompanyLogo extends StatelessWidget {
   const RightSideCompanyLogo({

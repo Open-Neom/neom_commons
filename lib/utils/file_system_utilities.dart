@@ -1,5 +1,7 @@
 import 'dart:io';
+
 import 'package:neom_core/app_config.dart';
+import 'package:path/path.dart' as p; // Importa el paquete path con un prefijo
 import 'package:path_provider/path_provider.dart';
 
 class FileSystemUtilities {
@@ -26,6 +28,13 @@ class FileSystemUtilities {
     }
 
     return file;
+  }
+
+  static String getFileNameWithExtension(String? filePath) {
+    if (filePath == null || filePath.isEmpty) {
+      return '';
+    }
+    return p.basename(filePath); // Usa p.basename para obtener el nombre del archivo
   }
 
 }

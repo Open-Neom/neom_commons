@@ -11,13 +11,13 @@ class HandledCachedNetworkImage extends StatelessWidget {
   final double? height;
   final double? width;
   final bool enableFullScreen;
+  final Duration fadeInDuration;
   final Function()? function;
 
 
   const HandledCachedNetworkImage(this.mediaUrl, {
     this.fit = BoxFit.fill, this.height, this.width, this.enableFullScreen = true,
-    this.function, super.key
-  });
+    this.fadeInDuration = const Duration(milliseconds: 500), this.function, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +27,11 @@ class HandledCachedNetworkImage extends StatelessWidget {
         height: height,
         width: width,
         fit: fit,
-        // placeholder: (context, url) => const CircularProgressIndicator(),
         errorWidget: (context,url,error) => const Icon(Icons.image_not_supported),
+        fadeInDuration: fadeInDuration,
       ),
       onTap: () => function != null ? function!() : enableFullScreen
-          ? Get.toNamed(AppRouteConstants.mediaFullScreen, arguments: [mediaUrl])
+          ? Get.toNamed(AppRouteConstants.imageFullScreen, arguments: [mediaUrl])
           : null
     );
   }

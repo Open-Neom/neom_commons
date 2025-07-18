@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:neom_core/app_config.dart';
 
 import 'app_utilities.dart';
-import 'constants/app_translation_constants.dart';
+import 'constants/translations/app_translation_constants.dart';
 
 class DeviceUtilities {
 

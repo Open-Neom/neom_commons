@@ -17,7 +17,7 @@ import '../app_flavour.dart';
 import '../utils/app_alerts.dart';
 import '../utils/constants/app_constants.dart';
 import '../utils/constants/app_page_id_constants.dart';
-import '../utils/constants/app_translation_constants.dart';
+import '../utils/constants/translations/common_translation_constants.dart';
 import '../utils/enums/app_drawer_menu.dart';
 import '../utils/external_utilities.dart';
 import '../utils/text_utilities.dart';
@@ -124,7 +124,7 @@ class AppDrawer extends StatelessWidget {
           constraints: const BoxConstraints(minWidth: 200, minHeight: 100),
           child: Center(
             child: Text(
-              AppTranslationConstants.loginToContinue.tr,
+              CommonTranslationConstants.loginToContinue.tr,
               style: AppTheme.primaryTitleText,
             ),
           ),
@@ -208,7 +208,7 @@ class AppDrawer extends StatelessWidget {
             padding: EdgeInsets.zero, // Remove padding here
             textStyle: const TextStyle(decoration: TextDecoration.underline), // Keep your underline style
           ),
-          child: Text(AppTranslationConstants.acquireSubscription.tr,),
+          child: Text(CommonTranslationConstants.acquireSubscription.tr,),
         ));
       } else {
         widgets.add(customText(CoreUtilities.getProfileMainFeature(_.appProfile.value).tr.capitalize,
@@ -219,16 +219,16 @@ class AppDrawer extends StatelessWidget {
         widgets.add(const Icon(Icons.verified_outlined, color: Colors.white70));
         widgets.add(TextButton(
             onPressed: () => AppAlerts.getSubscriptionAlert(_.subscriptionController!, context, AppRouteConstants.home),
-            child: Text(AppTranslationConstants.verifyProfile.tr,
+            child: Text(CommonTranslationConstants.verifyProfile.tr,
               style: const TextStyle(decoration: TextDecoration.underline),
             )
         ));
       }
     } else {
       if(_.user.subscriptionId == SubscriptionLevel.basic.name) {
-        widgets.add(Text(AppTranslationConstants.enjoyTheApp.tr,));
+        widgets.add(Text(CommonTranslationConstants.enjoyTheApp.tr,));
       } else {
-        widgets.add(Text(AppTranslationConstants.activeSubscription.tr,));
+        widgets.add(Text(CommonTranslationConstants.activeSubscription.tr,));
       }
 
     }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../app_flavour.dart';
 import '../utils/constants/app_page_id_constants.dart';
-import '../utils/constants/app_translation_constants.dart';
+import '../utils/constants/translations/common_translation_constants.dart';
 import 'splash_controller.dart';
 import 'theme/app_color.dart';
 import 'theme/app_theme.dart';
@@ -28,7 +28,7 @@ class SplashPage extends StatelessWidget {
                 Column(
                   children: [
                     const SizedBox(height: 20,),
-                    Text(AppTranslationConstants.splashSubtitle.tr,
+                    Text(CommonTranslationConstants.splashSubtitle.tr,
                       style: TextStyle(
                           color: Colors.white.withOpacity(1.0),
                           fontFamily: AppTheme.fontFamily,
