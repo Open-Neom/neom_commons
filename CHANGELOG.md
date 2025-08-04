@@ -1,4 +1,4 @@
-## 1.4.0-dev Architectural Changes and Refactoring:
+## 1.4.0-dev - Architectural Changes and Refactoring:
 
 Translation Constants Modularization:
 
