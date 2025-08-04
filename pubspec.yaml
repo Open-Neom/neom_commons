@@ -1,33 +1,30 @@
 name: neom_commons
 description: Commons for Open Neom.
-version: 1.4.0
+version: 1.4.0-dev
 homepage: https://github.com/Open-Neom/neom_commons
-publish_to: 'none'
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
+  sdk: ">=3.8.0 <4.0.0"
   flutter: ">=3.19.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  neom_core:
-    git:
-      url: git@github.com:Open-Neom/neom_core.git
+  neom_core: ^1.4.0-dev
 
-  font_awesome_flutter: ^10.8.0
-  lucide_icons_flutter: ^3.0.3
+  font_awesome_flutter: ^10.9.0
+  lucide_icons_flutter: ^3.0.8
 
   intl: ^0.20.2
   readmore: ^3.0.0
   animated_text_kit: ^4.2.3
-  get_time_ago: ^2.3.1
+  get_time_ago: ^2.3.2
   flutter_rating_bar: ^4.0.1
   flutter_linkify: ^6.0.0
   hashtagable_v3: ^3.0.1
 
-  carousel_slider: ^5.0.0
+  carousel_slider: ^5.1.1
   flutter_slider_indicator: ^1.0.0
   rubber: ^1.1.0
 

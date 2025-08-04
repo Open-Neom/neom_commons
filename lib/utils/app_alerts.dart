@@ -177,14 +177,14 @@ class AppAlerts {
     }
   }
 
-  static Future<bool?> getSubscriptionAlert(SubscriptionService? _, BuildContext context, String fromRoute) async {
+  static Future<bool?> getSubscriptionAlert(SubscriptionService? drawerController, BuildContext context, String fromRoute) async {
     AppConfig.logger.d("getSubscriptionAlert");
 
     List<ProfileType> profileTypes = AppFlavour.getProfileTypes();
 
-    if(_ == null) return null;
+    if(drawerController == null) return null;
 
-    if(_.subscriptionPlans.isEmpty) await _.initializeSubscriptions();
+    if(drawerController.subscriptionPlans.isEmpty) await drawerController.initializeSubscriptions();
 
     return Alert(
         context: context,
@@ -193,13 +193,13 @@ class AppAlerts {
             titleStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
             titleTextAlign: TextAlign.justify
         ),
-        content: Obx(() => _.isLoading ? const Center(child: CircularProgressIndicator()) : Column(
+        content: Obx(() => drawerController.isLoading ? const Center(child: CircularProgressIndicator()) : Column(
           children: <Widget>[
             AppTheme.heightSpace20,
-            Text(('${_.selectedPlanName}Msg').tr,
+            Text(('${drawerController.selectedPlanName}Msg').tr,
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),textAlign: TextAlign.justify,),
             AppTheme.heightSpace20,
-            HandledCachedNetworkImage(_.selectedPlanImgUrl),
+            HandledCachedNetworkImage(drawerController.selectedPlanImgUrl),
             AppTheme.heightSpace20,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -216,9 +216,9 @@ class AppAlerts {
                   }).toList(),
                   onChanged: (ProfileType? selectedType) {
                     if (selectedType == null) return;
-                    _.selectProfileType(selectedType);
+                    drawerController.selectProfileType(selectedType);
                   },
-                  value: _.profileType,
+                  value: drawerController.profileType,
                   alignment: Alignment.center,
                   icon: const Icon(Icons.arrow_downward),
                   iconSize: 20,
@@ -239,7 +239,7 @@ class AppAlerts {
                   style: const TextStyle(fontSize: 15),
                 ),
                 DropdownButton<String>(
-                  items: _.profilePlans.values.map((SubscriptionPlan plan) {
+                  items: drawerController.profilePlans.values.map((SubscriptionPlan plan) {
                     return DropdownMenuItem<String>(
                       value: plan.id,
                       child: Text(plan.name.tr),
@@ -247,10 +247,10 @@ class AppAlerts {
                   }).toList(),
                   onChanged: (String? plan) {
                     if(plan != null) {
-                      _.changeSubscriptionPlan(plan);
+                      drawerController.changeSubscriptionPlan(plan);
                     }
                   },
-                  value: _.selectedPlan.id,
+                  value: drawerController.selectedPlan.id,
                   alignment: Alignment.center,
                   icon: const Icon(Icons.arrow_downward),
                   iconSize: 20,
@@ -273,7 +273,7 @@ class AppAlerts {
                 ),
                 Row(
                   children: [
-                    Text("${CoreUtilities.getCurrencySymbol(_.selectedPrice.currency)} ${_.selectedPrice.amount} ${_.selectedPrice.currency.name.tr.toUpperCase()}",
+                    Text("${CoreUtilities.getCurrencySymbol(drawerController.selectedPrice.currency)} ${drawerController.selectedPrice.amount} ${drawerController.selectedPrice.currency.name.tr.toUpperCase()}",
                       style: const TextStyle(fontSize: 15),
                     ),
                     AppTheme.widthSpace5,
@@ -287,7 +287,7 @@ class AppAlerts {
           DialogButton(
             color: AppColor.bondiBlue75,
             onPressed: () async {
-              await _.paySubscription(_.selectedPlan, fromRoute);
+              await drawerController.paySubscription(drawerController.selectedPlan, fromRoute);
             },
             child: Text(CommonTranslationConstants.confirmAndProceed.tr,
               style: const TextStyle(fontSize: 15),

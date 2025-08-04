@@ -39,7 +39,7 @@ class AppDrawer extends StatelessWidget {
     return GetBuilder<AppDrawerController>(
     id: AppPageIdConstants.appDrawer,
     init: AppDrawerController(),
-    builder: (_) {
+    builder: (drawerController) {
       return Drawer(
         child: Container(
           decoration: AppTheme.appBoxDecoration,
@@ -52,7 +52,7 @@ class AppDrawer extends StatelessWidget {
                     physics: const BouncingScrollPhysics(),
                     children: <Widget>[
                       AppTheme.heightSpace10,
-                      _menuHeader(context, _),
+                      _menuHeader(context, drawerController),
                       const Divider(),
                       if(Get.isRegistered<ProfileService>()) drawerRowOption(AppDrawerMenu.profile,  const Icon(Icons.person), context),
                       if(AppConfig.instance.appInUse == AppInUse.e)
@@ -61,7 +61,7 @@ class AppDrawer extends StatelessWidget {
                             drawerRowOption(AppDrawerMenu.inspiration, const Icon(FontAwesomeIcons.filePen), context),
                           ],
                         ),
-                      if(AppConfig.instance.appInUse == AppInUse.g && _.appProfile.value?.type == ProfileType.appArtist && _.user?.userRole != UserRole.subscriber)
+                      if(AppConfig.instance.appInUse == AppInUse.g && drawerController.appProfile.value?.type == ProfileType.appArtist && drawerController.user?.userRole != UserRole.subscriber)
                         drawerRowOption(AppDrawerMenu.bands, const Icon(Icons.people), context),
                       if(AppFlavour.isNeomApp())
                         Column(
@@ -78,14 +78,14 @@ class AppDrawer extends StatelessWidget {
                       Column(
                         children: [
                           const Divider(),
-                          if(_.user?.userRole != UserRole.subscriber && !AppFlavour.isNeomApp())
+                          if(drawerController.user?.userRole != UserRole.subscriber && !AppFlavour.isNeomApp())
                             drawerRowOption(AppDrawerMenu.releaseUpload, Icon(AppFlavour.getAppItemIcon()), context),
                           if(AppConfig.instance.appInUse == AppInUse.e)
                             Column(
                               children: [
-                                if((_.userServiceImpl?.subscriptionLevel.value ?? SubscriptionLevel.freemium.value)
+                                if((drawerController.userServiceImpl?.subscriptionLevel.value ?? SubscriptionLevel.freemium.value)
                                     >= SubscriptionLevel.creator.value ||
-                                    ( _.user?.userRole.value ?? UserRole.subscriber.value) > UserRole.subscriber.value)
+                                    ( drawerController.user?.userRole.value ?? UserRole.subscriber.value) > UserRole.subscriber.value)
                                   drawerRowOption(AppDrawerMenu.nupale, const Icon(FontAwesomeIcons.bookOpenReader), context),
                                 //TODO Working on it with similar views as NUPALE but analysing caseteSessions
                                 // drawerRowOption(AppDrawerMenu.casete, const Icon(FontAwesomeIcons.tape), context),
@@ -100,8 +100,8 @@ class AppDrawer extends StatelessWidget {
                           // _menuListRowButton(AppConstants.crowdfunding, const Icon(FontAwesomeIcons.gifts), true, context),
                         ],
                       ),
-                      if(!AppFlavour.isNeomApp() && ((_.userServiceImpl?.subscriptionLevel.value ?? SubscriptionLevel.freemium.value)
-                              >= SubscriptionLevel.creator.value || (_.user?.userRole.value ?? UserRole.subscriber.value) > UserRole.subscriber.value)
+                      if(!AppFlavour.isNeomApp() && ((drawerController.userServiceImpl?.subscriptionLevel.value ?? SubscriptionLevel.freemium.value)
+                              >= SubscriptionLevel.creator.value || (drawerController.user?.userRole.value ?? UserRole.subscriber.value) > UserRole.subscriber.value)
                       ) Column(
                         children: [
                           drawerRowOption(AppDrawerMenu.wallet, const Icon(FontAwesomeIcons.coins), context),
@@ -126,15 +126,15 @@ class AppDrawer extends StatelessWidget {
     });
   }
 
-  Widget _menuHeader(BuildContext context, AppDrawerController _) {
+  Widget _menuHeader(BuildContext context, AppDrawerController drawerController) {
 
-    if(_.user?.id.isNotEmpty ?? false) {
+    if(drawerController.user?.id.isNotEmpty ?? false) {
       return Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            if(_.appProfile.value != null) GestureDetector(
+            if(drawerController.appProfile.value != null) GestureDetector(
               child: Container(
                 height: 56,
                 width: 56,
@@ -143,8 +143,8 @@ class AppDrawer extends StatelessWidget {
                   border: Border.all(color: Colors.white, width: 2),
                   borderRadius: BorderRadius.circular(28),
                   image: DecorationImage(
-                    image: CachedNetworkImageProvider(_.appProfile.value!.photoUrl.isNotEmpty
-                        ? _.appProfile.value!.photoUrl : AppProperties.getAppLogoUrl()),
+                    image: CachedNetworkImageProvider(drawerController.appProfile.value!.photoUrl.isNotEmpty
+                        ? drawerController.appProfile.value!.photoUrl : AppProperties.getAppLogoUrl()),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -160,27 +160,27 @@ class AppDrawer extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      if(_.appProfile.value != null) Text(TextUtilities.capitalizeFirstLetter(_.appProfile.value!.name.length > AppConstants.maxDrawerNameLength
-                          ? "${_.appProfile.value!.name.substring(0,AppConstants.maxDrawerNameLength)}..." : _.appProfile.value!.name,),
+                      if(drawerController.appProfile.value != null) Text(TextUtilities.capitalizeFirstLetter(drawerController.appProfile.value!.name.length > AppConstants.maxDrawerNameLength
+                          ? "${drawerController.appProfile.value!.name.substring(0,AppConstants.maxDrawerNameLength)}..." : drawerController.appProfile.value!.name,),
                         style: AppTheme.primaryTitleText,
                         overflow: TextOverflow.fade,
                       ),
-                      if(_.userServiceImpl != null && _.user != null && _.user!.userRole != UserRole.subscriber) IconButton(
+                      if(drawerController.userServiceImpl != null && drawerController.user != null && drawerController.user!.userRole != UserRole.subscriber) IconButton(
                           constraints: const BoxConstraints(),
                           icon: const Icon(Icons.keyboard_arrow_down_outlined),
-                          onPressed: ()=> _.isButtonDisabled.value ? {} : AppAlerts.selectProfileModal(context: context,
-                              profiles: _.user!.profiles, currentProfileId: _.appProfile.value?.id ?? '',
-                              onChangeProfile: _.userServiceImpl!.changeProfile,
-                              onCreateProfile: _.userServiceImpl!.createProfile
+                          onPressed: ()=> drawerController.isButtonDisabled.value ? {} : AppAlerts.selectProfileModal(context: context,
+                              profiles: drawerController.user!.profiles, currentProfileId: drawerController.appProfile.value?.id ?? '',
+                              onChangeProfile: drawerController.userServiceImpl!.changeProfile,
+                              onCreateProfile: drawerController.userServiceImpl!.createProfile
                           )
                       )
                     ],
                   ),
-                  if(_.userServiceImpl != null && _.userServiceImpl!.user.userRole != UserRole.subscriber)
-                    Text(_.userServiceImpl!.user.userRole.name.tr, style: const TextStyle(fontSize: 14)),
+                  if(drawerController.userServiceImpl != null && drawerController.userServiceImpl!.user.userRole != UserRole.subscriber)
+                    Text(drawerController.userServiceImpl!.user.userRole.name.tr, style: const TextStyle(fontSize: 14)),
                 ],
               ),
-              subtitle: AppConfig.instance.appInUse != AppInUse.c ? buildVerifyProfile(_,context) : null,
+              subtitle: AppConfig.instance.appInUse != AppInUse.c ? buildVerifyProfile(drawerController,context) : null,
             ),
           ],
         ),
@@ -209,42 +209,42 @@ class AppDrawer extends StatelessWidget {
     }
   }
 
-  Widget buildVerifyProfile(AppDrawerController _, BuildContext context) {
+  Widget buildVerifyProfile(AppDrawerController drawerController, BuildContext context) {
     List<Widget> widgets = [];
 
-    if(_.appProfile.value != null && _.appProfile.value?.verificationLevel != VerificationLevel.none) {
-      widgets.add(customText(CoreUtilities.getProfileMainFeature(_.appProfile.value!).tr.capitalize,
+    if(drawerController.appProfile.value != null && drawerController.appProfile.value?.verificationLevel != VerificationLevel.none) {
+      widgets.add(customText(CoreUtilities.getProfileMainFeature(drawerController.appProfile.value!).tr.capitalize,
           style: AppTheme.primarySubtitleText.copyWith(
               color: Colors.white70, fontSize: 15),
           context: context));
       widgets.add(AppTheme.widthSpace5);
-      widgets.add(AppFlavour.getVerificationIcon(_.appProfile.value!.verificationLevel));
-    } else if(_.user?.subscriptionId.isEmpty ?? true) {
-      if(_.appProfile.value?.type == ProfileType.general) {
+      widgets.add(AppFlavour.getVerificationIcon(drawerController.appProfile.value!.verificationLevel));
+    } else if(drawerController.user?.subscriptionId.isEmpty ?? true) {
+      if(drawerController.appProfile.value?.type == ProfileType.general) {
         widgets.add(TextButton(
-          onPressed: () => AppAlerts.getSubscriptionAlert(_.subscriptionServiceImpl, context, AppRouteConstants.home),
+          onPressed: () => AppAlerts.getSubscriptionAlert(drawerController.subscriptionServiceImpl, context, AppRouteConstants.home),
           style: TextButton.styleFrom(
             padding: EdgeInsets.zero, // Remove padding here
             textStyle: const TextStyle(decoration: TextDecoration.underline), // Keep your underline style
           ),
           child: Text(CommonTranslationConstants.acquireSubscription.tr,),
         ));
-      } else if(_.appProfile.value != null) {
-        widgets.add(customText(CoreUtilities.getProfileMainFeature(_.appProfile.value!).tr.capitalize,
+      } else if(drawerController.appProfile.value != null) {
+        widgets.add(customText(CoreUtilities.getProfileMainFeature(drawerController.appProfile.value!).tr.capitalize,
             style: AppTheme.primarySubtitleText.copyWith(
                 color: Colors.white70, fontSize: 15),
             context: context));
         widgets.add(AppTheme.widthSpace5);
         widgets.add(const Icon(Icons.verified_outlined, color: Colors.white70));
         widgets.add(TextButton(
-            onPressed: () => AppAlerts.getSubscriptionAlert(_.subscriptionServiceImpl!, context, AppRouteConstants.home),
+            onPressed: () => AppAlerts.getSubscriptionAlert(drawerController.subscriptionServiceImpl!, context, AppRouteConstants.home),
             child: Text(CommonTranslationConstants.verifyProfile.tr,
               style: const TextStyle(decoration: TextDecoration.underline),
             )
         ));
       }
     } else {
-      if(_.user?.subscriptionId == SubscriptionLevel.basic.name) {
+      if(drawerController.user?.subscriptionId == SubscriptionLevel.basic.name) {
         widgets.add(Text(CommonTranslationConstants.enjoyTheApp.tr,));
       } else {
         widgets.add(Text(CommonTranslationConstants.activeSubscription.tr,));

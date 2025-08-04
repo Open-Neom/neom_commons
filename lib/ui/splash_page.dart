@@ -16,7 +16,7 @@ class SplashPage extends StatelessWidget {
     return GetBuilder<SplashController>(
       init: SplashController(),
       id: AppPageIdConstants.splash,
-      builder: (_) => Scaffold(
+      builder: (splashController) => Scaffold(
         backgroundColor: AppColor.main50,
         body: Container(
           decoration: AppTheme.appBoxDecoration,
@@ -41,7 +41,7 @@ class SplashPage extends StatelessWidget {
                 const SizedBox(height: 30,),
                 const CircularProgressIndicator(),
                 const SizedBox(height: 30,),
-                Obx(() => Text(_.subtitle.value.tr,
+                Obx(() => Text(splashController.subtitle.value.tr,
                     style: TextStyle(
                       color: Colors.white.withOpacity(1.0),
                       fontFamily: AppTheme.fontFamily,
