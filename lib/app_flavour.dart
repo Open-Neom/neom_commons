@@ -201,11 +201,11 @@ class AppFlavour {
       case AppInUse.g:
         return AppTranslationConstants.music;
       case AppInUse.e:
-        return CommonTranslationConstants.audioLibrary;
+        return AppTranslationConstants.audioLibrary;
       case AppInUse.c:
-        return CommonTranslationConstants.audioLibrary;
+        return AppTranslationConstants.audioLibrary;
       default:
-        return CommonTranslationConstants.audioLibrary;
+        return AppTranslationConstants.audioLibrary;
     }
   }
 
@@ -274,7 +274,7 @@ class AppFlavour {
       case AppInUse.g:
         return AppTranslationConstants.music.tr;
       default:
-        return CommonTranslationConstants.audioLibrary.tr;
+        return AppTranslationConstants.audioLibrary.tr;
     }
   }
 
@@ -347,4 +347,18 @@ class AppFlavour {
     return profileTypes;
   }
 
+  static bool isNeomApp() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+      case AppInUse.o:
+        return true;
+      case AppInUse.g:
+      case AppInUse.e:
+      default:
+        break;
+    }
+
+    return false;
+  }
 }

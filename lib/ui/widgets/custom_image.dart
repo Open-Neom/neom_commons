@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:neom_core/data/implementations/user_controller.dart';
+import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 
 Widget cachedNetworkProfileImage(String profileId, String mediaUrl) {
@@ -15,7 +15,7 @@ Widget cachedNetworkProfileImage(String profileId, String mediaUrl) {
         placeholder: (context, url) => const CircularProgressIndicator(),
         errorWidget: (context,url,error) => const Icon(Icons.image_not_supported),
     ),
-    onTap: () => Get.find<UserController>().profile.id != profileId ?
+    onTap: () => Get.find<UserService>().profile.id != profileId ?
     Get.toNamed(AppRouteConstants.mateDetails, arguments: profileId)
         : Get.toNamed(AppRouteConstants.profileDetails, arguments: profileId),
   );

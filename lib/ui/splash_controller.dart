@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:neom_core/app_config.dart';
-import 'package:neom_core/data/implementations/user_controller.dart';
 import 'package:neom_core/domain/use_cases/login_service.dart';
+import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/auth_status.dart';
 import '../utils/app_utilities.dart';
@@ -9,8 +9,8 @@ import '../utils/constants/translations/common_translation_constants.dart';
 
 class SplashController extends GetxController {
   
-  final loginController = Get.find<LoginService>();
-  final userController = Get.find<UserController>();
+  final loginServiceImpl = Get.find<LoginService>();
+  final userServiceImpl = Get.find<UserService>();
 
   RxString subtitle = "".obs;
 
@@ -82,10 +82,10 @@ class SplashController extends GetxController {
         Get.offAndToNamed(toRoute);
         break;
       case AppRouteConstants.logout:
-        loginController.signOut();
+        loginServiceImpl.signOut();
         break;
       case AppRouteConstants.introRequiredPermissions:
-        loginController.signOut();
+        loginServiceImpl.signOut();
         break;
       case AppRouteConstants.accountSettings:
         handleAccountSettings();
@@ -95,14 +95,14 @@ class SplashController extends GetxController {
         break;
       case AppRouteConstants.introReason:
         changeSubtitle(CommonTranslationConstants.creatingAccount);
-        userController.createUser();
+        userServiceImpl.createUser();
         break;
       case AppRouteConstants.signup:
         changeSubtitle(CommonTranslationConstants.creatingAccount);
         break;
       case AppRouteConstants.createAdditionalProfile:
         changeSubtitle(CommonTranslationConstants.creatingProfile);
-        userController.createProfile();
+        userServiceImpl.createProfile();
         break;
       case AppRouteConstants.paymentGateway:
         handlePaymentGateway();
@@ -116,8 +116,8 @@ class SplashController extends GetxController {
         break;
     }
 
-    if(loginController.getAuthStatus() == AuthStatus.loggingIn) {
-      loginController.setAuthStatus(AuthStatus.loggedIn);
+    if(loginServiceImpl.getAuthStatus() == AuthStatus.loggingIn) {
+      loginServiceImpl.setAuthStatus(AuthStatus.loggedIn);
     }
 
     update();
@@ -132,10 +132,10 @@ class SplashController extends GetxController {
   Future<void> handleAccountSettings() async {
     if(toRoute == AppRouteConstants.accountRemove) {
       changeSubtitle(CommonTranslationConstants.removingAccount);
-      await userController.removeAccount();
+      await userServiceImpl.removeAccount();
     } else if (toRoute == AppRouteConstants.profileRemove) {
       changeSubtitle(CommonTranslationConstants.removingProfile);
-      await userController.removeProfile();
+      await userServiceImpl.removeProfile();
       Get.offAllNamed(AppRouteConstants.home);
     }
   }

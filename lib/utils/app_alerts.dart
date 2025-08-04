@@ -4,27 +4,27 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
-import 'package:neom_core/data/implementations/mate_controller.dart';
-import 'package:neom_core/data/implementations/report_controller.dart';
-import 'package:neom_core/data/implementations/subscription_controller.dart';
-import 'package:neom_core/data/implementations/user_controller.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/model/subscription_plan.dart';
+import 'package:neom_core/domain/use_cases/mate_service.dart';
+import 'package:neom_core/domain/use_cases/report_service.dart';
+import 'package:neom_core/domain/use_cases/subscription_service.dart';
+import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/core_utilities.dart';
 import 'package:neom_core/utils/enums/profile_type.dart';
 import 'package:neom_core/utils/enums/reference_type.dart';
 import 'package:neom_core/utils/enums/report_type.dart';
-// ignore: directives_ordering
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../app_flavour.dart';
 import '../ui/theme/app_color.dart';
 import '../ui/theme/app_theme.dart';
-import '../ui/widgets/handled_cached_network_image.dart';
+import '../ui/widgets/images/handled_cached_network_image.dart';
 import 'app_utilities.dart';
 import 'constants/translations/app_translation_constants.dart';
 import 'constants/translations/common_translation_constants.dart';
+import 'constants/translations/message_translation_constants.dart';
 
 class AppAlerts {
 
@@ -85,8 +85,8 @@ class AppAlerts {
     required void Function() onCreateProfile,}) async {
 
     try {
-      UserController userController = Get.find<UserController>();
-      await userController.getProfiles();
+      UserService userServiceImpl = Get.find<UserService>();
+      await userServiceImpl.getProfiles();
       await showModalBottomSheet(
           elevation: 0,
           backgroundColor: AppTheme.canvasColor25(context),
@@ -107,9 +107,9 @@ class AppAlerts {
                           padding: EdgeInsets.zero,
                           shrinkWrap: true,
                           separatorBuilder:  (context, index) => const Divider(),
-                          itemCount: userController.user.profiles.length,
+                          itemCount: userServiceImpl.user.profiles.length,
                           itemBuilder: (ctx, index) {
-                            AppProfile profile = userController.user.profiles.elementAt(index);
+                            AppProfile profile = userServiceImpl.user.profiles.elementAt(index);
                             return ListTile(
                               leading: IconButton(
                                 icon: CircleAvatar(
@@ -124,7 +124,7 @@ class AppAlerts {
                                   Navigator.pop(context);
                                   if(currentProfileId != profile.id) {
                                     Navigator.pop(context);
-                                    await userController.changeProfile(profile);
+                                    await userServiceImpl.changeProfile(profile);
                                   }
                                 },
                               ),
@@ -140,7 +140,7 @@ class AppAlerts {
                                 Navigator.pop(context);
                                 if(currentProfileId != profile.id) {
                                   Navigator.pop(context);
-                                  await userController.changeProfile(profile);
+                                  await userServiceImpl.changeProfile(profile);
                                 }
                               },
                             );
@@ -177,7 +177,7 @@ class AppAlerts {
     }
   }
 
-  static Future<bool?> getSubscriptionAlert(SubscriptionController? _, BuildContext context, String fromRoute) async {
+  static Future<bool?> getSubscriptionAlert(SubscriptionService? _, BuildContext context, String fromRoute) async {
     AppConfig.logger.d("getSubscriptionAlert");
 
     List<ProfileType> profileTypes = AppFlavour.getProfileTypes();
@@ -193,13 +193,13 @@ class AppAlerts {
             titleStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
             titleTextAlign: TextAlign.justify
         ),
-        content: Obx(() => _.isLoading.value ? const Center(child: CircularProgressIndicator()) : Column(
+        content: Obx(() => _.isLoading ? const Center(child: CircularProgressIndicator()) : Column(
           children: <Widget>[
             AppTheme.heightSpace20,
-            Text(('${_.selectedPlanName.value}Msg').tr,
+            Text(('${_.selectedPlanName}Msg').tr,
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),textAlign: TextAlign.justify,),
             AppTheme.heightSpace20,
-            HandledCachedNetworkImage(_.selectedPlanImgUrl.value),
+            HandledCachedNetworkImage(_.selectedPlanImgUrl),
             AppTheme.heightSpace20,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -218,7 +218,7 @@ class AppAlerts {
                     if (selectedType == null) return;
                     _.selectProfileType(selectedType);
                   },
-                  value: _.profileType.value,
+                  value: _.profileType,
                   alignment: Alignment.center,
                   icon: const Icon(Icons.arrow_downward),
                   iconSize: 20,
@@ -273,7 +273,7 @@ class AppAlerts {
                 ),
                 Row(
                   children: [
-                    Text("${CoreUtilities.getCurrencySymbol(_.selectedPrice.value.currency)} ${_.selectedPrice.value.amount} ${_.selectedPrice.value.currency.name.tr.toUpperCase()}",
+                    Text("${CoreUtilities.getCurrencySymbol(_.selectedPrice.currency)} ${_.selectedPrice.amount} ${_.selectedPrice.currency.name.tr.toUpperCase()}",
                       style: const TextStyle(fontSize: 15),
                     ),
                     AppTheme.widthSpace5,
@@ -297,7 +297,7 @@ class AppAlerts {
     ).show();
   }
 
-  static Future<void> showBlockProfileAlert(MateController _, BuildContext context, String postOwnerId) async {
+  static Future<void> showBlockProfileAlert(MateService mateServiceImpl, BuildContext context, String postOwnerId) async {
     Alert(
         context: context,
         style: AlertStyle(
@@ -307,11 +307,11 @@ class AppAlerts {
         title: CommonTranslationConstants.blockProfile.tr,
         content: Column(
           children: [
-            Text(CommonTranslationConstants.blockProfileMsg.tr,
+            Text(MessageTranslationConstants.blockProfileMsg.tr,
               style: const TextStyle(fontSize: 15),
             ),
             AppTheme.heightSpace10,
-            Text(CommonTranslationConstants.blockProfileMsg2.tr,
+            Text(MessageTranslationConstants.blockProfileMsg2.tr,
               style: const TextStyle(fontSize: 15),
             ),
           ],),
@@ -326,10 +326,10 @@ class AppAlerts {
           DialogButton(
             color: AppColor.bondiBlue75,
             onPressed: () async {
-              await _.block(postOwnerId);
+              await mateServiceImpl.block(postOwnerId);
                 Navigator.pop(context);
                 Navigator.pop(context);
-                AppUtilities.showSnackBar(message: CommonTranslationConstants.blockedProfileMsg);
+                AppUtilities.showSnackBar(message: MessageTranslationConstants.blockedProfileMsg);
             },
             child: Text(AppTranslationConstants.toBlock.tr,
               style: const TextStyle(fontSize: 15),
@@ -339,8 +339,10 @@ class AppAlerts {
     ).show();
   }
 
-  static Future<void> showSendReportAlert(ReportController _, BuildContext context, String referenceId,
+  static Future<void> showSendReportAlert(BuildContext context, String referenceId,
       {ReferenceType referenceType = ReferenceType.post}) async {
+
+    ReportService reportServiceImpl = Get.find<ReportService>();
     Alert(
         context: context,
         style: AlertStyle(
@@ -351,18 +353,21 @@ class AppAlerts {
         content: Column(
           children: <Widget>[
             Obx(()=>
-                DropdownButton<String>(
+                DropdownButton<ReportType>(
                   dropdownColor: AppColor.getMain(),
                   items: ReportType.values.map((ReportType reportType) {
-                    return DropdownMenuItem<String>(
-                      value: reportType.name,
+                    return DropdownMenuItem<ReportType>(
+                      value: reportType,
                       child: Text(reportType.name.tr),
                     );
                   }).toList(),
-                  onChanged: (String? reportType) {
-                    _.setReportType(reportType ?? "");
+                  onChanged: (ReportType? reportType) {
+                    if(reportType != null) {
+                      reportServiceImpl.setReportType(reportType);
+                    }
+
                   },
-                  value: _.reportType.value,
+                  value: reportServiceImpl.reportType,
                   alignment: Alignment.center,
                   icon: const Icon(Icons.arrow_downward),
                   iconSize: 20,
@@ -373,7 +378,7 @@ class AppAlerts {
             ),
             TextField(
               onChanged: (text) {
-                _.setMessage(text);
+                reportServiceImpl.setMessage(text);
               },
               decoration: InputDecoration(
                   labelText: AppTranslationConstants.message.tr
@@ -385,8 +390,8 @@ class AppAlerts {
           DialogButton(
             color: AppColor.bondiBlue75,
             onPressed: () async {
-              if(!_.isButtonDisabled.value) {
-                _.sendReport(referenceType, referenceId);
+              if(!reportServiceImpl.isButtonDisabled) {
+                reportServiceImpl.sendReport(referenceType, referenceId);
                 Navigator.pop(context);
                 Navigator.pop(context);
                 AppUtilities.showSnackBar(message: CommonTranslationConstants.hasSentReport);

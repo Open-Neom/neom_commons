@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/event.dart';
+import 'package:neom_core/utils/enums/app_locale.dart';
 
-import '../../utils/constants/app_locale_constants.dart';
 import '../../utils/constants/translations/app_translation_constants.dart';
 import '../theme/app_color.dart';
 import '../theme/app_theme.dart';
@@ -58,7 +58,7 @@ class EventTile extends StatelessWidget {
                     children: <Widget>[
                       const Icon(Icons.calendar_today, size: 12),
                       AppTheme.widthSpace5,
-                      Text(DateFormat.yMMMd(AppLocaleConstants.es)
+                      Text(DateFormat.yMMMd(AppLocale.spanish.code)
                             .format(DateTime.fromMillisecondsSinceEpoch(event.eventDate)),
                         style: const TextStyle(fontSize: 12)
                       )

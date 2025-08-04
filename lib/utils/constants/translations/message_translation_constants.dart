@@ -4,7 +4,6 @@ class MessageTranslationConstants {
   static const String addEventImg = 'addEventImg';
   static const String addProfileImg = 'addProfileImg';
   static const String allEvents = 'allEvents';
-  static const String atLeastOneFrequency = 'atLeastOneFrequency';
   static const String atLeastOneInstrument = 'atLeastOneInstrument';
   static const String bandNameUsed = 'bandNameUsed';
   static const String changePaymentCurrency = 'changePaymentCurrency';
@@ -35,10 +34,6 @@ class MessageTranslationConstants {
   static const String finishingAccount = 'finishingAccount';
   static const String followersMsg = 'followersMsg';
   static const String followingMsg = 'followingMsg';
-  static const String frequencyAdded = 'frequencyAdded';
-  static const String frequencyNotAdded = 'frequencyNotAdded';
-  static const String frequencyNotRemoved = 'frequencyNotRemoved';
-  static const String frequencyRemoved = 'frequencyRemoved';
   static const String hasCreatedEvent = 'hasCreatedEvent';
   static const String instrumentAdded = 'instrumentAdded';
   static const String instrumentNotAdded = 'instrumentNotAdded';
@@ -123,8 +118,6 @@ class MessageTranslationConstants {
   static const String specifyAmountContribute = 'specifyAmountContribute';
   static const String specifyEventPlace = 'specifyEventPlace';
   static const String spotifySynchronization = 'spotifySynchronization';
-  static const String takePhoto = 'takePhoto';
-  static const String takeVideo = 'takeVideo';
   static const String toShareApp = 'toShareApp';
   static const String upToDate = 'upToDate';
   static const String updatedPhoneMsg = 'updatedPhoneMsg';
@@ -139,4 +132,28 @@ class MessageTranslationConstants {
   static const String writeComment = 'writeComment';
   static const String writeYourMessage = 'writeYourMessage';
   static const String youWillFindMsg = 'youWillFindMsg';
+  static const String allowedContentReminderMsg = 'allowedContentReminderMsg';
+  static const String appliedCouponCodeMsg = 'appliedCouponCodeMsg';
+  static const String blockProfileMsg = 'blockProfileMsg';
+  static const String blockProfileMsg2 = 'blockProfileMsg2';
+  static const String blockedProfileMsg = 'blockedProfileMsg';
+  static const String buyReleaseItemMsg = 'buyReleaseItemMsg';
+  static const String buySubscriptionMsg = 'buySubscriptionMsg';
+  static const String downloadAppMsg = 'downloadAppMsg';
+  static const String findItemmatesNearYourPlaceMsg = 'findItemmatesNearYourPlaceMsg';
+  static const String gatewayPaymentUnderConstructionMsg = 'gatewayPaymentUnderConstructionMsg';
+  static const String itemDetailsAddedMsg = 'itemDetailsAddedMsg';
+  static const String invalidCouponCodeMsg = 'invalidCouponCodeMsg';
+  static const String itemlistRemovedErrorMsg = 'itemlistRemovedErrorMsg';
+  static const String itemlistUpdatedErrorMsg = 'itemlistUpdatedErrorMsg';
+  static const String letsGigMsg = 'letsGigMsg';
+  static const String locationRequiredMsg1 = 'locationRequiredMsg1';
+  static const String locationRequiredMsg2 = 'locationRequiredMsg2';
+  static const String organizeBandEventMsg = 'organizeBandEventMsg';
+  static const String paymentProcessedMsg = 'paymentProcessedMsg';
+  static const String removePostMsg = 'removePostMsg';
+  static const String reportPostMsg = 'reportPostMsg';
+  static const String underConstructionMsg = 'underConstructionMsg';
+  static const String videoAboveSizeMsg = 'videoAboveSizeMsg';
+  static const String welcomeToAppMsg = 'welcomeToAppMsg';
 }

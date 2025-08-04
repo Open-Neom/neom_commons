@@ -13,8 +13,6 @@ class AppLocaleConstants {
     'deutsch': Locale('de', 'DE')
   };
 
-  static const String es = 'es';
-
 // Listas de países por idioma (normalizadas y en minúsculas)
   static List<String> spanishCountries = [
     'mexico', 'spain', 'argentina', 'colombia', 'peru', 'venezuela',

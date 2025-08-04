@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:neom_core/utils/enums/app_locale.dart';
 
-import '../../utils/constants/app_locale_constants.dart';
 import '../../utils/constants/translations/app_translation_constants.dart';
 
 class DateTimeRow extends StatelessWidget {
@@ -19,7 +19,7 @@ class DateTimeRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(date == 0 ? AppTranslationConstants.dateTBD.tr
-              : DateFormat.yMMMd(AppLocaleConstants.es)
+              : DateFormat.yMMMd(AppLocale.spanish.code)
               .format(DateTime.fromMillisecondsSinceEpoch(date)),
             style: const TextStyle(fontSize: 15),
             textAlign: TextAlign.center,

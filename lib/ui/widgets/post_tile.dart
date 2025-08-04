@@ -7,7 +7,7 @@ import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/post_type.dart';
 
 import 'custom_image.dart';
-import 'handled_cached_network_image.dart';
+import 'images/handled_cached_network_image.dart';
 
 class PostTile extends StatelessWidget {
 
@@ -24,9 +24,7 @@ class PostTile extends StatelessWidget {
         : post.type == PostType.video ?
       cachedVideoThumbnail(thumbnailUrl: post.thumbnailUrl, mediaUrl: post.mediaUrl)
         : HandledCachedNetworkImage(event?.imgUrl ?? AppProperties.getNoImageUrl()),
-      onTap:()=> {
-        //TODO VERIFY ITS WORKING
-        //Get.delete<PostDetailsController>(),
+      onTap:() => {
         Get.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post])
       }
     );

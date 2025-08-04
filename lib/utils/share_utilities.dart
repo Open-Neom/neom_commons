@@ -13,8 +13,12 @@ import 'file_downloader.dart';
 class ShareUtilities {
 
   static Future<void> shareApp() async {
-    ShareResult shareResult = await Share.share('${MessageTranslationConstants.shareAppMsg.tr}\n'
-        '${AppProperties.getLinksUrl()}'
+
+    String sharedText = '${MessageTranslationConstants.shareAppMsg.tr}\n'
+        '${AppProperties.getLinksUrl()}';
+
+    ShareResult shareResult = await SharePlus.instance.share(
+        ShareParams(text: sharedText)
     );
 
     if(shareResult.status == ShareResultStatus.success && shareResult.raw != "null") {
@@ -49,20 +53,18 @@ class ShareUtilities {
     }
 
 
+    String sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
+        '${MessageTranslationConstants.shareAppMsg.tr}\n'
+        '\n${AppProperties.getLinksUrl()}\n';
+
+    List<XFile> sharedFiles = [];
     if(thumbnailLocalPath.isNotEmpty) {
-      shareResult = await Share.shareXFiles([XFile(thumbnailLocalPath)],
-          text: '$caption${caption.isNotEmpty ? "\n\n" : ""}'
-              '${MessageTranslationConstants.shareAppMsg.tr}\n'
-              '\n${AppProperties.getLinksUrl()}\n'
-      );
-    } else {
-      shareResult = await Share.share(
-          '$caption${caption.isNotEmpty ? "\n\n" : ""}'
-              '${MessageTranslationConstants.shareAppMsg.tr}\n'
-              '\n${AppProperties.getLinksUrl()}\n'
-      );
+      sharedFiles.add(XFile(thumbnailLocalPath));
     }
 
+    shareResult = await SharePlus.instance.share(
+        ShareParams(text: sharedText, files: sharedFiles)
+    );
 
     if(shareResult.status == ShareResultStatus.success && shareResult.raw != "null") {
       Get.snackbar(MessageTranslationConstants.sharedApp.tr,
@@ -97,20 +99,30 @@ class ShareUtilities {
     }
 
 
+    String sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
+        '${MessageTranslationConstants.shareAppMsg.tr}\n'
+        '\n${AppProperties.getLinksUrl()}\n';
+
+    List<XFile> sharedFiles = [];
     if(thumbnailLocalPath.isNotEmpty) {
-      shareResult = await Share.shareXFiles([XFile(thumbnailLocalPath)],
-          text: '$caption${caption.isNotEmpty ? "\n\n" : ""}'
-              '${MessageTranslationConstants.shareMediaItem.tr}\n'
-              '\n${AppProperties.getLinksUrl()}\n'
-      );
-    } else {
-      shareResult = await Share.share(
-          '$caption${caption.isNotEmpty ? "\n\n" : ""}'
-              '${MessageTranslationConstants.shareMediaItemMsg.tr}\n'
-              '\n${AppProperties.getLinksUrl()}\n'
-      );
+
     }
 
+
+    if(thumbnailLocalPath.isNotEmpty) {
+      sharedFiles.add(XFile(thumbnailLocalPath));
+      sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
+              '${MessageTranslationConstants.shareMediaItem.tr}\n'
+              '\n${AppProperties.getLinksUrl()}\n';
+    } else {
+      sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
+          '${MessageTranslationConstants.shareMediaItemMsg.tr}\n'
+          '\n${AppProperties.getLinksUrl()}\n';
+    }
+
+    shareResult = await SharePlus.instance.share(
+        ShareParams(text: sharedText, files: sharedFiles)
+    );
 
     if(shareResult.status == ShareResultStatus.success && shareResult.raw != "null") {
       Get.snackbar(MessageTranslationConstants.sharedMediaItem.tr,

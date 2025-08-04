@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/app_color.dart';
-import '../theme/app_theme.dart';
+import '../../theme/app_color.dart';
+import '../../theme/app_theme.dart';
 
 class SubmitButton extends StatelessWidget {
   final String text;
