@@ -1,3 +1,5 @@
+## 1.4.1-dev - Publishing to pub.dev
+
 ## 1.4.0-dev - Architectural Changes and Refactoring:
 
 Translation Constants Modularization:

@@ -6,7 +6,6 @@ import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/use_cases/inbox_service.dart';
 import 'package:neom_core/domain/use_cases/login_service.dart';
-import 'package:neom_core/domain/use_cases/profile_service.dart';
 import 'package:neom_core/domain/use_cases/settings_service.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
@@ -54,7 +53,7 @@ class AppDrawer extends StatelessWidget {
                       AppTheme.heightSpace10,
                       _menuHeader(context, drawerController),
                       const Divider(),
-                      if(Get.isRegistered<ProfileService>()) drawerRowOption(AppDrawerMenu.profile,  const Icon(Icons.person), context),
+                      // if(Get.isRegistered<ProfileService>()) drawerRowOption(AppDrawerMenu.profile,  const Icon(Icons.person), context),
                       if(AppConfig.instance.appInUse == AppInUse.e)
                         Column(
                           children: [
@@ -89,7 +88,7 @@ class AppDrawer extends StatelessWidget {
                                   drawerRowOption(AppDrawerMenu.nupale, const Icon(FontAwesomeIcons.bookOpenReader), context),
                                 //TODO Working on it with similar views as NUPALE but analysing caseteSessions
                                 // drawerRowOption(AppDrawerMenu.casete, const Icon(FontAwesomeIcons.tape), context),
-                                drawerRowOption(AppDrawerMenu.directory, const Icon(FontAwesomeIcons.building), context),
+                                // drawerRowOption(AppDrawerMenu.directory, const Icon(FontAwesomeIcons.building), context),
                                 const Divider(),
                                 drawerRowOption(AppDrawerMenu.appItemQuotation, const Icon(Icons.attach_money), context),
                                 drawerRowOption(AppDrawerMenu.services, const Icon(Icons.room_service), context),
@@ -339,7 +338,7 @@ class AppDrawer extends StatelessWidget {
           child: icon
       ),
       title: customText(
-        selectedMenu.name.tr.capitalize,
+        selectedMenu.name.tr,
         textAlign: TextAlign.start,
         style: TextStyle(
           fontSize: 20,

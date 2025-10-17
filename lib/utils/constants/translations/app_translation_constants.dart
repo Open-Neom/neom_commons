@@ -15,6 +15,7 @@ class AppTranslationConstants {
   static const String and = "and";
   static const String appCoin = 'appCoin';
   static const String appMember = 'appMember';
+  static const String apps = 'apps';
   static const String appTitle = 'appTitle';
   static const String artist = 'artist';
   static const String author = 'author';
@@ -195,6 +196,7 @@ class AppTranslationConstants {
   static const String publish = 'publish';
   static const String publicList = 'publicList';
   static const String qty = 'qty';
+  static const String radio = "radio";
   static const String rating = "rating";
   static const String rates = "rates";
   static const String readMore = 'readMore';
@@ -263,6 +265,7 @@ class AppTranslationConstants {
   static const String toUpdate = 'toUpdate';
   static const String total = "total";
   static const String tryAgain = 'tryAgain';
+  static const String tv = "tv";
   static const String type = "type";
   static const String unfollow = "unfollow";
   static const String unknown = 'unknown';

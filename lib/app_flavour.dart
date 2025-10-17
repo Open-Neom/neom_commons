@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -11,6 +10,7 @@ import 'package:neom_core/utils/enums/app_locale.dart';
 import 'package:neom_core/utils/enums/profile_type.dart';
 import 'package:neom_core/utils/enums/verification_level.dart';
 
+import 'ui/theme/app_color.dart';
 import 'utils/app_locale_utilities.dart';
 import 'utils/constants/app_assets.dart';
 import 'utils/constants/app_page_id_constants.dart';
@@ -133,14 +133,16 @@ class AppFlavour {
 
   static IconData getSecondTabIcon() {
     switch (AppConfig.instance.appInUse) {
-      case AppInUse.g:
-        return FontAwesomeIcons.calendar;
-      case AppInUse.e:
-        return FontAwesomeIcons.calendar;
       case AppInUse.c:
-        return FontAwesomeIcons.calendar;
+        return Icons.event;
+      case AppInUse.d:
+        return Icons.event;
+      case AppInUse.e:
+        return Icons.event;
+      case AppInUse.g:
+        return Icons.event;
       default:
-        return FontAwesomeIcons.calendar;
+        return Icons.event;
     }
   }
 
@@ -159,11 +161,14 @@ class AppFlavour {
 
   static IconData getThirdTabIcon() {
     switch (AppConfig.instance.appInUse) {
-      case AppInUse.g:
+      case AppInUse.c:
         return FontAwesomeIcons.building;
+      case AppInUse.d:
+        return FontAwesomeIcons.shop;
+        //TODO return Icons.radio;
       case AppInUse.e:
         return FontAwesomeIcons.shop;
-      case AppInUse.c:
+      case AppInUse.g:
         return FontAwesomeIcons.building;
       default:
         return FontAwesomeIcons.shop;
@@ -172,11 +177,14 @@ class AppFlavour {
 
   static String getThirdTabTitle() {
     switch (AppConfig.instance.appInUse) {
-      case AppInUse.g:
+      case AppInUse.c:
         return AppTranslationConstants.directory;
+      case AppInUse.d:
+        return AppTranslationConstants.shop;
+      //TODO return AppTranslationConstants.radio
       case AppInUse.e:
         return AppTranslationConstants.bookShop;
-      case AppInUse.c:
+      case AppInUse.g:
         return AppTranslationConstants.directory;
       default:
         return AppTranslationConstants.shop;
@@ -185,12 +193,15 @@ class AppFlavour {
 
   static IconData getForthTabIcon() {
     switch (AppConfig.instance.appInUse) {
-      case AppInUse.g:
-        return Icons.play_circle_fill;
-      case AppInUse.e:
-        return FontAwesomeIcons.headphones;
       case AppInUse.c:
         return LucideIcons.audioWaveform;
+      case AppInUse.d:
+        return Icons.chat_bubble;
+        //TODO return Icons.tv;
+      case AppInUse.e:
+        return FontAwesomeIcons.headphones;
+      case AppInUse.g:
+        return Icons.play_circle_fill;
       default:
         return LucideIcons.headphones;
     }
@@ -198,28 +209,73 @@ class AppFlavour {
 
   static String getFortTabTitle() {
     switch (AppConfig.instance.appInUse) {
-      case AppInUse.g:
-        return AppTranslationConstants.music;
-      case AppInUse.e:
-        return AppTranslationConstants.audioLibrary;
       case AppInUse.c:
         return AppTranslationConstants.audioLibrary;
+      case AppInUse.d:
+        return AppTranslationConstants.radio;
+        //TODO return AppTranslationConstants.tv;
+      case AppInUse.e:
+        return AppTranslationConstants.audioLibrary;
+      case AppInUse.g:
+        return AppTranslationConstants.music;
+
       default:
         return AppTranslationConstants.audioLibrary;
+    }
+  }
+
+  static IconData getCentralTabIcon() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return Icons.add_box_outlined;
+      case AppInUse.d:
+        return Icons.apps;
+      case AppInUse.e:
+        return Icons.add_box_outlined;
+      case AppInUse.g:
+        return Icons.add_box_outlined;
+      case AppInUse.o:
+        return Icons.add_box_outlined;
+      default:
+        return Icons.apps;
+    }
+  }
+
+  static String getCentralTabTitle() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.c:
+      case AppInUse.d:
+      case AppInUse.e:
+      case AppInUse.g:
+      default:
+        return AppTranslationConstants.apps;
+    }
+  }
+
+  static bool activateHomeActionBtn() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.g:
+      case AppInUse.e:
+        return false;
+      case AppInUse.c:
+      case AppInUse.o:
+        return true;
+      default:
+        return false;
     }
   }
 
   static IconData getHomeActionBtnIcon() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
-        return CupertinoIcons.add;
+        return Icons.add;
       case AppInUse.e:
-        return CupertinoIcons.add;
+        return Icons.add;
       case AppInUse.c:
       case AppInUse.o:
         return FontAwesomeIcons.om;
       default:
-        return CupertinoIcons.add;
+        return Icons.add;
     }
   }
 
@@ -355,6 +411,78 @@ class AppFlavour {
         return true;
       case AppInUse.g:
       case AppInUse.e:
+      default:
+        break;
+    }
+
+    return false;
+  }
+
+  static Color getBackgroundColor() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return AppColor.main50;
+      case AppInUse.e:
+        return AppColor.darkBackground;
+      case AppInUse.g:
+        break;
+      case AppInUse.o:
+        return AppColor.main50;
+      default:
+        break;
+    }
+
+    return AppColor.getMain();
+  }
+
+  static bool gotoDetails() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return true;
+      case AppInUse.e:
+        return true;
+      case AppInUse.g:
+        return false;
+      case AppInUse.o:
+        return true;
+      default:
+        break;
+    }
+
+    return true;
+  }
+
+  static bool addAudioLimitation() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return false;
+      case AppInUse.e:
+        return false;
+      case AppInUse.g:
+        return true;
+      case AppInUse.o:
+        return false;
+      default:
+        break;
+    }
+
+    return false;
+  }
+
+  static bool showAppBarAddButton() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return true;
+      case AppInUse.e:
+        return false;
+      case AppInUse.g:
+        return false;
+      case AppInUse.o:
+        return true;
       default:
         break;
     }

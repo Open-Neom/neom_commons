@@ -14,8 +14,8 @@ class VideoPlayButton extends StatelessWidget {
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 colors: [
-                  const Color(0x36FFFFFF).withOpacity(0.1),
-                  const Color(0x0FFFFFFF).withOpacity(0.1)
+                  const Color(0x36FFFFFF).withAlpha(26),
+                  const Color(0x0FFFFFFF).withAlpha(26)
                 ],
                 begin: FractionalOffset.topLeft,
                 end: FractionalOffset.bottomRight

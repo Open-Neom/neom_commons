@@ -12,7 +12,7 @@ class HeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
-      color: AppColor.mystic.withOpacity(0.05),
+      color: AppColor.mystic.withAlpha(13),
       alignment: Alignment.centerLeft,
       child: UrlText(
         text: title,

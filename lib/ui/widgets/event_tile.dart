@@ -32,7 +32,7 @@ class EventTile extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Container(
-              padding: const EdgeInsets.only(left: 0, right: 5, top: 10, bottom: 10),
+              padding: const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 10),
               width: MediaQuery.of(context).size.width,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -26,7 +26,7 @@ class AppBarChild extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         children: [
           if(preTitle != null) Row(children: [preTitle!, AppTheme.widthSpace10],),
-          Text(title.capitalize, style: TextStyle(color: Colors.white.withOpacity(0.8),
+          Text(title.capitalize, style: TextStyle(color: Colors.white.withAlpha(204),
               fontWeight: FontWeight.bold),
           ),
         ],

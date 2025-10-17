@@ -117,7 +117,7 @@ class AppTheme {
           topLeft: Radius.circular(23),
           topRight: Radius.circular(23),
           bottomLeft: Radius.circular(23)),
-      color: Colors.white.withOpacity(0.10)
+      color: Colors.white.withAlpha(26)
   );
 
   static final BoxDecoration messageBoxDecoration = BoxDecoration(
@@ -125,7 +125,7 @@ class AppTheme {
       topLeft: Radius.circular(23),
       topRight: Radius.circular(23),
       bottomRight: Radius.circular(23)),
-      color: Colors.white.withOpacity(0.10)
+      color: Colors.white.withAlpha(26)
   );
 
   static const SizedBox heightSpace100 = SizedBox(height: 100);
@@ -147,15 +147,15 @@ class AppTheme {
   }
 
   static Color canvasColor75(BuildContext context) {
-    return Theme.of(context).canvasColor.withOpacity(0.75);
+    return Theme.of(context).canvasColor.withAlpha(191);
   }
 
   static Color canvasColor50(BuildContext context) {
-    return Theme.of(context).canvasColor.withOpacity(0.50);
+    return Theme.of(context).canvasColor.withAlpha(128);
   }
 
   static Color canvasColor25(BuildContext context) {
-    return Theme.of(context).canvasColor.withOpacity(0.25);
+    return Theme.of(context).canvasColor.withAlpha(64);
   }
 
   static Paint getTextForeGround() {

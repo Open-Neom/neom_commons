@@ -11,41 +11,47 @@ class AppColor {
     AppInUse appInUse = AppConfig.instance.appInUse;
     Color mainColor = Colors.white;
     switch(appInUse) {
-      case AppInUse.e:
-        mainColor = const Color.fromRGBO(156, 48, 26, 1);
-        break;
       case AppInUse.c:
         mainColor = const Color.fromRGBO(79, 25, 100, 1);
         break;
-      default:
+      case AppInUse.d:
+        mainColor = const Color(0xFF071e33);
+        break;
+      case AppInUse.e:
+        mainColor = const Color.fromRGBO(140, 20, 25, 1);
+        // mainColor = const Color.fromRGBO(175, 40, 30, 1);
+        // mainColor = const Color.fromRGBO(156, 48, 26, 1);
+        break;
+      case AppInUse.g:
         mainColor = const Color.fromRGBO(22, 42, 93, 1);
+        break;
+      case AppInUse.o:
+        mainColor = const Color.fromRGBO(79, 25, 100, 1);
+        break;
+      default:
+        mainColor = const Color.fromRGBO(79, 25, 100, 1);
     }
 
     return mainColor;
   }
 
-  static Color main25 = getMain().withValues(
-    red: 0.25 * getMain().r,
-    green: 0.25 * getMain().g,
-    blue: 0.25 * getMain().b,
-    alpha: 1.0);
-
-  static Color main50 = getMain().withOpacity(0.5);
-  static Color main75 = getMain().withOpacity(0.75);
-  static Color main95 = getMain().withOpacity(0.95);
-  static final Color bottomNavigationBar = getMain().withOpacity(0.5);
-  static final Color messageComposer = getMain().withOpacity(0.5);
-  static final Color drawer = getMain().withOpacity(0.5);
-  static final Color appBar = getMain().withOpacity(0.5);
-  static final Color boxDecoration = getMain().withOpacity(0.3);
+  static Color main25 = getMain().withAlpha(64);
+  static Color main50 = getMain().withAlpha(128);
+  static Color main75 = getMain().withAlpha(191);
+  static Color main95 = getMain().withAlpha(242);
+  static final Color bottomNavigationBar = getMain().withAlpha(128);
+  static final Color messageComposer = getMain().withAlpha(128);
+  static final Color drawer = getMain().withAlpha(128);
+  static final Color appBar = getMain().withAlpha(128);
+  static final Color boxDecoration = getMain().withAlpha(77);
 
   static const Color secondary = Color(0xff14171A);
   static const Color lightGrey = Color(0xffAAB8C2);
 
   static const Color white = Colors.white;
-  static final Color white80 = Colors.white.withOpacity(0.8);
-  static final Color white50 = Colors.white.withOpacity(0.5);
-  static final Color white25 = Colors.white.withOpacity(0.25);
+  static final Color white80 = Colors.white.withAlpha(204);
+  static final Color white50 = Colors.white.withAlpha(128);
+  static final Color white25 = Colors.white.withAlpha(64);
 
   static const Color yellow = Color(0xffFCCD00);
   static const Color ceriseRed = Color.fromRGBO(224, 36, 94, 1.0);
@@ -63,11 +69,14 @@ class AppColor {
   static const Color cardColor = Color.fromRGBO(47, 65, 123, 0.6);
 
   static Color getContextCardColor(BuildContext context) {
-    return Theme.of(context).cardColor.withOpacity(0.2);
+    return Theme.of(context).cardColor.withAlpha(52);
   }
 
   static const Color blogEditor = Color(0xFF1976D2);
 
   static const Color darkViolet = Color.fromRGBO(79, 25, 100, 1);
-  static Color deepDarkViolet = const Color.fromRGBO(79, 25, 100, 1).withOpacity(0.6);
+  static Color deepDarkViolet = const Color.fromRGBO(79, 25, 100, 1).withAlpha(156);
+
+  static const Color darkBackground = Color.fromRGBO(20, 20, 20, 1);
+
 }

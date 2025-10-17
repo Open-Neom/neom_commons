@@ -4,7 +4,6 @@ import '../app_flavour.dart';
 import '../utils/constants/app_page_id_constants.dart';
 import '../utils/constants/translations/common_translation_constants.dart';
 import 'splash_controller.dart';
-import 'theme/app_color.dart';
 import 'theme/app_theme.dart';
 
 class SplashPage extends StatelessWidget {
@@ -17,7 +16,7 @@ class SplashPage extends StatelessWidget {
       init: SplashController(),
       id: AppPageIdConstants.splash,
       builder: (splashController) => Scaffold(
-        backgroundColor: AppColor.main50,
+        backgroundColor: AppFlavour.getBackgroundColor(),
         body: Container(
           decoration: AppTheme.appBoxDecoration,
           child: Center(
@@ -30,7 +29,7 @@ class SplashPage extends StatelessWidget {
                     const SizedBox(height: 20,),
                     Text(CommonTranslationConstants.splashSubtitle.tr,
                       style: TextStyle(
-                          color: Colors.white.withOpacity(1.0),
+                          color: Colors.white,
                           fontFamily: AppTheme.fontFamily,
                           fontSize: 20,
                           fontWeight: FontWeight.bold
@@ -43,7 +42,7 @@ class SplashPage extends StatelessWidget {
                 const SizedBox(height: 30,),
                 Obx(() => Text(splashController.subtitle.value.tr,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(1.0),
+                      color: Colors.white,
                       fontFamily: AppTheme.fontFamily,
                       fontSize: 15.0,
                     ),

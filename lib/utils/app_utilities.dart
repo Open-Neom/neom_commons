@@ -114,7 +114,7 @@ class AppUtilities {
 
     try {
       if(imageUrl.isEmpty) {
-        imageUrl = AppProperties.getNoImageUrl();
+        imageUrl = AppProperties.getAppLogoUrl();
       }
 
       Uri uri = Uri.parse(imageUrl);

@@ -45,7 +45,7 @@ class CustomLoader {
   }
 
   Widget buildLoader(BuildContext context, {Color? backgroundColor}) {
-    backgroundColor ??= const Color(0xffa8a8a8).withOpacity(.5);
+    backgroundColor ??= const Color(0xffa8a8a8).withAlpha(128);
     var height = 150.0;
     return CustomScreenLoader(
       height: height,

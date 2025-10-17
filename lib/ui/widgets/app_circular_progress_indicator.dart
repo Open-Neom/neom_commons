@@ -31,7 +31,7 @@ class AppCircularProgressIndicator extends StatelessWidget {
                 AppTheme.heightSpace10,
                 Text(subtitle.tr,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(1.0),
+                    color: Colors.white,
                     fontFamily: AppTheme.fontFamily,
                     fontSize: 12.0,
                   ),

@@ -77,4 +77,6 @@ class AppAssets {
   static const String donateGooglePayBlack = 'assets/images/donate-gpay-black.jpg';
   static const String buyMeACoffeeButtonBlack = 'assets/images/music_player/xtras/buy_me_a_coffee_black_btn.png';
 
+  static const String mainItemCover = 'assets/images/mainItemCover.png';
+
 }

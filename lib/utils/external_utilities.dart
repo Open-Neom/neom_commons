@@ -41,6 +41,7 @@ class ExternalUtilities {
   }
 
   static void launchWhatsappURL(String phone, String message) async {
+
     try {
       String url = AppProperties.getWhatsappUrl().replaceAll("<phoneNumber>", phone);
       url = url.replaceAll("<message>", message);
