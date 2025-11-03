@@ -20,13 +20,14 @@ class PostTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
     child: post.type == PostType.image ?
-      HandledCachedNetworkImage(post.mediaUrl)
-        : post.type == PostType.video ?
+      HandledCachedNetworkImage(post.mediaUrl,
+        function: () => Get.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post]),
+      ) : post.type == PostType.video ?
       cachedVideoThumbnail(thumbnailUrl: post.thumbnailUrl, mediaUrl: post.mediaUrl)
-        : HandledCachedNetworkImage(event?.imgUrl ?? AppProperties.getNoImageUrl()),
-      onTap:() => {
-        Get.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post])
-      }
+        : HandledCachedNetworkImage(event?.imgUrl ?? AppProperties.getNoImageUrl(),
+        function: () => Get.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post]),
+      ),
+      onTap: () => Get.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post])
     );
   }
 

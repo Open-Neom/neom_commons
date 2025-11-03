@@ -11,9 +11,11 @@ import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
+import 'package:neom_core/domain/model/external_item.dart';
 import 'package:neom_core/domain/model/item_found_in_list.dart';
 import 'package:neom_core/domain/model/item_list.dart';
 
+import '../app_flavour.dart';
 import '../ui/theme/app_color.dart';
 import 'constants/app_constants.dart';
 import 'text_utilities.dart';
@@ -237,6 +239,51 @@ class AppUtilities {
 
   static Uint8List base64Decode(String base64String) {
     return base64.decode(base64String);
+  }
+
+  static Map<String, List<AppReleaseItem>> categorizeReleaseItems(List<AppReleaseItem> releaseItems, {
+    bool byTags = false,
+    List<String> forbiddenList = const ['emxi lecturas', 'libro digital', 'libro físico']
+  }) {
+    final Map<String, List<AppReleaseItem>> categorizedItems = {};
+
+    for (final item in releaseItems) {
+      // Selecciona la lista de claves según el modo: tags o categorías
+      final List<String> keys = byTags ? (item.tags ?? []) : (item.categories);
+      for (final key in keys) {
+        if (forbiddenList.contains(key.toLowerCase())) continue;
+        categorizedItems.putIfAbsent(key, () => []);
+        categorizedItems[key]!.add(item);
+      }
+    }
+
+    return categorizedItems;
+  }
+
+  static void gotoItemDetails(dynamic item, {isMain = true}) {
+    try {
+      if(item is AppReleaseItem) {
+        AppReleaseItem releaseItem = item;
+        if(isMain) {
+          Get.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [releaseItem]);
+        } else {
+          Get.toNamed(AppFlavour.getSecondaryItemDetailsRoute(), arguments: [releaseItem]);
+        }
+      } else if(item is AppMediaItem) {
+        AppMediaItem mediaItem = item;
+        if(isMain) {
+          Get.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [mediaItem]);
+        } else {
+          Get.toNamed(AppFlavour.getSecondaryItemDetailsRoute(), arguments: [mediaItem]);
+        }
+      } else if(item is ExternalItem) {
+        ExternalItem externalItem = item;
+        Get.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [externalItem]);
+      }
+    } catch (e) {
+      AppConfig.logger.e("Error mapping ChamberPreset to BaseItem: $e");
+      throw Exception('Error mapping chamber preset to BaseItem: $e');
+    }
   }
 
 }

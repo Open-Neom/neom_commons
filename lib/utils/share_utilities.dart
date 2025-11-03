@@ -78,10 +78,10 @@ class ShareUtilities {
 
     String thumbnailLocalPath = "";
 
-    if(mediaItem.imgUrl.isNotEmpty || (mediaItem.allImgs?.isNotEmpty ?? false) ) {
-      String imgUrl = mediaItem.imgUrl.isNotEmpty ? mediaItem.imgUrl : mediaItem.allImgs?.first ?? "";
+    if(mediaItem.imgUrl.isNotEmpty || (mediaItem.galleryUrls?.isNotEmpty ?? false) ) {
+      String imgUrl = mediaItem.imgUrl.isNotEmpty ? mediaItem.imgUrl : mediaItem.galleryUrls?.first ?? "";
       if(imgUrl.isNotEmpty) {
-        thumbnailLocalPath = await FileDownloader.downloadImage(imgUrl, imgName: "${mediaItem.artist}_${mediaItem.name}");
+        thumbnailLocalPath = await FileDownloader.downloadImage(imgUrl, imgName: "${mediaItem.ownerName}_${mediaItem.name}");
       }
     }
 
@@ -92,10 +92,10 @@ class ShareUtilities {
         caption = caption.replaceAll(CoreConstants.titleTextDivider, "\n\n");
       }
       String dotsLine = "";
-      for(int i = 0; i < mediaItem.artist.length; i++) {
+      for(int i = 0; i < mediaItem.ownerName.length; i++) {
         dotsLine = "$dotsLine.";
       }
-      caption = "$caption\n\n${mediaItem.artist}\n$dotsLine";
+      caption = "$caption\n\n${mediaItem.ownerName}\n$dotsLine";
     }
 
 

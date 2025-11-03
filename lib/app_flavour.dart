@@ -4,9 +4,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
+import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
 import 'package:neom_core/utils/enums/app_locale.dart';
+import 'package:neom_core/utils/enums/itemlist_type.dart';
+import 'package:neom_core/utils/enums/media_item_type.dart';
+import 'package:neom_core/utils/enums/media_search_type.dart';
 import 'package:neom_core/utils/enums/profile_type.dart';
 import 'package:neom_core/utils/enums/verification_level.dart';
 
@@ -60,6 +64,7 @@ class AppFlavour {
       case AppInUse.e:
         return FontAwesomeIcons.bookOpenReader;
       case AppInUse.c:
+      case AppInUse.o:
         return Icons.sync;
       default:
         return Icons.sync;
@@ -489,4 +494,95 @@ class AppFlavour {
 
     return false;
   }
+
+  static MediaItemType getDefaultItemType() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return MediaItemType.neomPreset;
+      case AppInUse.e:
+        return MediaItemType.book;
+      case AppInUse.g:
+        return MediaItemType.song;
+      case AppInUse.o:
+        return MediaItemType.neomPreset;
+      default:
+        break;
+    }
+
+    return MediaItemType.neomPreset;
+  }
+
+  static ItemlistType getDefaultItemlistType() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return ItemlistType.playlist;
+      case AppInUse.e:
+        return ItemlistType.readlist;
+      case AppInUse.g:
+        return ItemlistType.playlist;
+      case AppInUse.o:
+        return ItemlistType.playlist;
+      default:
+        break;
+    }
+    return ItemlistType.playlist;
+  }
+
+  static MediaSearchType getDefaultMediaSearchType() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return MediaSearchType.song;
+      case AppInUse.e:
+        return MediaSearchType.book;
+      case AppInUse.g:
+        return MediaSearchType.song;
+      case AppInUse.o:
+        return MediaSearchType.song;
+      default:
+        return MediaSearchType.song;
+    }
+
+  }
+
+
+  static void gotoSuggestedItem() {
+    AppReleaseItem suggestedItem = AppReleaseItem(
+      previewUrl: AppConfig.instance.appInfo.suggestedUrl,
+    );
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        //TODO implement for spiritual app
+      case AppInUse.e:
+        Get.toNamed(AppRouteConstants.pdfViewer, arguments: [suggestedItem, true, true]);
+      case AppInUse.g:
+        //TODO implement for music app
+      case AppInUse.o:
+        //TODO implement for neom app
+      default:
+        break;
+    }
+
+  }
+
+  static String getSuggestedItemText() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return CommonTranslationConstants.suggestedMeditation.tr;
+      case AppInUse.e:
+        return CommonTranslationConstants.suggestedReading.tr;
+      case AppInUse.g:
+        return CommonTranslationConstants.suggestedSong.tr;
+      case AppInUse.o:
+        return CommonTranslationConstants.suggestedArticle.tr;
+      default:
+        return '';
+    }
+
+  }
+
 }

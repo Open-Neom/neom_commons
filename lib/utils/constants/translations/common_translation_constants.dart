@@ -134,7 +134,10 @@ class CommonTranslationConstants {
   static const String startedFollowingYou = 'startedFollowingYou';
   static const String subscriptionMainDesc = 'subscriptionMainDesc';
   static const String subscriptionMainName = 'subscriptionMainName';
+  static const String suggestedArticle = 'suggestedArticle';
+  static const String suggestedMeditation = 'suggestedMeditation';
   static const String suggestedReading = 'suggestedReading';
+  static const String suggestedSong = 'suggestedSong';
   static const String tapToUploadImage = 'tapToUploadImage';
   static const String termsAndConditions = 'termsAndConditions';
   static const String testPeriod = 'testPeriod';

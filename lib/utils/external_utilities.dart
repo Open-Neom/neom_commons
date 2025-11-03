@@ -41,6 +41,7 @@ class ExternalUtilities {
   }
 
   static void launchWhatsappURL(String phone, String message) async {
+    AppConfig.logger.d('Launching Whatsapp: $phone - message: $message');
 
     try {
       String url = AppProperties.getWhatsappUrl().replaceAll("<phoneNumber>", phone);

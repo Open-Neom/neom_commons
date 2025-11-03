@@ -1,6 +1,7 @@
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
+import 'package:neom_core/domain/model/external_item.dart';
 import 'package:neom_core/domain/model/item_list.dart';
 import 'package:neom_core/domain/model/neom/chamber_preset.dart';
 import 'package:neom_core/utils/enums/app_media_source.dart';
@@ -15,7 +16,7 @@ class AppMediaItemMapper {
     try {
 
     } catch (e) {
-      throw Exception('Error parsing song item: $e');
+      throw Exception('Error parsing item: $e');
     }
 
     return items;
@@ -26,13 +27,13 @@ class AppMediaItemMapper {
     try {
 
     } catch (e) {
-      throw Exception('Error parsing song item: $e');
+      throw Exception('Error parsing item: $e');
     }
 
     return items;
   }
 
-  static AppMediaItem fromAppReleaseItem(AppReleaseItem releaseItem, {MediaItemType itemType = MediaItemType.song}) {
+  static AppMediaItem fromAppReleaseItem(AppReleaseItem releaseItem, {MediaItemType itemType = MediaItemType.neomPreset}) {
     try {
       return AppMediaItem(
         id: releaseItem.id,
@@ -44,24 +45,61 @@ class AppMediaItemMapper {
         albumId: releaseItem.metaId,
         externalArtists: releaseItem.featInternalArtists?.values.toList(),
         duration: releaseItem.duration,
-        genres: releaseItem.tags,
+        categories: releaseItem.tags,
         imgUrl: releaseItem.imgUrl,
-        allImgs: releaseItem.galleryUrls,
+        galleryUrls: releaseItem.galleryUrls,
         url: releaseItem.previewUrl,
-        publisher: releaseItem.publisher,
+        metaOwner: releaseItem.metaOwner,
         publishedYear: releaseItem.publishedYear,
         releaseDate: releaseItem.createdTime,
         permaUrl: releaseItem.externalUrl ?? '',
         featInternalArtists: releaseItem.featInternalArtists,
-        artist: TextUtilities.getArtistName(releaseItem.ownerName),
-        artistId: releaseItem.ownerEmail,
+        ownerName: TextUtilities.getArtistName(releaseItem.ownerName),
+        ownerId: releaseItem.ownerEmail,
         likes: releaseItem.likedProfiles?.length ?? 0,
         state: releaseItem.state,
         mediaSource: AppMediaSource.internal,
         type: releaseItem.type == ReleaseType.episode ? MediaItemType.podcast : releaseItem.type == ReleaseType.chapter ? MediaItemType.audiobook : itemType
       );
     } catch (e) {
-      throw Exception('Error parsing song item: $e');
+      throw Exception('Error parsing item: $e');
+    }
+  }
+
+  static AppMediaItem fromExternalItem(ExternalItem externalItem, {MediaItemType itemType = MediaItemType.neomPreset}) {
+    try {
+      // Mapeamos los campos de ExternalItem (que ahora heredan de BaseItem)
+      // a la estructura de AppMediaItem.
+      return AppMediaItem(
+          id: externalItem.id,
+          name: externalItem.name,
+          description: externalItem.description,
+          lyrics: externalItem.lyrics,
+          language: externalItem.language,
+          album: externalItem.album,
+          albumId: externalItem.albumId,
+          externalArtists: externalItem.externalArtists,
+          duration: externalItem.duration,
+          categories: externalItem.categories,
+          imgUrl: externalItem.imgUrl,
+          galleryUrls: externalItem.galleryUrls,
+          url: externalItem.url,
+          metaOwner: externalItem.metaOwner,
+          publishedYear: externalItem.publishedYear,
+          releaseDate: externalItem.releaseDate,
+          permaUrl: externalItem.permaUrl,
+          ownerName: externalItem.ownerName,
+          ownerId: externalItem.ownerId,
+          likes: externalItem.likes,
+          state: externalItem.state,
+          // La fuente es externa, pero AppMediaItem solo tiene AppMediaSource.
+          // Asumimos que si viene de ExternalItem, se marca como external.
+          mediaSource: AppMediaSource.external,
+          type: externalItem.type
+      );
+    } catch (e) {
+      AppConfig.logger.e(e.toString());
+      throw Exception('Error mapping external item to AppMediaItem: $e');
     }
   }
 
@@ -79,12 +117,6 @@ class AppMediaItemMapper {
       }
     }
 
-    // if(itemlist.chamberPresets != null) {
-    //   itemlist.chamberPresets!.forEach((element) {
-    //     appMediaItems.add(AppMediaItem.fromAppItem(element));
-    //   });
-    // }
-
     AppConfig.logger.t("Retrieving ${appMediaItems.length} total AppMediaItems.");
     return appMediaItems;
   }
@@ -93,16 +125,16 @@ class AppMediaItemMapper {
     return AppMediaItem(
         id: chamberPreset.id,
         name: chamberPreset.name,
-        artist: "",
-        artistId: chamberPreset.ownerId,
+        ownerName: "",
+        ownerId: chamberPreset.ownerId,
         album: "",
         imgUrl: chamberPreset.imgUrl,
         duration:  chamberPreset.neomFrequency?.frequency.ceil() ?? 0,
         url: "",
         description: chamberPreset.description.isNotEmpty ? chamberPreset.description : chamberPreset.neomFrequency?.description ?? "",
-        publisher: "",
+        metaOwner: "",
         state: chamberPreset.state,
-        genres: [],
+        categories: [],
         mediaSource: AppMediaSource.internal,
         releaseDate: 0,
         is320Kbps: true,

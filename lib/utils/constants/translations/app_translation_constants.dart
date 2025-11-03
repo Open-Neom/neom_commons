@@ -147,6 +147,7 @@ class AppTranslationConstants {
   static const String minutes = "minutes";
   static const String modify = "modify";
   static const String moderator = 'moderator';
+  static const String month = 'month';
   static const String more = 'more';
   static const String music = 'music';
   static const String musicians = 'musicians';
@@ -192,6 +193,7 @@ class AppTranslationConstants {
   static const String privacy = "privacy";
   static const String professional = 'professional';
   static const String profile = "profile";
+  static const String profileNotFound = "profileNotFound";
   static const String profileType = 'profileType';
   static const String publish = 'publish';
   static const String publicList = 'publicList';
@@ -247,6 +249,7 @@ class AppTranslationConstants {
   static const String toBlock = 'toBlock';
   static const String toBuy = 'toBuy';
   static const String toBuyPhysical = 'toBuyPhysical';
+  static const String toCreate = 'toCreate';
   static const String toChange = 'toChange';
   static const String toContact = "toContact";
   static const String toContinue = "toContinue";
