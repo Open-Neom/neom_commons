@@ -13,11 +13,12 @@ class DeviceUtilities {
   static bool isDeviceSupportedVersion({bool isIOS = false}){
     AppConfig.logger.i(Platform.operatingSystemVersion);
     if(isIOS) {
-      return Platform.operatingSystemVersion.contains('13')
-          || Platform.operatingSystemVersion.contains('14')
-          || Platform.operatingSystemVersion.contains('15')
-          || Platform.operatingSystemVersion.contains('16')
-          || Platform.operatingSystemVersion.contains('17');
+      AppConfig.logger.i('iOS version check: ${Platform.operatingSystemVersion}');
+      return Platform.operatingSystemVersion.contains('16')
+          || Platform.operatingSystemVersion.contains('17')
+          || Platform.operatingSystemVersion.contains('18')
+          || Platform.operatingSystemVersion.contains('19')
+          || Platform.operatingSystemVersion.contains('20');
     } else {
       return true;
     }
