@@ -236,7 +236,7 @@ class AppDrawer extends StatelessWidget {
         widgets.add(AppTheme.widthSpace5);
         widgets.add(const Icon(Icons.verified_outlined, color: Colors.white70));
         widgets.add(TextButton(
-            onPressed: () => AppAlerts.getSubscriptionAlert(drawerController.subscriptionServiceImpl!, context, AppRouteConstants.home),
+            onPressed: () => AppAlerts.getSubscriptionAlert(drawerController.subscriptionServiceImpl, context, AppRouteConstants.home),
             child: Text(CommonTranslationConstants.verifyProfile.tr,
               style: const TextStyle(decoration: TextDecoration.underline),
             )

@@ -12,6 +12,7 @@ class AppBarChild extends StatelessWidget implements PreferredSizeWidget {
   Widget? leadingWidget;
   List<Widget>? actionWidgets;
   bool? centerTitle;
+  double? titleSpacing;
 
   AppBarChild({this.title = "", this.preTitle, this.color, this.leadingWidget, this.actionWidgets, this.centerTitle, super.key});
 
@@ -31,6 +32,7 @@ class AppBarChild extends StatelessWidget implements PreferredSizeWidget {
           ),
         ],
       ),
+      titleSpacing: titleSpacing,
       backgroundColor: color,
       elevation: 0.0,
       actions: actionWidgets,
