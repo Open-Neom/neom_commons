@@ -14,7 +14,7 @@ class AppBarChild extends StatelessWidget implements PreferredSizeWidget {
   bool? centerTitle;
   double? titleSpacing;
 
-  AppBarChild({this.title = "", this.preTitle, this.color, this.leadingWidget, this.actionWidgets, this.centerTitle, super.key});
+  AppBarChild({this.title = "", this.preTitle, this.titleSpacing, this.color, this.leadingWidget, this.actionWidgets, this.centerTitle, super.key});
 
   @override
   Size get preferredSize => AppTheme.appBarHeight;
