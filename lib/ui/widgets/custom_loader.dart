@@ -30,7 +30,7 @@ class CustomLoader {
     );
   }
 
-  void showLoader(context) {
+  void showLoader(BuildContext context) {
     _overlayState = Overlay.of(context);
     _buildLoader();
     _overlayState.insert(_overlayEntry);

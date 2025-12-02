@@ -71,9 +71,18 @@ class AppDrawer extends StatelessWidget {
                             if(Get.isRegistered<InboxService>()) drawerRowOption(AppDrawerMenu.inbox, const Icon(FontAwesomeIcons.comments), context),
                           ],
                         ),
-                      // drawerRowOption(AppDrawerMenu.calendar, const Icon(FontAwesomeIcons.calendar), context),
                       if(!AppFlavour.isNeomApp()) //TODO Not implemented on "C" app yet
                         drawerRowOption(AppDrawerMenu.requests, const Icon(Icons.email), context),
+                      if((drawerController.userServiceImpl?.subscriptionLevel.value ?? SubscriptionLevel.freemium.value)
+                          >= SubscriptionLevel.creator.value ||
+                          (drawerController.user?.userRole.value ?? UserRole.subscriber.value) > UserRole.subscriber.value)
+                        Column(
+                          children: [
+                            if(AppConfig.instance.appInUse == AppInUse.e || AppConfig.instance.appInUse == AppInUse.o)
+                            drawerRowOption(AppDrawerMenu.nupale, const Icon(FontAwesomeIcons.bookOpenReader), context),
+                            drawerRowOption(AppDrawerMenu.casete, const Icon(FontAwesomeIcons.solidFileAudio), context),
+                          ],
+                        ),
                       Column(
                         children: [
                           const Divider(),
@@ -82,19 +91,12 @@ class AppDrawer extends StatelessWidget {
                           if(AppConfig.instance.appInUse == AppInUse.e)
                             Column(
                               children: [
-                                if((drawerController.userServiceImpl?.subscriptionLevel.value ?? SubscriptionLevel.freemium.value)
-                                    >= SubscriptionLevel.creator.value ||
-                                    ( drawerController.user?.userRole.value ?? UserRole.subscriber.value) > UserRole.subscriber.value)
-                                  drawerRowOption(AppDrawerMenu.nupale, const Icon(FontAwesomeIcons.bookOpenReader), context),
-                                //TODO Working on it with similar views as NUPALE but analysing caseteSessions
-                                // drawerRowOption(AppDrawerMenu.casete, const Icon(FontAwesomeIcons.tape), context),
-                                // drawerRowOption(AppDrawerMenu.directory, const Icon(FontAwesomeIcons.building), context),
                                 const Divider(),
                                 drawerRowOption(AppDrawerMenu.appItemQuotation, const Icon(Icons.attach_money), context),
                                 drawerRowOption(AppDrawerMenu.services, const Icon(Icons.room_service), context),
                                 const Divider(),
                               ],
-                            )
+                            ),
                           ///NOT READY FOR THIS FUNCITONALITY OF CROWDFUNDING - AppInUse.e Usage
                           // _menuListRowButton(AppConstants.crowdfunding, const Icon(FontAwesomeIcons.gifts), true, context),
                         ],
@@ -327,7 +329,7 @@ class AppDrawer extends StatelessWidget {
             case AppDrawerMenu.nupale:
               Get.toNamed(AppRouteConstants.nupaleHome);
             case AppDrawerMenu.casete:
-              Get.toNamed(AppRouteConstants.nupaleStats2);
+              Get.toNamed(AppRouteConstants.caseteHome);
               // Get.toNamed(AppRouteConstants.caseteStats);
               // TODO: Handle this case.
           }

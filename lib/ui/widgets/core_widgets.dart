@@ -30,12 +30,12 @@ Widget buildLabel(BuildContext context, String title, String msg){
 }
 
 Widget buildActionChip({
-  required appEnum, required Function controllerFunction,
+  required Enum appEnum, required Function controllerFunction,
   bool isActive = true, bool isSelected = false}) {
   return ActionChip(
     backgroundColor: isSelected ? AppColor.bondiBlue : AppColor.bottomNavigationBar,
     shape: AppTheme.outlinedBorderChip,
-    label: Text((appEnum as Enum).name.tr.capitalizeFirst,
+    label: Text((appEnum).name.tr.capitalizeFirst,
       style: TextStyle(
         fontSize: AppTheme.chipsFontSize,
         color: isActive ? null : AppColor.white50,

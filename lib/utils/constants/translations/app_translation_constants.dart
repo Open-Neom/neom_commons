@@ -2,6 +2,7 @@ class AppTranslationConstants {
   static const String aboard = 'aboard';
   static const String about = 'about';
   static const String accept = "accept";
+  static const String accountRequired = 'accountRequired';
   static const String activate = 'activate';
   static const String active = 'active';
   static const String add = 'add';
@@ -135,6 +136,7 @@ class AppTranslationConstants {
   static const String link = 'link';
   static const String location = 'location';
   static const String login = 'login';
+  static const String loginSignup = 'loginSignup';
   static const String loose = 'loose';
   static const String main = 'main';
   static const String mainInstrument = "mainInstrument";
@@ -267,7 +269,9 @@ class AppTranslationConstants {
   static const String toUnblock = 'toUnblock';
   static const String toUpdate = 'toUpdate';
   static const String total = "total";
-  static const String tryAgain = 'tryAgain';
+  static const String tryAgain = 'tryAgain';  
+  static const String trialEnded = 'trialEnded';  
+  static const String trialEndedMessage = 'trialEndedMessage';
   static const String tv = "tv";
   static const String type = "type";
   static const String unfollow = "unfollow";
@@ -293,4 +297,23 @@ class AppTranslationConstants {
   static const String yes = "yes";
   static const String youAre = "youAre";
 
+  static const String january = "january";
+  static const String february = "february";
+  static const String march = "march";
+  static const String april = "april";
+  static const String may = "may";
+  static const String june = "june";
+  static const String july = "july";
+  static const String august = "august";
+  static const String september = "september";
+  static const String october = "october";
+  static const String november = "november";
+  static const String december = "december";
+
+  static const String giglist = "giglist";
+  static const String readlist = "readlist";
+
+  static const String exploreAsGuest = "exploreAsGuest";
+  static const String guestActionPrompt = "guestActionPrompt";
+  static const String continueExploring = "continueExploring";
 }

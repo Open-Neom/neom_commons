@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../utils/constants/app_constants.dart';
 import '../theme/app_theme.dart';
+import 'dot_container.dart';
 
 class GenresGridView extends StatelessWidget {
 
@@ -15,30 +16,23 @@ class GenresGridView extends StatelessWidget {
       {
         super.key,
         this.alignment = Alignment.center,
-        this.fontSize = 14,
+        this.fontSize = 12,
         this.crossAxisCount = 3,
       });
 
   @override
   Widget build(BuildContext context) {
-    Widget dot = Container(
-      width: 5.0,
-      height: 5.0,
-      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-      decoration: BoxDecoration(
-          color: color, borderRadius: BorderRadius.circular(50.0)),
-    );
 
     double gridHeight = AppTheme.fullHeight(context);
     int gridItems = genres.length;
 
     if(gridItems <= crossAxisCount) {
-      gridHeight = (AppTheme.fullHeight(context)/15) / (crossAxisCount/gridItems).ceil();
-    } else if(gridItems<10) {
+      gridHeight = (AppTheme.fullHeight(context)/20) / (crossAxisCount/gridItems).ceil();
+    } else if(gridItems < 10) {
+      gridHeight = (AppTheme.fullHeight(context)/16) / (crossAxisCount/gridItems).ceil();
+    } else if(gridItems < 15) {
       gridHeight = (AppTheme.fullHeight(context)/12) / (crossAxisCount/gridItems).ceil();
-    } else if(gridItems<15) {
-      gridHeight = (AppTheme.fullHeight(context)/10) / (crossAxisCount/gridItems).ceil();
-    } else if(gridItems>=15) {
+    } else if(gridItems >= 15) {
       gridHeight = (AppTheme.fullHeight(context)/8) / (crossAxisCount/gridItems).ceil();
       gridItems = 15;
     } else {
@@ -59,7 +53,7 @@ class GenresGridView extends StatelessWidget {
               return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    dot,
+                    DotContainer(color: color),
                     Text((genre.length < AppConstants.maxGenreNameLength
                         ? genre :  genre.substring(0, AppConstants.maxGenreNameLength)).capitalize,
                       style: TextStyle(color: color, fontSize: fontSize,),

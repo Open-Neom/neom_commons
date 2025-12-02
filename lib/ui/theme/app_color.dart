@@ -19,8 +19,8 @@ class AppColor {
         break;
       case AppInUse.e:
         mainColor = const Color.fromRGBO(140, 20, 25, 1);
-        // mainColor = const Color.fromRGBO(175, 40, 30, 1);
-        // mainColor = const Color.fromRGBO(156, 48, 26, 1);
+        /// mainColor = const Color.fromRGBO(175, 40, 30, 1);
+        /// mainColor = const Color.fromRGBO(156, 48, 26, 1);
         break;
       case AppInUse.g:
         mainColor = const Color.fromRGBO(22, 42, 93, 1);

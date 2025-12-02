@@ -9,7 +9,7 @@ import 'constants/translations/app_translation_constants.dart';
 
 class DateTimeUtilities {
 
-  static List<DateTime> getDaysFromNow({days = 28}){
+  static List<DateTime> getDaysFromNow({int days = 28}){
 
     List<DateTime> dates = [];
 

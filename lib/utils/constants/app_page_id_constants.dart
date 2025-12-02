@@ -107,5 +107,6 @@ class AppPageIdConstants {
 
   static const String camera = 'camera';
   static const String nupale = 'nupale';
+  static const String casete = 'casete';
 
 }

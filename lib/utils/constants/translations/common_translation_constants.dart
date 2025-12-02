@@ -61,6 +61,7 @@ class CommonTranslationConstants {
   static const String lastSession = 'lastSession';
   static const String letsGig = 'letsGig';
   static const String likedYourPost = 'likedYourPost';
+  static const String listeningSessions = 'listeningSessions';
   static const String listenOnSpotify = 'listenOnSpotify';
   static const String loadingPossibleBandmates = 'loadingPossibleBandmates';
   static const String locationRequiredTitle = 'locationRequiredTitle';

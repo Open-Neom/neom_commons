@@ -23,9 +23,17 @@ class AppAssets {
   static const String unknownItemmate = 'assets/images/unknown_mate.png';
   static const String noImageFound = 'assets/images/no_image_found.png';
 
-  static const String rehearsal = "assets/images/events/rehearsal.png";
+  static const String eventType = "assets/images/eventType/";
+  // static const String rehearsal = "assets/images/eventType/rehearsal.png";
+  // static const String gig = "assets/images/eventType/gig.png";
+  // static const String jamming = "assets/images/eventType/jamming.png";
+  // static const String festival = "assets/images/eventType/festival.png";
+  // static const String clinic = "assets/images/eventType/clinic.png";
+  // static const String lesson = "assets/images/eventType/lesson.png";
+  // static const String meetup = "assets/images/eventType/meetup.png";
+  // static const String talk = "assets/images/eventType/talk.png";
+
   static const String microphone = "assets/images/events/microphone.png";
-  static const String festival = "assets/images/events/festival.png";
   static const String pray = "assets/images/events/pray.png";
 
   static const String eventVector01 = 'assets/elements/event-01.png';

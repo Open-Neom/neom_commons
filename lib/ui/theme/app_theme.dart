@@ -5,8 +5,11 @@ class AppTheme {
 
   static BoxDecoration appBoxDecoration = BoxDecoration(
     gradient: LinearGradient(colors: [
-      AppColor.main75,
-      AppColor.main50
+      Color.lerp(AppColor.getMain(), Colors.black, 0.2)!,
+      // Mezcla el color secundario con negro
+      Color.lerp(AppColor.main95, Colors.black, 0.2)!
+      // AppColor.getMain(),
+      // AppColor.main95
     ],
       begin: FractionalOffset.topRight,
       end: FractionalOffset.bottomLeft, //FractionalOffset(1.0, 1.0)

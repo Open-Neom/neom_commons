@@ -136,34 +136,6 @@ class AppFlavour {
     }
   }
 
-  static IconData getSecondTabIcon() {
-    switch (AppConfig.instance.appInUse) {
-      case AppInUse.c:
-        return Icons.event;
-      case AppInUse.d:
-        return Icons.event;
-      case AppInUse.e:
-        return Icons.event;
-      case AppInUse.g:
-        return Icons.event;
-      default:
-        return Icons.event;
-    }
-  }
-
-  static String getSecondTabTitle() {
-    switch (AppConfig.instance.appInUse) {
-      case AppInUse.g:
-        return AppTranslationConstants.events;
-      case AppInUse.e:
-        return AppTranslationConstants.events;
-      case AppInUse.c:
-        return AppTranslationConstants.events;
-      default:
-        return AppTranslationConstants.events;
-    }
-  }
-
   static IconData getThirdTabIcon() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.c:
@@ -173,8 +145,8 @@ class AppFlavour {
         //TODO return Icons.radio;
       case AppInUse.e:
         return FontAwesomeIcons.shop;
-      case AppInUse.g:
-        return FontAwesomeIcons.building;
+      // case AppInUse.g:
+      //   return FontAwesomeIcons.building;
       default:
         return FontAwesomeIcons.shop;
     }
@@ -189,8 +161,8 @@ class AppFlavour {
       //TODO return AppTranslationConstants.radio
       case AppInUse.e:
         return AppTranslationConstants.bookShop;
-      case AppInUse.g:
-        return AppTranslationConstants.directory;
+      // case AppInUse.g:
+      //   return AppTranslationConstants.directory;
       default:
         return AppTranslationConstants.shop;
     }
@@ -205,8 +177,8 @@ class AppFlavour {
         //TODO return Icons.tv;
       case AppInUse.e:
         return FontAwesomeIcons.headphones;
-      case AppInUse.g:
-        return Icons.play_circle_fill;
+      // case AppInUse.g:
+      //   return Icons.play_circle_fill;
       default:
         return LucideIcons.headphones;
     }
@@ -221,8 +193,8 @@ class AppFlavour {
         //TODO return AppTranslationConstants.tv;
       case AppInUse.e:
         return AppTranslationConstants.audioLibrary;
-      case AppInUse.g:
-        return AppTranslationConstants.music;
+      // case AppInUse.g:
+      //   return AppTranslationConstants.music;
 
       default:
         return AppTranslationConstants.audioLibrary;
@@ -237,8 +209,8 @@ class AppFlavour {
         return Icons.apps;
       case AppInUse.e:
         return Icons.add_box_outlined;
-      case AppInUse.g:
-        return Icons.add_box_outlined;
+      // case AppInUse.g:
+      //   return Icons.add_box_outlined;
       case AppInUse.o:
         return Icons.add_box_outlined;
       default:
@@ -251,7 +223,7 @@ class AppFlavour {
       case AppInUse.c:
       case AppInUse.d:
       case AppInUse.e:
-      case AppInUse.g:
+      // case AppInUse.g:
       default:
         return AppTranslationConstants.apps;
     }
@@ -259,7 +231,7 @@ class AppFlavour {
 
   static bool activateHomeActionBtn() {
     switch (AppConfig.instance.appInUse) {
-      case AppInUse.g:
+      // case AppInUse.g:
       case AppInUse.e:
         return false;
       case AppInUse.c:
@@ -431,7 +403,7 @@ class AppFlavour {
       case AppInUse.e:
         return AppColor.darkBackground;
       case AppInUse.g:
-        break;
+        return AppColor.main50;
       case AppInUse.o:
         return AppColor.main50;
       default:
@@ -477,7 +449,25 @@ class AppFlavour {
     return false;
   }
 
-  static bool showAppBarAddButton() {
+  static bool showAppBarAddBtn() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return true;
+      case AppInUse.e:
+        return false;
+      case AppInUse.g:
+        return false;
+      case AppInUse.o:
+        return true;
+      default:
+        break;
+    }
+
+    return false;
+  }
+  
+  static bool showAppBarDirectoryBtn() {
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
@@ -581,6 +571,40 @@ class AppFlavour {
         return CommonTranslationConstants.suggestedArticle.tr;
       default:
         return '';
+    }
+
+  }
+
+  static bool hasCoverInEvents() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return false;
+      case AppInUse.e:
+        return false;
+      case AppInUse.g:
+        return false;
+      case AppInUse.o:
+        return false;
+      default:
+        return false;
+    }
+
+  }
+
+  static bool showLogoInEvents() {
+
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return true;
+      case AppInUse.e:
+        return false;
+      case AppInUse.g:
+        return true;
+      case AppInUse.o:
+        return true;
+      default:
+        return true;
     }
 
   }

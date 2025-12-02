@@ -1,6 +1,6 @@
 name: neom_commons
 description: Commons for Open Neom.
-version: 1.5.0-dev
+version: 2.0.0-dev
 homepage: https://github.com/Open-Neom/neom_commons
 
 environment:
@@ -11,19 +11,19 @@ dependencies:
   flutter:
     sdk: flutter
 
-  neom_core: ^1.4.1-dev
+  neom_core: ^2.0.0-dev
 
   # TRANSITIVE DEPENDENCIES FOR PUB.DEV PUBLISHING
   get: ^5.0.0-release-candidate-9.3.2
   cached_network_image: ^3.4.1
-  http: ^1.5.0
+  http: ^1.6.0
   url_launcher: ^6.3.2
   rflutter_alert: ^2.0.7
   path: ^1.9.1
   path_provider: ^2.1.5
 
   font_awesome_flutter: ^10.9.1
-  lucide_icons_flutter: ^3.0.9
+  lucide_icons_flutter: ^3.1.6
 
   intl: ^0.20.2
   readmore: ^3.0.0
@@ -38,9 +38,9 @@ dependencies:
   rubber: ^1.1.0
 
   intl_phone_field: ^3.2.0
-  share_plus: ^11.1.0
+  share_plus: ^12.0.1
 
-  crypto: ^3.0.6
+  crypto: ^3.0.7
 
   webview_flutter: ^4.13.0
   permission_handler: ^12.0.0+1
@@ -49,6 +49,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 flutter:

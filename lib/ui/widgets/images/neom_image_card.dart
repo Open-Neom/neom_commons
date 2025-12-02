@@ -60,7 +60,7 @@ class NeomImageCard extends StatelessWidget {
             else
               CachedNetworkImage(
                 fit: BoxFit.cover,
-                errorWidget: (context, _, __) => Image(fit: BoxFit.cover, image: placeholderImage,),
+                errorWidget: (context, _, _) => Image(fit: BoxFit.cover, image: placeholderImage,),
                 imageUrl: imageUrl,
                 placeholder: (context, url) => Image(fit: BoxFit.cover, image: placeholderImage,),
               ),

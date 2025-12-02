@@ -9,7 +9,7 @@ class CachedNetworkRoutingImage extends StatelessWidget {
   final String referenceId;
   final BoxFit fit;
 
-  const CachedNetworkRoutingImage(context, {super.key,
+  const CachedNetworkRoutingImage(BuildContext context, {super.key,
     required this.toNamed, required this.mediaUrl,
     this.referenceId = "", this.fit = BoxFit.fitHeight});
 

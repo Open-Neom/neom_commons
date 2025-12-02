@@ -117,6 +117,12 @@ class AppMediaItemMapper {
       }
     }
 
+    if(itemlist.externalItems != null) {
+      for (var element in itemlist.externalItems!) {
+        appMediaItems.add(AppMediaItemMapper.fromExternalItem(element));
+      }
+    }
+
     AppConfig.logger.t("Retrieving ${appMediaItems.length} total AppMediaItems.");
     return appMediaItems;
   }
