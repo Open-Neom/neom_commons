@@ -80,6 +80,7 @@ class AppTranslationConstants {
   static const String event = 'event';
   static const String events = 'events';
   static const String explore = 'explore';
+  static const String explorePlatform = 'explorePlatform';
   static const String family = 'family';
   static const String favorite = 'favorite';
   static const String favoriteItems = 'favoriteItems';
