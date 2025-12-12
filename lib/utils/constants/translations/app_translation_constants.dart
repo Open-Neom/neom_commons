@@ -8,6 +8,7 @@ class AppTranslationConstants {
   static const String add = 'add';
   static const String adding = 'adding';
   static const String address = 'address';
+  static const String addUrl = 'addUrl';
   static const String ads = "ads";
   static const String album = "album";
   static const String all = "all";
@@ -122,6 +123,7 @@ class AppTranslationConstants {
   static const String instrument = 'instrument';
   static const String instruments = "instruments";
   static const String instrumentsPreferences = "instrumentsPreferences";
+  static const String invalidUrl = "invalidUrl";
   static const String invitations = "invitations";
   static const String invite = 'invite';
   static const String invited = 'invited';
@@ -154,6 +156,7 @@ class AppTranslationConstants {
   static const String music = 'music';
   static const String musicians = 'musicians';
   static const String name = 'name';
+  static const String nearProfiles = 'nearProfiles';
   static const String newPost = 'newPost';
   static const String next = "next";
   static const String no = "no";
@@ -208,9 +211,9 @@ class AppTranslationConstants {
   static const String readings = 'readings';
   static const String readlists = 'readlists';
   static const String reason = "reason";
-
   static const String rehearsal = "rehearsal";
   static const String releaseItem = 'releaseItem';
+  static const String releases = 'releases';
   static const String remove = "remove";
   static const String report = 'report';
   static const String requests = "requests";
@@ -231,6 +234,7 @@ class AppTranslationConstants {
   static const String settings = "settings";
   static const String setLocale = "setLocale";
   static const String shop = 'shop';
+  static const String showMore = 'showMore';
   static const String slogan = 'slogan';
   static const String sorry = 'sorry';
   static const String spanish = "spanish";
@@ -316,4 +320,5 @@ class AppTranslationConstants {
   static const String exploreAsGuest = "exploreAsGuest";
   static const String guestActionPrompt = "guestActionPrompt";
   static const String continueExploring = "continueExploring";
+
 }

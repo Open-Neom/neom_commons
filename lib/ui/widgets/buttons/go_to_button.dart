@@ -19,7 +19,7 @@ class GoToButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppTheme.fullHeight(context) * 0.08,
+      height: AppTheme.fullHeight(context) * 0.06,
       width: AppTheme.fullWidth(context) * 0.58,
       decoration: BoxDecoration(
           color: AppColor.main50,

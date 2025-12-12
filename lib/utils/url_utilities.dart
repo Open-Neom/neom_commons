@@ -2,6 +2,7 @@
 // import 'dart:html' as html;
 // import 'dart:html' as html;
 
+import 'package:neom_core/app_config.dart';
 import 'package:neom_core/utils/constants/url_constants.dart';
 
 
@@ -53,6 +54,30 @@ class UrlUtilities {
   static bool isExternalDomain(String url) {
     final uri = Uri.parse(url);
     return UrlConstants.externalDomains.contains(uri.host);
+  }
+
+  static bool isValidExternalDomain(String url) {
+    AppConfig.logger.d('Validating URL: $url');
+
+    // 1. Normalización: Si el usuario escribió "youtube.com", le agregamos "https://"
+    // Esto es vital para que Uri.parse funcione correctamente.
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://$url';
+    }
+
+    // 2. Validación Nativa (Más confiable que Regex para URLs modernas)
+    // Uri.tryParse maneja mejor rutas complejas como /@usuario o query params (?v=xyz)
+    final uri = Uri.tryParse(url);
+
+    // Verificamos que tenga esquema (http/s) y un host (dominio) válido con al menos un punto
+    bool isValid = uri != null &&
+        uri.hasScheme &&
+        uri.host.isNotEmpty &&
+        (uri.host.contains('.') || uri.host == 'localhost') &&
+        !uri.host.endsWith('.');
+
+    AppConfig.logger.d('URL is valid: $isValid');
+    return isValid;
   }
 
 }

@@ -68,7 +68,7 @@ class AppTheme {
   static const double padding20 = 20.0;
   static const double padding10 = 10.0;
   static const double padding5 = 5.0;
-  static const double chipsFontSize = 25;
+  static const double chipsFontSize = 22;
   static final outlinedBorderChip = StadiumBorder(side: const BorderSide(color: Colors.white70).scale(0.2));
   static const primaryTitleText = TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600);
   static const primarySubtitleText = TextStyle(color: Colors.white);

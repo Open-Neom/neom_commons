@@ -596,15 +596,15 @@ class AppFlavour {
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
-        return true;
+        return false;
       case AppInUse.e:
         return false;
       case AppInUse.g:
-        return true;
+        return false;
       case AppInUse.o:
-        return true;
+        return false;
       default:
-        return true;
+        return false;
     }
 
   }

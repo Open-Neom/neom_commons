@@ -13,18 +13,17 @@ class HeaderIntro extends StatelessWidget{
   final bool showPreLogo;
   final int sizeRelation;
 
-  const HeaderIntro({this.title = "", this.subtitle = "", this.showLogo = true, this.showPreLogo = true, this.sizeRelation = 3, super.key});
+  const HeaderIntro({this.title = "", this.subtitle = "", this.showLogo = false, this.showPreLogo = false, this.sizeRelation = 3, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          (AppConfig.instance.appInUse == AppInUse.e && showPreLogo)
-              ? Image.asset(AppAssets.logoAppWhite,
-            height: AppTheme.fullWidth(context)/(MediaQuery.of(context).orientation == Orientation.portrait ? sizeRelation:5),
+          showPreLogo ? Image.asset(AppAssets.logoAppWhite,
+            height: AppTheme.fullWidth(context)/(MediaQuery.of(context).orientation == Orientation.portrait ? sizeRelation:3),
             width: AppTheme.fullWidth(context)/(MediaQuery.of(context).orientation == Orientation.portrait ? sizeRelation:5),
           ) : const SizedBox.shrink(),
           AppTheme.heightSpace10,

@@ -63,13 +63,13 @@ class AuthGuard {
                 shape: const StadiumBorder()
             ),
             onPressed: () {
-              Navigator.pop(context);
+              // Navigator.pop(context);
 
               // 2. Apagar modo invitado (para que RootPage sepa que vamos al Login real)
               AppConfig.instance.isGuestMode = false;
 
               // 3. Ir al Login llevando la "Promesa" de redirección
-              Get.toNamed(
+              Get.offAllNamed(
                   AppRouteConstants.login,
                   arguments: {
                     'nextRoute': redirectRoute,
