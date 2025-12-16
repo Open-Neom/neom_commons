@@ -29,6 +29,7 @@ class AppTranslationConstants {
   static const String barters = 'barters';
   static const String bartersNetwork = 'bartersNetwork';
   static const String basic = 'basic';
+  static const String binauralBeat = 'binauralBeat';
   static const String bookShop = 'bookShop';
   static const String bookshelf = 'bookshelf';
   static const String by = 'by';
@@ -142,6 +143,7 @@ class AppTranslationConstants {
   static const String loginSignup = 'loginSignup';
   static const String loose = 'loose';
   static const String main = 'main';
+  static const String mainFrequency = 'mainFrequency';
   static const String mainInstrument = "mainInstrument";
   static const String maximum = "maximum";
   static const String meditations = 'meditations';
@@ -155,6 +157,7 @@ class AppTranslationConstants {
   static const String month = 'month';
   static const String more = 'more';
   static const String music = 'music';
+  static const String musicalNote = 'musicalNote';
   static const String musicians = 'musicians';
   static const String name = 'name';
   static const String nearProfiles = 'nearProfiles';

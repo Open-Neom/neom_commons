@@ -3,7 +3,7 @@ import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/base_item.dart';
 import 'package:neom_core/domain/model/external_item.dart';
-import 'package:neom_core/domain/model/neom/chamber_preset.dart';
+import 'package:neom_core/domain/model/neom/neom_chamber_preset.dart';
 
 class BaseItemMapper {
 
@@ -79,7 +79,7 @@ class BaseItemMapper {
     }
   }
 
-  static BaseItem fromChamberPreset(ChamberPreset chamberPreset) {
+  static BaseItem fromChamberPreset(NeomChamberPreset chamberPreset) {
     try {
       return BaseItem(
         id: chamberPreset.id,
@@ -90,7 +90,7 @@ class BaseItemMapper {
         galleryUrls: null,
         // ChamberPreset no tiene URL de vista previa directa (es un preset de audio)
         url: "",
-        duration: chamberPreset.neomFrequency?.frequency.ceil() ?? 0,
+        duration: chamberPreset.mainFrequency?.frequency.ceil() ?? 0,
         state: chamberPreset.state,
         permaUrl: chamberPreset.imgUrl, // Usamos la URL de imagen como permaUrl
         ownerId: chamberPreset.ownerId,

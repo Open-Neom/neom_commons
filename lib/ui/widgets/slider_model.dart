@@ -14,7 +14,7 @@ class SliderModel{
 
   static List<SliderModel> getOnboardingSlides(){
     List<SliderModel> slides = [];
-    SliderModel s1 = SliderModel(AppAssets.logoAppWhite,
+    SliderModel s1 = SliderModel(AppAssets.isologoAppWhite,
         CommonTranslationConstants.welcomeToApp.tr, MessageTranslationConstants.welcomeToAppMsg.tr);
     SliderModel s2 = SliderModel(AppAssets.intro02,
         CommonTranslationConstants.findItemmatesNearYourPlace.tr, MessageTranslationConstants.findItemmatesNearYourPlaceMsg.tr);

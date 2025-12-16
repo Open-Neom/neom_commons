@@ -13,16 +13,6 @@ class CommonRoutes {
         transition: Transition.zoom
     ),
     GetPage(
-        name: AppRouteConstants.introCreating,
-        page: () => const SplashPage(),
-        transition: Transition.zoom
-    ),
-    GetPage(
-        name: AppRouteConstants.introWelcome,
-        page: () => const SplashPage(),
-        transition: Transition.zoom
-    ),
-    GetPage(
       name: AppRouteConstants.accountRemove,
       page: () => const SplashPage(),
     ),

@@ -3,7 +3,7 @@ import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/external_item.dart';
 import 'package:neom_core/domain/model/item_list.dart';
-import 'package:neom_core/domain/model/neom/chamber_preset.dart';
+import 'package:neom_core/domain/model/neom/neom_chamber_preset.dart';
 import 'package:neom_core/utils/enums/app_media_source.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/enums/release_type.dart';
@@ -127,7 +127,7 @@ class AppMediaItemMapper {
     return appMediaItems;
   }
 
-  static AppMediaItem fromChamberPreset(ChamberPreset chamberPreset) {
+  static AppMediaItem fromChamberPreset(NeomChamberPreset chamberPreset) {
     return AppMediaItem(
         id: chamberPreset.id,
         name: chamberPreset.name,
@@ -135,9 +135,9 @@ class AppMediaItemMapper {
         ownerId: chamberPreset.ownerId,
         album: "",
         imgUrl: chamberPreset.imgUrl,
-        duration:  chamberPreset.neomFrequency?.frequency.ceil() ?? 0,
+        duration:  chamberPreset.mainFrequency?.frequency.ceil() ?? 0,
         url: "",
-        description: chamberPreset.description.isNotEmpty ? chamberPreset.description : chamberPreset.neomFrequency?.description ?? "",
+        description: chamberPreset.description.isNotEmpty ? chamberPreset.description : chamberPreset.mainFrequency?.description ?? "",
         metaOwner: "",
         state: chamberPreset.state,
         categories: [],

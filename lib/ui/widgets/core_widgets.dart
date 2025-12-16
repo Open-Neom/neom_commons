@@ -12,7 +12,7 @@ Widget buildLabel(BuildContext context, String title, String msg){
     children: <Widget>[
       customText(title,
           context: context,
-          style: const TextStyle(fontSize: 25,fontWeight: FontWeight.bold)
+          style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold)
       ),
       AppTheme.heightSpace10,
       Padding(

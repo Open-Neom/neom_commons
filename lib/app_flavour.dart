@@ -25,7 +25,7 @@ class AppFlavour {
 
   static Widget getSplashImage() {
     return Image.asset(
-      AppAssets.logoAppWhite,
+      AppAssets.isologoAppWhite,
       height: AppConfig.instance.appInUse == AppInUse.g ? 50 : 150,
       width: 150,
     );
@@ -279,20 +279,22 @@ class AppFlavour {
       case AppInUse.e:
       return AppAssets.logoCompanyWhite;
       case AppInUse.c:
-        return AppAssets.logoAppWhite;
+        return AppLocaleUtilities.languageFromLocale(Get.locale!)
+            == AppLocale.spanish.name ? AppAssets.logoSloganSpanish
+            : AppAssets.logoSloganEnglish;
       default:
-        return AppAssets.logoAppWhite;
+        return AppAssets.isologoAppWhite;
     }
   }
 
   static String getAppPreLogoPath() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
-        return '';
+        return AppAssets.isologoAppWhite;
       case AppInUse.e:
-        return AppAssets.logoAppWhite;
+        return AppAssets.isologoAppWhite;
       case AppInUse.c:
-        return '';
+        return AppAssets.isologoAppWhite;
       default:
         return '';
     }
@@ -471,7 +473,7 @@ class AppFlavour {
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
-        return true;
+        return false;
       case AppInUse.e:
         return false;
       case AppInUse.g:

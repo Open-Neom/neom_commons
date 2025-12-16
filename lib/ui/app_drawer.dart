@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
-import 'package:neom_core/domain/use_cases/inbox_service.dart';
 import 'package:neom_core/domain/use_cases/login_service.dart';
 import 'package:neom_core/domain/use_cases/settings_service.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
@@ -67,8 +66,8 @@ class AppDrawer extends StatelessWidget {
                           children: [
                             drawerRowOption(AppDrawerMenu.frequencies, Icon(AppFlavour.getInstrumentIcon()), context),
                             if(Get.isRegistered<UserService>()) drawerRowOption(AppDrawerMenu.presets, const Icon(Icons.surround_sound_outlined), context),
-                            const Divider(),
-                            if(Get.isRegistered<InboxService>()) drawerRowOption(AppDrawerMenu.inbox, const Icon(FontAwesomeIcons.comments), context),
+                            ///DEPRECATED const Divider(),
+                            ///DEPRECATED if(Get.isRegistered<InboxService>()) drawerRowOption(AppDrawerMenu.inbox, const Icon(FontAwesomeIcons.comments), context),
                           ],
                         ),
                       if(!AppFlavour.isNeomApp()) //TODO Not implemented on "C" app yet
@@ -80,6 +79,7 @@ class AppDrawer extends StatelessWidget {
                           children: [
                             if(AppConfig.instance.appInUse == AppInUse.e || AppConfig.instance.appInUse == AppInUse.o)
                             drawerRowOption(AppDrawerMenu.nupale, const Icon(FontAwesomeIcons.bookOpenReader), context),
+                            if(AppConfig.instance.appInUse != AppInUse.c || AppConfig.instance.appInUse == AppInUse.o)
                             drawerRowOption(AppDrawerMenu.casete, const Icon(FontAwesomeIcons.solidFileAudio), context),
                           ],
                         ),

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:neom_core/app_config.dart';
-import 'package:neom_core/utils/enums/app_in_use.dart';
 import '../../app_flavour.dart';
 import '../../utils/constants/app_assets.dart';
 import '../theme/app_theme.dart';
@@ -22,14 +20,13 @@ class HeaderIntro extends StatelessWidget{
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          showPreLogo ? Image.asset(AppAssets.logoAppWhite,
+          showPreLogo ? Image.asset(AppAssets.isologoAppWhite,
             height: AppTheme.fullWidth(context)/(MediaQuery.of(context).orientation == Orientation.portrait ? sizeRelation:3),
             width: AppTheme.fullWidth(context)/(MediaQuery.of(context).orientation == Orientation.portrait ? sizeRelation:5),
           ) : const SizedBox.shrink(),
           AppTheme.heightSpace10,
           showLogo ? Image.asset(AppFlavour.getAppLogoPath(),
-            width: AppTheme.fullWidth(context)*(AppConfig.instance.appInUse != AppInUse.e ? 0.75 : (MediaQuery.of(context).orientation == Orientation.portrait ? 0.25:0.15)),
-            fit: BoxFit.fitWidth,
+            fit: MediaQuery.of(context).orientation == Orientation.portrait ? BoxFit.fitHeight : BoxFit.fitWidth,
           ) : const SizedBox.shrink(),
           title.isEmpty ? const SizedBox.shrink() : Column(
             children: [

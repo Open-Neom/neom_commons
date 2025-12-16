@@ -67,7 +67,7 @@ class ShareUtilities {
     // 2. GENERAR EL LINK ESPECÍFICO DEL POST
     bool getSiteUrl = true;
     String deepLink = getSiteUrl ? AppProperties.getSiteUrl() :
-    DeeplinkUtilities.generateDeepLink(host: 'share', type: 'post', id: post.id);
+      DeeplinkUtilities.generateDeepLink(host: 'share', type: 'post', id: post.id);
 
     // Construcción del texto a compartir
     String sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
@@ -118,7 +118,7 @@ class ShareUtilities {
     // 3. GENERAR EL LINK ESPECÍFICO DEL MEDIA ITEM
     bool getSiteUrl = true;
     String deepLink = getSiteUrl ? AppProperties.getSiteUrl() :
-    DeeplinkUtilities.generateDeepLink(host: 'share', type: 'media', id: mediaItem.id);
+      DeeplinkUtilities.generateDeepLink(host: 'share', type: 'media', id: mediaItem.id);
     String sharedText;
 
     // Lógica para el mensaje
