@@ -25,9 +25,12 @@ class HeaderIntro extends StatelessWidget{
             width: AppTheme.fullWidth(context)/(MediaQuery.of(context).orientation == Orientation.portrait ? sizeRelation:5),
           ) : const SizedBox.shrink(),
           AppTheme.heightSpace10,
-          showLogo ? Image.asset(AppFlavour.getAppLogoPath(),
-            fit: MediaQuery.of(context).orientation == Orientation.portrait ? BoxFit.fitHeight : BoxFit.fitWidth,
-          ) : const SizedBox.shrink(),
+          SizedBox(
+            width: AppTheme.fullWidth(context)*0.6,
+            child: showLogo ? Image.asset(AppFlavour.getAppLogoPath(),
+              fit: MediaQuery.of(context).orientation == Orientation.portrait ? BoxFit.fitHeight : BoxFit.fitWidth,
+            ) : const SizedBox.shrink(),
+          ),
           title.isEmpty ? const SizedBox.shrink() : Column(
             children: [
               showLogo ? const SizedBox.shrink() : AppTheme.heightSpace20,

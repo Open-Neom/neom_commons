@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
+import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
@@ -12,6 +13,7 @@ import 'package:neom_core/utils/enums/itemlist_type.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/enums/media_search_type.dart';
 import 'package:neom_core/utils/enums/profile_type.dart';
+import 'package:neom_core/utils/enums/subscription_level.dart';
 import 'package:neom_core/utils/enums/verification_level.dart';
 
 import 'ui/theme/app_color.dart';
@@ -71,11 +73,19 @@ class AppFlavour {
     }
   }
 
-  static String getMainItemDetailsRoute() {
+  static String getMainItemDetailsRoute({MediaItemType? type}) {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
         return AppRouteConstants.audioPlayerMedia;
       case AppInUse.e:
+      // Lógica inteligente para EMXI:
+      // Si el formato es audio (MP3/Audiolibro), enviamos al reproductor.
+        if (type == MediaItemType.audiobook ||
+            type == MediaItemType.song ||
+            type == MediaItemType.podcast) {
+          return AppRouteConstants.audioPlayerMedia;
+        }
+        // Por defecto para libros o PDF
         return AppRouteConstants.bookDetails;
       case AppInUse.c:
         return AppRouteConstants.audioPlayerMedia;
@@ -84,16 +94,18 @@ class AppFlavour {
     }
   }
 
-  static String getSecondaryItemDetailsRoute() {
+  static String getSecondaryItemDetailsRoute({MediaItemType? type}) {
     switch (AppConfig.instance.appInUse) {
-      case AppInUse.g:
-        return AppRouteConstants.audioPlayerMedia;
       case AppInUse.e:
+      // Si el item secundario es un PDF, vamos a detalles, si no, al player.
+        if (type == MediaItemType.book || type == MediaItemType.pdf) {
+          return AppRouteConstants.bookDetails;
+        }
         return AppRouteConstants.audioPlayerMedia;
+      case AppInUse.g:
       case AppInUse.c:
-        return AppRouteConstants.audioPlayerMedia;
       default:
-          return '';
+        return AppRouteConstants.audioPlayerMedia;
     }
   }
 
@@ -607,6 +619,112 @@ class AppFlavour {
         return false;
       default:
         return false;
+    }
+
+  }
+
+  static bool showCasete() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return false;
+      case AppInUse.e:
+        return true;
+      case AppInUse.g:
+        return true;
+      case AppInUse.o:
+        return false;
+      default:
+        return false;
+    }
+  }
+
+  static bool showNupale() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return false;
+      case AppInUse.e:
+        return true;
+      case AppInUse.g:
+        return false;
+      case AppInUse.o:
+        return false;
+      default:
+        return false;
+    }
+  }
+
+  static bool showServices() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return false;
+      case AppInUse.e:
+        return true;
+      case AppInUse.g:
+        return false;
+      case AppInUse.o:
+        return false;
+      default:
+        return false;
+    }
+  }
+
+  static bool showWallet() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return false;
+      case AppInUse.e:
+        return true;
+      case AppInUse.g:
+        return true;
+      case AppInUse.o:
+        return false;
+      default:
+        return false;
+    }
+  }
+
+  static bool showReleaseUpload() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return false;
+      case AppInUse.e:
+        return true;
+      case AppInUse.g:
+        return true;
+      case AppInUse.o:
+        return false;
+      default:
+        return false;
+    }
+  }
+
+  static Object? getCaseteItem() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return AppReleaseItem();
+      case AppInUse.e:
+        return AppMediaItem();
+      case AppInUse.g:
+        return AppReleaseItem();
+      case AppInUse.o:
+        return AppReleaseItem();
+      default:
+        return null;
+    }
+  }
+
+  static SubscriptionLevel getCaseteSubscription() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return SubscriptionLevel.basic;
+      case AppInUse.e:
+        return SubscriptionLevel.plus;
+      case AppInUse.g:
+        return SubscriptionLevel.basic;
+      case AppInUse.o:
+        return SubscriptionLevel.basic;
+      default:
+        return SubscriptionLevel.basic;
     }
 
   }

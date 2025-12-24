@@ -302,6 +302,8 @@ class AppTranslationConstants {
   static const String welcome = 'welcome';
   static const String wereFound = "wereFound";
   static const String wifi = 'wifi';
+  static const String writing = 'writing';
+
   static const String yes = "yes";
   static const String youAre = "youAre";
 

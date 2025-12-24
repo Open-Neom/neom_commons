@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
@@ -26,7 +25,7 @@ class AppDrawerController extends GetxController implements AppDrawerService {
     appProfile.value = userServiceImpl?.profile;
 
     Get.find<HomeService>().mediaPlayerEnabled = false;
-    if((user?.subscriptionId.isEmpty ?? true) && !kDebugMode) initializeSubscriptionService();
+    if(user?.subscriptionId.isEmpty ?? true) initializeSubscriptionService();
   }
 
   @override
@@ -39,7 +38,9 @@ class AppDrawerController extends GetxController implements AppDrawerService {
   void onClose() {
     super.onClose();
     AppConfig.logger.t("Drawer Controller Closed");
-    Get.find<HomeService>().mediaPlayerEnabled = true;
+    if(AppConfig.instance.appInfo.mediaPlayerEnabled) {
+      Get.find<HomeService>().mediaPlayerEnabled = true;
+    }
   }
 
   @override

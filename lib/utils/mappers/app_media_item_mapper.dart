@@ -3,7 +3,6 @@ import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/external_item.dart';
 import 'package:neom_core/domain/model/item_list.dart';
-import 'package:neom_core/domain/model/neom/neom_chamber_preset.dart';
 import 'package:neom_core/utils/enums/app_media_source.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/enums/release_type.dart';
@@ -33,7 +32,7 @@ class AppMediaItemMapper {
     return items;
   }
 
-  static AppMediaItem fromAppReleaseItem(AppReleaseItem releaseItem, {MediaItemType itemType = MediaItemType.neomPreset}) {
+  static AppMediaItem fromAppReleaseItem(AppReleaseItem releaseItem) {
     try {
       return AppMediaItem(
         id: releaseItem.id,
@@ -59,7 +58,7 @@ class AppMediaItemMapper {
         likes: releaseItem.likedProfiles?.length ?? 0,
         state: releaseItem.state,
         mediaSource: AppMediaSource.internal,
-        type: releaseItem.type == ReleaseType.episode ? MediaItemType.podcast : releaseItem.type == ReleaseType.chapter ? MediaItemType.audiobook : itemType
+        type: releaseItem.type == ReleaseType.episode ? MediaItemType.podcast : releaseItem.type == ReleaseType.chapter ? MediaItemType.audiobook : releaseItem.mediaType
       );
     } catch (e) {
       throw Exception('Error parsing item: $e');
@@ -127,30 +126,29 @@ class AppMediaItemMapper {
     return appMediaItems;
   }
 
-  static AppMediaItem fromChamberPreset(NeomChamberPreset chamberPreset) {
-    return AppMediaItem(
-        id: chamberPreset.id,
-        name: chamberPreset.name,
-        ownerName: "",
-        ownerId: chamberPreset.ownerId,
-        album: "",
-        imgUrl: chamberPreset.imgUrl,
-        duration:  chamberPreset.mainFrequency?.frequency.ceil() ?? 0,
-        url: "",
-        description: chamberPreset.description.isNotEmpty ? chamberPreset.description : chamberPreset.mainFrequency?.description ?? "",
-        metaOwner: "",
-        state: chamberPreset.state,
-        categories: [],
-        mediaSource: AppMediaSource.internal,
-        releaseDate: 0,
-        is320Kbps: true,
-        likes: 0,
-        lyrics: '',
-        permaUrl: chamberPreset.imgUrl,
-        publishedYear: 0,
-        type: MediaItemType.neomPreset
-    );
-
-  }
+  ///DEPRECATED
+  // static AppMediaItem fromChamberPreset(NeomChamberPreset chamberPreset) {
+  //   return AppMediaItem(
+  //       id: chamberPreset.id,
+  //       name: chamberPreset.name,
+  //       ownerName: "",
+  //       ownerId: chamberPreset.ownerId,
+  //       album: "",
+  //       imgUrl: chamberPreset.imgUrl,
+  //       duration:  chamberPreset.mainFrequency?.frequency.ceil() ?? 0,
+  //       url: "",
+  //       description: chamberPreset.description.isNotEmpty ? chamberPreset.description : chamberPreset.mainFrequency?.description ?? "",
+  //       metaOwner: "",
+  //       state: chamberPreset.state,
+  //       categories: [],
+  //       mediaSource: AppMediaSource.internal,
+  //       releaseDate: 0,
+  //       is320Kbps: true,
+  //       likes: 0,
+  //       lyrics: '',
+  //       permaUrl: chamberPreset.imgUrl,
+  //       publishedYear: 0,
+  //       type: MediaItemType.neomPreset
+  //   );
 
 }

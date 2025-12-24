@@ -177,14 +177,17 @@ class AppAlerts {
     }
   }
 
-  static Future<bool?> getSubscriptionAlert(SubscriptionService? drawerController, BuildContext context, String fromRoute) async {
-    AppConfig.logger.d("getSubscriptionAlert");
+  static Future<bool?> getSubscriptionAlert(SubscriptionService? subscriptionController, BuildContext context, String fromRoute) async {
+    AppConfig.logger.d("getSubscriptionAlert called from $fromRoute");
 
     List<ProfileType> profileTypes = AppFlavour.getProfileTypes();
 
-    if(drawerController == null) return null;
+    if(subscriptionController == null) {
+      AppConfig.logger.d("SubscriptionController is null, returning null");
+      return null;
+    }
 
-    if(drawerController.subscriptionPlans.isEmpty) await drawerController.initializeSubscriptions();
+    if(subscriptionController.subscriptionPlans.isEmpty) await subscriptionController.initializeSubscriptions();
 
     return Alert(
         context: context,
@@ -193,13 +196,13 @@ class AppAlerts {
             titleStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
             titleTextAlign: TextAlign.justify
         ),
-        content: Obx(() => drawerController.isLoading ? const Center(child: CircularProgressIndicator()) : Column(
+        content: Obx(() => subscriptionController.isLoading ? const Center(child: CircularProgressIndicator()) : Column(
           children: <Widget>[
             AppTheme.heightSpace20,
-            Text(('${drawerController.selectedPlanName}Msg').tr,
+            Text(('${subscriptionController.selectedPlanName}Msg').tr,
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),textAlign: TextAlign.justify,),
             AppTheme.heightSpace20,
-            HandledCachedNetworkImage(drawerController.selectedPlanImgUrl),
+            HandledCachedNetworkImage(subscriptionController.selectedPlanImgUrl),
             AppTheme.heightSpace20,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -216,9 +219,9 @@ class AppAlerts {
                   }).toList(),
                   onChanged: (ProfileType? selectedType) {
                     if (selectedType == null) return;
-                    drawerController.selectProfileType(selectedType);
+                    subscriptionController.selectProfileType(selectedType);
                   },
-                  value: drawerController.profileType,
+                  value: subscriptionController.profileType,
                   alignment: Alignment.center,
                   icon: const Icon(Icons.arrow_downward),
                   iconSize: 20,
@@ -239,7 +242,7 @@ class AppAlerts {
                   style: const TextStyle(fontSize: 15),
                 ),
                 DropdownButton<String>(
-                  items: drawerController.profilePlans.values.map((SubscriptionPlan plan) {
+                  items: subscriptionController.profilePlans.values.map((SubscriptionPlan plan) {
                     return DropdownMenuItem<String>(
                       value: plan.id,
                       child: Text(plan.name.tr),
@@ -247,10 +250,10 @@ class AppAlerts {
                   }).toList(),
                   onChanged: (String? plan) {
                     if(plan != null) {
-                      drawerController.changeSubscriptionPlan(plan);
+                      subscriptionController.changeSubscriptionPlan(plan);
                     }
                   },
-                  value: drawerController.selectedPlan.id,
+                  value: subscriptionController.selectedPlan.id,
                   alignment: Alignment.center,
                   icon: const Icon(Icons.arrow_downward),
                   iconSize: 20,
@@ -273,7 +276,7 @@ class AppAlerts {
                 ),
                 Row(
                   children: [
-                    Text("${CoreUtilities.getCurrencySymbol(drawerController.selectedPrice.currency)} ${drawerController.selectedPrice.amount} ${drawerController.selectedPrice.currency.name.tr.toUpperCase()}",
+                    Text("${CoreUtilities.getCurrencySymbol(subscriptionController.selectedPrice.currency)} ${subscriptionController.selectedPrice.amount} ${subscriptionController.selectedPrice.currency.name.tr.toUpperCase()}",
                       style: const TextStyle(fontSize: 15),
                     ),
                     AppTheme.widthSpace5,
@@ -287,7 +290,7 @@ class AppAlerts {
           DialogButton(
             color: AppColor.bondiBlue75,
             onPressed: () async {
-              await drawerController.paySubscription(drawerController.selectedPlan, fromRoute);
+              await subscriptionController.paySubscription(subscriptionController.selectedPlan, fromRoute);
             },
             child: Text(CommonTranslationConstants.confirmAndProceed.tr,
               style: const TextStyle(fontSize: 15),

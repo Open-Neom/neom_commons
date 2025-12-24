@@ -11,9 +11,11 @@ import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
-import 'package:neom_core/domain/model/external_item.dart';
 import 'package:neom_core/domain/model/item_found_in_list.dart';
 import 'package:neom_core/domain/model/item_list.dart';
+import 'package:neom_core/utils/constants/app_route_constants.dart';
+import 'package:neom_core/utils/enums/app_in_use.dart';
+import 'package:neom_core/utils/enums/media_item_type.dart';
 
 import '../app_flavour.dart';
 import '../ui/theme/app_color.dart';
@@ -260,30 +262,69 @@ class AppUtilities {
     return categorizedItems;
   }
 
-  static void gotoItemDetails(dynamic item, {isMain = true}) {
+  static void gotoItemDetails(dynamic item) {
+    MediaItemType? itemType;
+    String itemUrl = "";
+
     try {
-      if(item is AppReleaseItem) {
-        AppReleaseItem releaseItem = item;
-        if(isMain) {
-          Get.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [releaseItem]);
-        } else {
-          Get.toNamed(AppFlavour.getSecondaryItemDetailsRoute(), arguments: [releaseItem]);
-        }
-      } else if(item is AppMediaItem) {
-        AppMediaItem mediaItem = item;
-        if(isMain) {
-          Get.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [mediaItem]);
-        } else {
-          Get.toNamed(AppFlavour.getSecondaryItemDetailsRoute(), arguments: [mediaItem]);
-        }
-      } else if(item is ExternalItem) {
-        ExternalItem externalItem = item;
-        Get.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [externalItem]);
+      // 1. Extraer URL y tipo base según el objeto
+      if (item is AppReleaseItem) {
+        itemUrl = item.previewUrl;
+        itemType = item.mediaType;
+      } else if (item is AppMediaItem) {
+        itemUrl = item.url;
+        itemType = item.type;
       }
+
+      // 2. Sobrescribir tipo si la URL indica algo distinto (detección inteligente)
+      MediaItemType? detectedType = getMediaTypeFromUrl(itemUrl);
+      if (detectedType != null) itemType = detectedType;
+
+      // 3. Determinar si es Main o Secondary basado en el tipo detectado
+      // Tipos que suelen ser "Main" (Reproductor principal / Visor PDF)
+      List<MediaItemType> mainTypes = [
+        MediaItemType.song,
+        MediaItemType.pdf,
+        MediaItemType.audiobook,
+        MediaItemType.frequency
+      ];
+
+      bool isMain = mainTypes.contains(itemType);
+
+      // 4. Navegación final
+      String route = isMain
+          ? AppFlavour.getMainItemDetailsRoute(type: itemType)
+          : AppFlavour.getSecondaryItemDetailsRoute();
+
+      // Caso especial: Navegar directamente al visor PDF si es un PDF detectado
+      if (itemType == MediaItemType.pdf) {
+        Get.toNamed(AppRouteConstants.bookDetails, arguments: [item]);
+      } else {
+        Get.toNamed(route, arguments: [item]);
+      }
+
     } catch (e) {
-      AppConfig.logger.e("Error mapping ChamberPreset to BaseItem: $e");
-      throw Exception('Error mapping chamber preset to BaseItem: $e');
+      AppConfig.logger.e("Error en navegación dinámica: $e");
     }
+  }
+
+  static MediaItemType? getMediaTypeFromUrl(String url) {
+    if (url.isEmpty) return null;
+
+    final String path = url.toLowerCase();
+
+    // Lógica de detección por extensión
+    if (path.endsWith('.pdf')) return MediaItemType.pdf;
+    if (path.endsWith('.mp3') || path.endsWith('.m4a') || path.endsWith('.wav')) {
+      return AppConfig.instance.appInUse == AppInUse.e
+          ? MediaItemType.audiobook
+          : MediaItemType.song;
+    }
+    if (path.contains('youtube.com') || path.contains('youtu.be') || path.endsWith('.mp4')) {
+      return MediaItemType.video;
+    }
+
+    return null;
   }
 
 }
