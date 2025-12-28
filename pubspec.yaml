@@ -1,6 +1,6 @@
 name: neom_commons
 description: Commons for Open Neom.
-version: 2.2.0-dev
+version: 2.2.1-dev
 homepage: https://github.com/Open-Neom/neom_commons
 
 environment:
