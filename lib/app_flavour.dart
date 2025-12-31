@@ -638,6 +638,36 @@ class AppFlavour {
     }
   }
 
+  static bool showBlog() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return false;
+      case AppInUse.e:
+        return true;
+      case AppInUse.g:
+        return false;
+      case AppInUse.o:
+        return false;
+      default:
+        return false;
+    }
+  }
+
+  static bool showBands() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return false;
+      case AppInUse.e:
+        return false;
+      case AppInUse.g:
+        return true;
+      case AppInUse.o:
+        return false;
+      default:
+        return false;
+    }
+  }
+
   static bool showNupale() {
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:

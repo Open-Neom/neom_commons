@@ -53,13 +53,9 @@ class AppDrawer extends StatelessWidget {
                       _menuHeader(context, controller),
                       const Divider(),
                       // if(Get.isRegistered<ProfileService>()) drawerRowOption(AppDrawerMenu.profile,  const Icon(Icons.person), context),
-                      if(AppConfig.instance.appInUse == AppInUse.e)
-                        Column(
-                          children: [
-                            drawerRowOption(AppDrawerMenu.inspiration, const Icon(FontAwesomeIcons.filePen), context),
-                          ],
-                        ),
-                      if(AppConfig.instance.appInUse == AppInUse.g && controller.appProfile.value?.type == ProfileType.appArtist && controller.user?.userRole != UserRole.subscriber)
+                      if(AppFlavour.showBlog())
+                        drawerRowOption(AppDrawerMenu.inspiration, const Icon(FontAwesomeIcons.filePen), context),
+                      if(AppFlavour.showBands() && controller.appProfile.value?.type == ProfileType.appArtist && controller.user?.userRole != UserRole.subscriber)
                         drawerRowOption(AppDrawerMenu.bands, const Icon(Icons.people), context),
                       if(AppFlavour.isNeomApp())
                         Column(
