@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  neom_core: ^2.3.0-dev
+  neom_core: ^2.2.0-dev
 
   # TRANSITIVE DEPENDENCIES FOR PUB.DEV PUBLISHING
   get: ^5.0.0-release-candidate-9.3.2
