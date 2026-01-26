@@ -94,6 +94,11 @@ class AppPageIdConstants {
   static const String chamberPresets = "chamberPresets";
   static const String preset = "preset";
   static const String chamberPresetDetails = "chamberPresetDetails";
+  static const String oscilloscope = "oscilloscope";
+  static const String flocking = "flocking";
+  static const String breathing = "breathing";
+  static const String spatial360 = "spatial360";
+  static const String vr360 = "vr360";
 
   static const String audioPlayerHome = "audioPlayerHome" ;
   static const String mediaPlayer = 'mediaPlayer';

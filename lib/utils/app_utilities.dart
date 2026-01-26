@@ -26,6 +26,7 @@ import 'text_utilities.dart';
 class AppUtilities {
 
   static void showSnackBar({String title = '', String message = '', Duration duration = const Duration(seconds: 3)}) {
+    AppConfig.logger.d("Showing snackbar: $title - $message");
     if(title.isEmpty) title = AppProperties.getAppName();
     Get.snackbar(title.tr, message.tr,
         snackPosition: SnackPosition.bottom,

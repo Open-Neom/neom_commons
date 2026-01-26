@@ -20,6 +20,7 @@ class AppTranslationConstants {
   static const String apps = 'apps';
   static const String appTitle = 'appTitle';
   static const String artist = 'artist';
+  static const String attention = 'attention';
   static const String author = 'author';
   static const String audioLibrary = 'audioLibrary';
   static const String back = "back";
@@ -293,6 +294,8 @@ class AppTranslationConstants {
   static const String verified = "verified";
   static const String version = 'version';
   static const String viewSummary = 'viewSummary';
+  static const String virtual = 'virtual';
+  static const String virtualReality = 'virtualReality';
   static const String visitSite = 'visitSite';
   static const String vocal = 'vocal';
   static const String vocalType = 'vocalType';
