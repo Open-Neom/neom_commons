@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/event.dart';
 import 'package:neom_core/domain/model/post.dart';
@@ -21,13 +21,13 @@ class PostTile extends StatelessWidget {
     return GestureDetector(
     child: post.type == PostType.image ?
       HandledCachedNetworkImage(post.mediaUrl,
-        function: () => Get.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post]),
+        function: () => Sint.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post]),
       ) : post.type == PostType.video ?
       cachedVideoThumbnail(thumbnailUrl: post.thumbnailUrl, mediaUrl: post.mediaUrl)
         : HandledCachedNetworkImage(event?.imgUrl ?? AppProperties.getNoImageUrl(),
-        function: () => Get.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post]),
+        function: () => Sint.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post]),
       ),
-      onTap: () => Get.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post])
+      onTap: () => Sint.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [post])
     );
   }
 

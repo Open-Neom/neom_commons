@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/utils/constants/core_constants.dart';
 
 import 'theme/app_theme.dart';

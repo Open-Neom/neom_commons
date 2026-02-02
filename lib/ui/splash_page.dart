@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import '../app_flavour.dart';
 import '../utils/constants/app_page_id_constants.dart';
 import '../utils/constants/translations/common_translation_constants.dart';
@@ -12,7 +12,7 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SplashController>(
+    return SintBuilder<SplashController>(
       init: SplashController(),
       id: AppPageIdConstants.splash,
       builder: (splashController) => Scaffold(

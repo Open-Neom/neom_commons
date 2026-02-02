@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:intl/intl.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/event.dart';

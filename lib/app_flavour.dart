@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
@@ -285,13 +285,13 @@ class AppFlavour {
   static String getAppLogoPath() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
-        return AppLocaleUtilities.languageFromLocale(Get.locale!)
+        return AppLocaleUtilities.languageFromLocale(Sint.locale!)
             == AppLocale.spanish.name ? AppAssets.logoSloganSpanish
             : AppAssets.logoSloganEnglish;
       case AppInUse.e:
       return AppAssets.logoCompanyWhite;
       case AppInUse.c:
-        return AppLocaleUtilities.languageFromLocale(Get.locale!)
+        return AppLocaleUtilities.languageFromLocale(Sint.locale!)
             == AppLocale.spanish.name ? AppAssets.logoSloganSpanish
             : AppAssets.logoSloganEnglish;
       default:
@@ -561,7 +561,7 @@ class AppFlavour {
       case AppInUse.c:
         //TODO implement for spiritual app
       case AppInUse.e:
-        Get.toNamed(AppRouteConstants.pdfViewer, arguments: [suggestedItem, true, true]);
+        Sint.toNamed(AppRouteConstants.pdfViewer, arguments: [suggestedItem, true, true]);
       case AppInUse.g:
         //TODO implement for music app
       case AppInUse.o:

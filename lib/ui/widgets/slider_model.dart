@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import '../../utils/constants/app_assets.dart';
 import '../../utils/constants/translations/common_translation_constants.dart';
 import '../../utils/constants/translations/message_translation_constants.dart';

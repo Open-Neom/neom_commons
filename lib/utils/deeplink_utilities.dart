@@ -1,5 +1,5 @@
 import 'package:app_links/app_links.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
@@ -38,12 +38,12 @@ class DeeplinkUtilities {
     }
 
     if (type == 'post' && id != null) {
-      Get.toNamed(AppRouteConstants.postDetails, arguments: id);
+      Sint.toNamed(AppRouteConstants.postDetails, arguments: id);
     } else if (type == 'media' && id != null) {
-      Get.toNamed(AppRouteConstants.itemDetails, arguments: id);
+      Sint.toNamed(AppRouteConstants.itemDetails, arguments: id);
     } else {
       // Fallback: Si no reconocemos la ruta, vamos al home
-      Get.offAllNamed(AppRouteConstants.home);
+      Sint.offAllNamed(AppRouteConstants.home);
     }
   }
 

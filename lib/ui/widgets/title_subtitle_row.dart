@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 
 import '../../utils/app_alerts.dart';
@@ -49,7 +49,7 @@ class TitleSubtitleRow extends StatelessWidget {
 
             if(navigateTo.isNotEmpty) {
               navigateTo != AppRouteConstants.underConstruction ?
-              Get.toNamed(navigateTo, arguments: navigateArguments)
+              Sint.toNamed(navigateTo, arguments: navigateArguments)
                   : AppAlerts.showAlert(context, title: title, message: CommonTranslationConstants.underConstruction.tr);
             } else if(url.isNotEmpty) {
               ExternalUtilities.launchURL(url);

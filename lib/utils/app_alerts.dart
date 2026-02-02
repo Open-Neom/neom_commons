@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
@@ -85,7 +85,7 @@ class AppAlerts {
     required void Function() onCreateProfile,}) async {
 
     try {
-      UserService userServiceImpl = Get.find<UserService>();
+      UserService userServiceImpl = Sint.find<UserService>();
       await userServiceImpl.getProfiles();
       await showModalBottomSheet(
           elevation: 0,
@@ -165,7 +165,7 @@ class AppAlerts {
                         subtitle: const Text("Agrega un perfil adicional para manejar distintas cuentas."),
                         onTap: () {
                           Navigator.pop(context);
-                          Get.toNamed(AppRouteConstants.introProfile);
+                          Sint.toNamed(AppRouteConstants.introProfile);
                         },
                       ),
                     ),
@@ -345,7 +345,7 @@ class AppAlerts {
   static Future<void> showSendReportAlert(BuildContext context, String referenceId,
       {ReferenceType referenceType = ReferenceType.post}) async {
 
-    ReportService reportServiceImpl = Get.find<ReportService>();
+    ReportService reportServiceImpl = Sint.find<ReportService>();
     Alert(
         context: context,
         style: AlertStyle(

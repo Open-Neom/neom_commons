@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
@@ -29,7 +29,7 @@ class ShareUtilities {
     );
 
     if(shareResult.status == ShareResultStatus.success && shareResult.raw != "null") {
-      Get.snackbar(MessageTranslationConstants.sharedApp.tr,
+      Sint.snackbar(MessageTranslationConstants.sharedApp.tr,
           MessageTranslationConstants.sharedAppMsg.tr,
           snackPosition: SnackPosition.bottom);
     }
@@ -83,7 +83,7 @@ class ShareUtilities {
     );
 
     if(shareResult.status == ShareResultStatus.success && (shareResult.raw) != "null") {
-      Get.snackbar(MessageTranslationConstants.sharedApp.tr,
+      Sint.snackbar(MessageTranslationConstants.sharedApp.tr,
           MessageTranslationConstants.sharedAppMsg.tr,
           snackPosition: SnackPosition.bottom);
     }
@@ -152,7 +152,7 @@ class ShareUtilities {
     );
 
     if(shareResult.status == ShareResultStatus.success && shareResult.raw != "null") {
-      Get.snackbar(MessageTranslationConstants.sharedMediaItem.tr,
+      Sint.snackbar(MessageTranslationConstants.sharedMediaItem.tr,
           MessageTranslationConstants.sharedMediaItemMsg.tr,
           snackPosition: SnackPosition.bottom);
     }

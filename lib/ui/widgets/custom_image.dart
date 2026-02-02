@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 
@@ -15,9 +15,9 @@ Widget cachedNetworkProfileImage(String profileId, String mediaUrl) {
         placeholder: (context, url) => const CircularProgressIndicator(),
         errorWidget: (context,url,error) => const Icon(Icons.image_not_supported),
     ),
-    onTap: () => Get.find<UserService>().profile.id != profileId ?
-    Get.toNamed(AppRouteConstants.mateDetails, arguments: profileId)
-        : Get.toNamed(AppRouteConstants.profileDetails, arguments: profileId),
+    onTap: () => Sint.find<UserService>().profile.id != profileId ?
+    Sint.toNamed(AppRouteConstants.mateDetails, arguments: profileId)
+        : Sint.toNamed(AppRouteConstants.profileDetails, arguments: profileId),
   );
 }
 
@@ -29,7 +29,7 @@ Widget fileImage(File mediaFile) {
             fit: BoxFit.fitHeight,
           ),
         ),
-      onTap: () => Get.toNamed(AppRouteConstants.imageFullScreen, arguments: [mediaFile.path, false])
+      onTap: () => Sint.toNamed(AppRouteConstants.imageFullScreen, arguments: [mediaFile.path, false])
   );
 }
 
@@ -44,6 +44,6 @@ Widget cachedVideoThumbnail({required String thumbnailUrl, required String media
         ),
       ),
     // ),
-    onTap: () => Get.toNamed(AppRouteConstants.videoFullScreen, arguments: [mediaUrl]),
+    onTap: () => Sint.toNamed(AppRouteConstants.videoFullScreen, arguments: [mediaUrl]),
   );
 }

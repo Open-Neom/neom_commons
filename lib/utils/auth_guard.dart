@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
@@ -29,8 +29,8 @@ class AuthGuard {
   static bool _userIsLoggedIn() {
     try {
       // 1. Si el servicio no está inyectado, no hay usuario.
-      if (!Get.isRegistered<UserService>()) return false;
-      final userService = Get.find<UserService>();
+      if (!Sint.isRegistered<UserService>()) return false;
+      final userService = Sint.find<UserService>();
       // 2. Debe tener un ID y NO estar en modo invitado explícito.
       return userService.user.id.isNotEmpty && !AppConfig.instance.isGuestMode;
     } catch (e) {
@@ -41,7 +41,7 @@ class AuthGuard {
 
   /// Muestra el diálogo y configura la redirección (Privado)
   static void showGuestModal(BuildContext context, {String? redirectRoute, dynamic arguments}) {
-    Get.dialog(
+    Sint.dialog(
       AlertDialog(
         backgroundColor: AppColor.getMain(),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -69,7 +69,7 @@ class AuthGuard {
               AppConfig.instance.isGuestMode = false;
 
               // 3. Ir al Login llevando la "Promesa" de redirección
-              Get.offAllNamed(
+              Sint.offAllNamed(
                   AppRouteConstants.login,
                   arguments: {
                     'nextRoute': redirectRoute,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/data/firestore/profile_firestore.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
@@ -67,7 +67,7 @@ class LikeButtonState extends State<LikeButton>
   @override
   Widget build(BuildContext context) {
     try {
-      final UserService userServiceImpl = Get.find<UserService>();
+      final UserService userServiceImpl = Sint.find<UserService>();
       profile = userServiceImpl.profile;
       liked = profile.favoriteItems?.contains(widget.appMediaItem?.id) ?? false;
     } catch (e) {

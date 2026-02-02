@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:http/http.dart' as http;
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
@@ -28,7 +28,7 @@ class AppUtilities {
   static void showSnackBar({String title = '', String message = '', Duration duration = const Duration(seconds: 3)}) {
     AppConfig.logger.d("Showing snackbar: $title - $message");
     if(title.isEmpty) title = AppProperties.getAppName();
-    Get.snackbar(title.tr, message.tr,
+    Sint.snackbar(title.tr, message.tr,
         snackPosition: SnackPosition.bottom,
         duration: duration
     );
@@ -299,9 +299,9 @@ class AppUtilities {
 
       // Caso especial: Navegar directamente al visor PDF si es un PDF detectado
       if (itemType == MediaItemType.pdf) {
-        Get.toNamed(AppRouteConstants.bookDetails, arguments: [item]);
+        Sint.toNamed(AppRouteConstants.bookDetails, arguments: [item]);
       } else {
-        Get.toNamed(route, arguments: [item]);
+        Sint.toNamed(route, arguments: [item]);
       }
 
     } catch (e) {
@@ -327,5 +327,20 @@ class AppUtilities {
 
     return null;
   }
+
+  // /// Returns whether a dynamic value PROBABLY
+  // /// has the isEmpty getter/method by checking
+  // /// standard dart types that contains it.
+  // ///
+  // /// This is here to for the 'DRY'
+  // static bool? isEmpty(dynamic value) {
+  //   if (value is String) {
+  //     return value.toString().trim().isEmpty;
+  //   }
+  //   if (value is Iterable || value is Map) {
+  //     return value.isEmpty as bool?;
+  //   }
+  //   return false;
+  // }
 
 }

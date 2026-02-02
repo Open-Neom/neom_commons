@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import '../utils/constants/translations/app_translation_constants.dart';
 import 'theme/app_color.dart';
@@ -105,7 +105,7 @@ class SlideTiles extends StatelessWidget {
               style: const TextStyle(fontSize: 18),textAlign: TextAlign.center,
             ),
             GestureDetector(
-              onTap: () {Get.toNamed(AppRouteConstants.login);},
+              onTap: () {Sint.toNamed(AppRouteConstants.login);},
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 30,vertical: 10),
                 margin: const EdgeInsets.symmetric(horizontal: 30,vertical: 30),

@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 
@@ -31,7 +31,7 @@ class HandledCachedNetworkImage extends StatelessWidget {
         fadeInDuration: fadeInDuration,
       ),
       onTap: () => function != null ? function!() : enableFullScreen
-          ? Get.toNamed(AppRouteConstants.imageFullScreen, arguments: [mediaUrl])
+          ? Sint.toNamed(AppRouteConstants.imageFullScreen, arguments: [mediaUrl])
           : null
     );
   }

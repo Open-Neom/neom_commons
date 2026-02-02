@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:intl/intl.dart';
 import 'package:neom_core/app_config.dart';
@@ -72,7 +72,7 @@ class DateTimeUtilities {
 
   static String formatTimeAgo(DateTime dateTime, {String? locale}) {
     return GetTimeAgo.parse(dateTime,
-        locale: locale ?? Get.locale?.languageCode,
+        locale: locale ?? Sint.locale?.languageCode,
         pattern: CoreConstants.timeAgoPattern,
     );
   }

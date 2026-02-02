@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import '../utils/constants/app_assets.dart';
 import '../utils/constants/translations/common_translation_constants.dart';
 import 'theme/app_color.dart';

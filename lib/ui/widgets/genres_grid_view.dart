@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import '../../utils/constants/app_constants.dart';
 import '../theme/app_theme.dart';
 import 'dot_container.dart';

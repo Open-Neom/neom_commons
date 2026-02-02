@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 
 class CachedNetworkRoutingImage extends StatelessWidget {
 
@@ -28,7 +28,7 @@ class CachedNetworkRoutingImage extends StatelessWidget {
           // ),
           onTap: () => {
             if(toNamed.isNotEmpty)
-              Get.toNamed(toNamed, arguments: [referenceId]),
+              Sint.toNamed(toNamed, arguments: [referenceId]),
           }
 
       );

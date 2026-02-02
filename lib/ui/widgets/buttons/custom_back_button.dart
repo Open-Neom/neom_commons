@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 
 import '../../theme/app_color.dart';
 import '../../theme/app_theme.dart';
@@ -13,7 +13,7 @@ class CustomBackButton extends StatelessWidget {
       left: 4,
       top: 26,
       child: GestureDetector(
-        onTap: () => Get.back(),
+        onTap: () => Sint.back(),
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.padding10),
           child: Container(

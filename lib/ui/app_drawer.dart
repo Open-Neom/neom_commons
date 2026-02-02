@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/use_cases/login_service.dart';
@@ -34,7 +34,7 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AppDrawerController>(
+    return SintBuilder<AppDrawerController>(
     id: AppPageIdConstants.appDrawer,
     init: AppDrawerController(),
     builder: (controller) {
@@ -52,7 +52,7 @@ class AppDrawer extends StatelessWidget {
                       AppTheme.heightSpace10,
                       _menuHeader(context, controller),
                       const Divider(),
-                      // if(Get.isRegistered<ProfileService>()) drawerRowOption(AppDrawerMenu.profile,  const Icon(Icons.person), context),
+                      // if(Sint.isRegistered<ProfileService>()) drawerRowOption(AppDrawerMenu.profile,  const Icon(Icons.person), context),
                       if(AppFlavour.showBlog())
                         drawerRowOption(AppDrawerMenu.inspiration, const Icon(FontAwesomeIcons.filePen), context),
                       if(AppFlavour.showBands() && controller.appProfile.value?.type == ProfileType.appArtist && controller.user?.userRole != UserRole.subscriber)
@@ -61,7 +61,7 @@ class AppDrawer extends StatelessWidget {
                         Column(
                           children: [
                             drawerRowOption(AppDrawerMenu.frequencies, Icon(AppFlavour.getInstrumentIcon()), context),
-                            if(Get.isRegistered<UserService>()) drawerRowOption(AppDrawerMenu.presets, const Icon(Icons.surround_sound_outlined), context),
+                            if(Sint.isRegistered<UserService>()) drawerRowOption(AppDrawerMenu.presets, const Icon(Icons.surround_sound_outlined), context),
                           ],
                         ),
                       if(!AppFlavour.isNeomApp()) //TODO Not implemented on "C" app yet
@@ -108,8 +108,8 @@ class AppDrawer extends StatelessWidget {
                           const Divider(),
                         ],
                       ),
-                      if(Get.isRegistered<SettingsService>()) drawerRowOption(AppDrawerMenu.settings, const Icon(Icons.settings), context),
-                      if(Get.isRegistered<LoginService>()) Column(
+                      if(Sint.isRegistered<SettingsService>()) drawerRowOption(AppDrawerMenu.settings, const Icon(Icons.settings), context),
+                      if(Sint.isRegistered<LoginService>()) Column(
                         children: [
                           const Divider(),
                           drawerRowOption(AppDrawerMenu.logout, const Icon(Icons.logout), context),
@@ -149,11 +149,11 @@ class AppDrawer extends StatelessWidget {
                   ),
                 ),
               ),
-              onTap: ()=> Get.toNamed(AppRouteConstants.profile),
+              onTap: ()=> Sint.toNamed(AppRouteConstants.profile),
             ),
             ListTile(
               onTap: () {
-                Get.toNamed(AppRouteConstants.profile);
+                Sint.toNamed(AppRouteConstants.profile);
               },
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,12 +186,12 @@ class AppDrawer extends StatelessWidget {
         ),
       );
     } else {
-      bool isLoginEnable = Get.isRegistered<LoginService>();
+      bool isLoginEnable = Sint.isRegistered<LoginService>();
       return customInkWell(
         context: context,
         onPressed: () {
           if(isLoginEnable) {
-            Get.offAllNamed(AppRouteConstants.login);
+            Sint.offAllNamed(AppRouteConstants.login);
           }
         },
         child: ConstrainedBox(
@@ -262,74 +262,74 @@ class AppDrawer extends StatelessWidget {
         if(isEnabled) {
           switch(selectedMenu) {
             case AppDrawerMenu.profile:
-              Get.toNamed(AppRouteConstants.profile);
+              Sint.toNamed(AppRouteConstants.profile);
               break;
             case AppDrawerMenu.instruments:
-              Get.toNamed(AppRouteConstants.instrumentsFav);
+              Sint.toNamed(AppRouteConstants.instrumentsFav);
               break;
             case AppDrawerMenu.genres:
-              if (isEnabled) Get.toNamed(AppRouteConstants.genresFav);
+              if (isEnabled) Sint.toNamed(AppRouteConstants.genresFav);
               break;
             case AppDrawerMenu.bands:
-              Get.toNamed(AppRouteConstants.bands);
+              Sint.toNamed(AppRouteConstants.bands);
               break;
             case AppDrawerMenu.events:
-              Get.toNamed(AppRouteConstants.events);
+              Sint.toNamed(AppRouteConstants.events);
               break;
             case AppDrawerMenu.inbox:
-              Get.toNamed(AppRouteConstants.inbox);
+              Sint.toNamed(AppRouteConstants.inbox);
               break;
             case AppDrawerMenu.calendar:
-              Get.toNamed(AppRouteConstants.calendar);
+              Sint.toNamed(AppRouteConstants.calendar);
               break;
             case AppDrawerMenu.services:
-              Get.toNamed(AppRouteConstants.services);
+              Sint.toNamed(AppRouteConstants.services);
               break;
             case AppDrawerMenu.requests:
-              Get.toNamed(AppRouteConstants.request);
+              Sint.toNamed(AppRouteConstants.request);
               break;
             case AppDrawerMenu.booking:
-              Get.toNamed(AppRouteConstants.booking);
+              Sint.toNamed(AppRouteConstants.booking);
               break;
             case AppDrawerMenu.directory:
-              Get.toNamed(AppRouteConstants.directory);
+              Sint.toNamed(AppRouteConstants.directory);
               break;
             case AppDrawerMenu.wallet:
-              Get.toNamed(AppRouteConstants.wallet);
+              Sint.toNamed(AppRouteConstants.wallet);
               break;
             case AppDrawerMenu.settings:
-              Get.toNamed(AppRouteConstants.settingsPrivacy);
+              Sint.toNamed(AppRouteConstants.settingsPrivacy);
               break;
             case AppDrawerMenu.crowdfunding:
               ExternalUtilities.launchURL(AppProperties.getCrowdfundingUrl());
               break;
             case AppDrawerMenu.appItemQuotation:
-              Get.toNamed(AppRouteConstants.quotation);
+              Sint.toNamed(AppRouteConstants.quotation);
               break;
             case AppDrawerMenu.logout:
-              Get.toNamed(AppRouteConstants.logout,
+              Sint.toNamed(AppRouteConstants.logout,
                   arguments: [AppRouteConstants.logout]
               );
               break;
             case AppDrawerMenu.releaseUpload:
-              Get.toNamed(AppRouteConstants.releaseUpload);
+              Sint.toNamed(AppRouteConstants.releaseUpload);
               break;
             case AppDrawerMenu.digitalLibrary:
               // TODO: Handle this case.
               break;
             case AppDrawerMenu.frequencies:
-              Get.toNamed(AppRouteConstants.frequencyFav);
+              Sint.toNamed(AppRouteConstants.frequencyFav);
               break;
             case AppDrawerMenu.presets:
-              Get.toNamed(AppRouteConstants.chamber);
+              Sint.toNamed(AppRouteConstants.chamber);
               break;
             case AppDrawerMenu.inspiration:
-              Get.toNamed(AppRouteConstants.blog);
+              Sint.toNamed(AppRouteConstants.blog);
             case AppDrawerMenu.nupale:
-              Get.toNamed(AppRouteConstants.nupaleHome);
+              Sint.toNamed(AppRouteConstants.nupaleHome);
             case AppDrawerMenu.casete:
-              Get.toNamed(AppRouteConstants.caseteHome);
-              // Get.toNamed(AppRouteConstants.caseteStats);
+              Sint.toNamed(AppRouteConstants.caseteHome);
+              // Sint.toNamed(AppRouteConstants.caseteStats);
               // TODO: Handle this case.
           }
         }

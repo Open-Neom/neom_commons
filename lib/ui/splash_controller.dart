@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/use_cases/login_service.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
@@ -7,10 +7,10 @@ import 'package:neom_core/utils/enums/auth_status.dart';
 import '../utils/app_utilities.dart';
 import '../utils/constants/translations/common_translation_constants.dart';
 
-class SplashController extends GetxController {
+class SplashController extends SintController {
   
-  final loginServiceImpl = Get.find<LoginService>();
-  final userServiceImpl = Get.find<UserService>();
+  final loginServiceImpl = Sint.find<LoginService>();
+  final userServiceImpl = Sint.find<UserService>();
 
   RxString subtitle = "".obs;
 
@@ -23,8 +23,8 @@ class SplashController extends GetxController {
     super.onInit();
 
     try {
-      if (Get.arguments != null) {
-        List<dynamic> arguments = Get.arguments;
+      if (Sint.arguments != null) {
+        List<dynamic> arguments = Sint.arguments;
         fromRoute = arguments.elementAt(0);
         if(arguments.length > 1) toRoute = arguments.elementAt(1);
       }
@@ -79,7 +79,7 @@ class SplashController extends GetxController {
 
     switch(fromRoute){
       case AppRouteConstants.home:
-        Get.offAndToNamed(toRoute);
+        Sint.offAndToNamed(toRoute);
         break;
       case AppRouteConstants.logout:
         loginServiceImpl.signOut();
@@ -109,7 +109,7 @@ class SplashController extends GetxController {
         break;
       case AppRouteConstants.finishingSpotifySync:
         AppUtilities.showSnackBar(message: CommonTranslationConstants.playlistSynchFinished.tr);
-        Get.offAllNamed(AppRouteConstants.home);
+        Sint.offAllNamed(AppRouteConstants.home);
         break;
       case "":
         AppConfig.logger.t("There is no fromRoute");
@@ -126,7 +126,7 @@ class SplashController extends GetxController {
   Future<void> handlePaymentGateway() async {
     changeSubtitle(CommonTranslationConstants.paymentProcessed);
     update();
-    await Get.offAllNamed(AppRouteConstants.home, arguments: [toRoute]);
+    await Sint.offAllNamed(AppRouteConstants.home, arguments: [toRoute]);
   }
 
   Future<void> handleAccountSettings() async {
@@ -136,14 +136,14 @@ class SplashController extends GetxController {
     } else if (toRoute == AppRouteConstants.profileRemove) {
       changeSubtitle(CommonTranslationConstants.removingProfile);
       await userServiceImpl.removeProfile();
-      Get.offAllNamed(AppRouteConstants.home);
+      Sint.offAllNamed(AppRouteConstants.home);
     }
   }
 
   Future<void> handleForgotPassword() async {
     changeSubtitle(CommonTranslationConstants.sendingPasswordRecovery);
-    Get.offAllNamed(AppRouteConstants.login);
-    Get.snackbar(
+    Sint.offAllNamed(AppRouteConstants.login);
+    Sint.snackbar(
       CommonTranslationConstants.passwordReset.tr,
       CommonTranslationConstants.passwordEmailResetSent.tr,
       snackPosition: SnackPosition.bottom,);

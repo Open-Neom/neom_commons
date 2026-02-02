@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/model/app_user.dart';
@@ -7,9 +7,9 @@ import 'package:neom_core/domain/use_cases/home_service.dart';
 import 'package:neom_core/domain/use_cases/subscription_service.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
 
-class AppDrawerController extends GetxController implements AppDrawerService {
+class AppDrawerController extends SintController implements AppDrawerService {
 
-  final userServiceImpl = Get.isRegistered<UserService>() ? Get.find<UserService>() : null;
+  final userServiceImpl = Sint.isRegistered<UserService>() ? Sint.find<UserService>() : null;
   SubscriptionService? subscriptionServiceImpl;
 
   AppUser? user;
@@ -24,7 +24,7 @@ class AppDrawerController extends GetxController implements AppDrawerService {
     user = userServiceImpl?.user;
     appProfile.value = userServiceImpl?.profile;
 
-    Get.find<HomeService>().mediaPlayerEnabled = false;
+    Sint.find<HomeService>().mediaPlayerEnabled = false;
     if(user?.subscriptionId.isEmpty ?? true) initializeSubscriptionService();
   }
 
@@ -39,14 +39,14 @@ class AppDrawerController extends GetxController implements AppDrawerService {
     super.onClose();
     AppConfig.logger.t("Drawer Controller Closed");
     if(AppConfig.instance.appInfo.mediaPlayerEnabled) {
-      Get.find<HomeService>().mediaPlayerEnabled = true;
+      Sint.find<HomeService>().mediaPlayerEnabled = true;
     }
   }
 
   @override
   Future<void> initializeSubscriptionService() async {
-    if(Get.isRegistered<SubscriptionService>()) {
-      subscriptionServiceImpl = Get.find<SubscriptionService>();
+    if(Sint.isRegistered<SubscriptionService>()) {
+      subscriptionServiceImpl = Sint.find<SubscriptionService>();
     }
   }
 
