@@ -17,11 +17,13 @@ enum AppDrawerMenu {
   settings("settings"),
   appItemQuotation("appItemQuotation"),
   crowdfunding("crowdfunding"),
-  logout("releaseUpload"),
+  logout("logout"),
   releaseUpload("releaseUpload"),
   inspiration("inspiration"),
   nupale("nupale"),
-  casete("casete");
+  casete("casete"),
+  games("games");
+
 
   final String value;
   const AppDrawerMenu(this.value);

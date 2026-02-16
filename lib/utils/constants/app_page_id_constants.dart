@@ -41,6 +41,7 @@ class AppPageIdConstants {
   static const String playlistNameDesc = "playlistNameDesc";
 
   static const String home = "home";
+  static const String mobility = "mobility";
   static const String feed = "feed";
   static const String timeline = "timeline";
   static const String postComments = "postComments";
@@ -113,5 +114,10 @@ class AppPageIdConstants {
   static const String camera = 'camera';
   static const String nupale = 'nupale';
   static const String casete = 'casete';
+
+  static const String gamesHome = 'gamesHome';
+  static const String wordChain = 'wordChain';
+  static const String storyBuilder = 'storyBuilder';
+  static const String storiesGallery = 'storiesGallery';
 
 }

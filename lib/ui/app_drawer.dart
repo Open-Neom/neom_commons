@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/use_cases/login_service.dart';
@@ -14,6 +13,7 @@ import 'package:neom_core/utils/enums/profile_type.dart';
 import 'package:neom_core/utils/enums/subscription_level.dart';
 import 'package:neom_core/utils/enums/user_role.dart';
 import 'package:neom_core/utils/enums/verification_level.dart';
+import 'package:sint/sint.dart';
 
 import '../app_flavour.dart';
 import '../utils/app_alerts.dart';
@@ -53,6 +53,8 @@ class AppDrawer extends StatelessWidget {
                       _menuHeader(context, controller),
                       const Divider(),
                       // if(Sint.isRegistered<ProfileService>()) drawerRowOption(AppDrawerMenu.profile,  const Icon(Icons.person), context),
+                      if(AppFlavour.showBlog())
+                        drawerRowOption(AppDrawerMenu.games, const Icon(FontAwesomeIcons.gamepad), context),
                       if(AppFlavour.showBlog())
                         drawerRowOption(AppDrawerMenu.inspiration, const Icon(FontAwesomeIcons.filePen), context),
                       if(AppFlavour.showBands() && controller.appProfile.value?.type == ProfileType.appArtist && controller.user?.userRole != UserRole.subscriber)
@@ -329,6 +331,8 @@ class AppDrawer extends StatelessWidget {
               Sint.toNamed(AppRouteConstants.nupaleHome);
             case AppDrawerMenu.casete:
               Sint.toNamed(AppRouteConstants.caseteHome);
+            case AppDrawerMenu.games:
+              Sint.toNamed(AppRouteConstants.games);
               // Sint.toNamed(AppRouteConstants.caseteStats);
               // TODO: Handle this case.
           }

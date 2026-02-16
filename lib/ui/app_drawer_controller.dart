@@ -1,4 +1,3 @@
-import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/model/app_user.dart';
@@ -6,6 +5,7 @@ import 'package:neom_core/domain/use_cases/app_drawer_service.dart';
 import 'package:neom_core/domain/use_cases/home_service.dart';
 import 'package:neom_core/domain/use_cases/subscription_service.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
+import 'package:sint/sint.dart';
 
 class AppDrawerController extends SintController implements AppDrawerService {
 

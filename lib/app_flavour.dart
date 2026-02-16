@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sint/sint.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
@@ -15,13 +14,18 @@ import 'package:neom_core/utils/enums/media_search_type.dart';
 import 'package:neom_core/utils/enums/profile_type.dart';
 import 'package:neom_core/utils/enums/subscription_level.dart';
 import 'package:neom_core/utils/enums/verification_level.dart';
+import 'package:sint/sint.dart';
 
 import 'ui/theme/app_color.dart';
+import 'ui/theme/app_theme.dart';
+import 'ui/widgets/title_subtitle_row.dart';
 import 'utils/app_locale_utilities.dart';
+import 'utils/app_utilities.dart';
 import 'utils/constants/app_assets.dart';
 import 'utils/constants/app_page_id_constants.dart';
 import 'utils/constants/translations/app_translation_constants.dart';
 import 'utils/constants/translations/common_translation_constants.dart';
+import 'utils/external_utilities.dart';
 
 class AppFlavour {
 
@@ -302,9 +306,7 @@ class AppFlavour {
   static String getAppPreLogoPath() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
-        return AppAssets.isologoAppWhite;
       case AppInUse.e:
-        return AppAssets.isologoAppWhite;
       case AppInUse.c:
         return AppAssets.isologoAppWhite;
       default:
@@ -487,7 +489,7 @@ class AppFlavour {
       case AppInUse.c:
         return false;
       case AppInUse.e:
-        return false;
+        return true;
       case AppInUse.g:
         return false;
       case AppInUse.o:
@@ -755,6 +757,82 @@ class AppFlavour {
         return SubscriptionLevel.basic;
       default:
         return SubscriptionLevel.basic;
+    }
+
+  }
+
+  static void navigateToShelfItem(AppReleaseItem releaseItem) {
+    if(Sint.isRegistered(tag: AppPageIdConstants.mediaPlayer)) {
+      Sint.delete(tag: AppPageIdConstants.mediaPlayer);
+    }
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.e:
+        if(releaseItem.previewUrl.isNotEmpty) {
+          if(releaseItem.previewUrl.contains(".pdf")) {
+            Sint.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [releaseItem], preventDuplicates: false);
+            Sint.toNamed(AppRouteConstants.pdfViewer, arguments: [releaseItem, true]);
+          } else {
+            AppUtilities.gotoItemDetails(releaseItem);
+          }
+        } else if (releaseItem.webPreviewUrl?.isNotEmpty ?? false) {
+          ExternalUtilities.launchURL(releaseItem.webPreviewUrl!);
+        }
+      case AppInUse.c:
+      case AppInUse.g:
+      case AppInUse.o:
+      default:
+        AppUtilities.gotoItemDetails(releaseItem);
+    }
+  }
+
+  static void navigateToReleaseItem(String referenceId) {
+    if(Sint.isRegistered(tag: AppPageIdConstants.mediaPlayer)) {
+      Sint.delete(tag: AppPageIdConstants.mediaPlayer);
+    }
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.e:
+      case AppInUse.c:
+      case AppInUse.g:
+      case AppInUse.o:
+      default:
+      Sint.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [referenceId], preventDuplicates: false);
+    }
+  }
+
+  static Widget getSalesModelInfoWidget(BuildContext context) {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return SizedBox.shrink();
+      case AppInUse.e:
+        return Column(
+          children: [
+            TitleSubtitleRow(AppTranslationConstants.digitalSalesModel.tr,
+              subtitle: AppTranslationConstants.digitalSalesModelMsg.tr,
+              showDivider: false,
+            ),
+            AppTheme.heightSpace10,
+            SizedBox(
+              width: AppTheme.fullWidth(context)*0.5,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.asset(AppAssets.releaseUploadIntro,
+                  fit: BoxFit.cover,),
+              ),
+            ),
+            AppTheme.heightSpace10,
+            TitleSubtitleRow(AppTranslationConstants.physicalSalesModel.tr,
+                subtitle: AppTranslationConstants.physicalSalesModelMsg.tr,
+                showDivider: false
+            ),
+            AppTheme.heightSpace10,
+          ],
+        );
+      case AppInUse.g:
+        return SizedBox.shrink();
+      case AppInUse.o:
+        return SizedBox.shrink();
+      default:
+        return SizedBox.shrink();
     }
 
   }

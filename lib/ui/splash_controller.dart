@@ -1,9 +1,10 @@
-import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/use_cases/login_service.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/auth_status.dart';
+import 'package:sint/sint.dart';
+
 import '../utils/app_utilities.dart';
 import '../utils/constants/translations/common_translation_constants.dart';
 

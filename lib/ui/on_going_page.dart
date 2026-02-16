@@ -1,7 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:sint/sint.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
+import 'package:sint/sint.dart';
+
 import '../utils/constants/translations/app_translation_constants.dart';
 import 'theme/app_color.dart';
 import 'theme/app_theme.dart';

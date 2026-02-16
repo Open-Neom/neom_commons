@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
@@ -16,6 +15,7 @@ import 'package:neom_core/utils/enums/profile_type.dart';
 import 'package:neom_core/utils/enums/reference_type.dart';
 import 'package:neom_core/utils/enums/report_type.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:sint/sint.dart';
 
 import '../app_flavour.dart';
 import '../ui/theme/app_color.dart';

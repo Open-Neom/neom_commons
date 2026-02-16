@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:sint/sint.dart';
 import 'package:http/http.dart' as http;
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
@@ -16,6 +15,7 @@ import 'package:neom_core/domain/model/item_list.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
+import 'package:sint/sint.dart';
 
 import '../app_flavour.dart';
 import '../ui/theme/app_color.dart';

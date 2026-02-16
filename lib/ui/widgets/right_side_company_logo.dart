@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
+import 'package:sint/sint.dart';
+
 import '../../utils/app_alerts.dart';
 import '../../utils/constants/app_assets.dart';
 import '../../utils/constants/translations/app_translation_constants.dart';

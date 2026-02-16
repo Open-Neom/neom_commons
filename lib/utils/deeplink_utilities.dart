@@ -1,8 +1,8 @@
 import 'package:app_links/app_links.dart';
-import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
+import 'package:sint/sint.dart';
 
 
 class DeeplinkUtilities {

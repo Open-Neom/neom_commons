@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sint/sint.dart';
 import 'package:intl/intl.dart';
 import 'package:neom_core/utils/enums/app_locale.dart';
+import 'package:sint/sint.dart';
 
 import '../../utils/constants/translations/app_translation_constants.dart';
 

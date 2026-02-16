@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/data/firestore/profile_firestore.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
+import 'package:sint/sint.dart';
 
 import '../../../utils/app_utilities.dart';
 import '../../../utils/constants/translations/app_translation_constants.dart';

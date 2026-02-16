@@ -1,8 +1,8 @@
-import 'package:sint/sint.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:intl/intl.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/utils/constants/core_constants.dart';
+import 'package:sint/sint.dart';
 
 import 'constants/translations/app_translation_constants.dart';
 

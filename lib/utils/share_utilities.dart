@@ -1,16 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:sint/sint.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
+import 'package:neom_core/domain/model/blog_entry.dart';
 import 'package:neom_core/domain/model/post.dart';
 import 'package:neom_core/utils/constants/core_constants.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/enums/post_type.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:sint/sint.dart';
 
 import 'constants/app_assets.dart';
 import 'constants/translations/app_translation_constants.dart';
@@ -35,7 +36,7 @@ class ShareUtilities {
     }
   }
 
-  static Future<void> shareAppWithPost(Post post) async {
+  static Future<void> shareAppWithPost(Post post, {bool getSiteUrl = true}) async {
 
     String thumbnailLocalPath = "";
 
@@ -65,7 +66,6 @@ class ShareUtilities {
     }
 
     // 2. GENERAR EL LINK ESPECÍFICO DEL POST
-    bool getSiteUrl = true;
     String deepLink = getSiteUrl ? AppProperties.getSiteUrl() :
       DeeplinkUtilities.generateDeepLink(host: 'share', type: 'post', id: post.id);
 
@@ -90,7 +90,7 @@ class ShareUtilities {
 
   }
 
-  static Future<void> shareAppWithMediaItem(AppMediaItem mediaItem) async {
+  static Future<void> shareAppWithMediaItem(AppMediaItem mediaItem, {bool getSiteUrl = true}) async {
 
     String thumbnailLocalPath = "";
 
@@ -116,7 +116,6 @@ class ShareUtilities {
 
 
     // 3. GENERAR EL LINK ESPECÍFICO DEL MEDIA ITEM
-    bool getSiteUrl = true;
     String deepLink = getSiteUrl ? AppProperties.getSiteUrl() :
       DeeplinkUtilities.generateDeepLink(host: 'share', type: 'media', id: mediaItem.id);
     String sharedText;
@@ -155,6 +154,52 @@ class ShareUtilities {
       Sint.snackbar(MessageTranslationConstants.sharedMediaItem.tr,
           MessageTranslationConstants.sharedMediaItemMsg.tr,
           snackPosition: SnackPosition.bottom);
+    }
+  }
+
+  /// Share a BlogEntry with optional thumbnail.
+  static Future<void> shareBlogEntry(BlogEntry blogEntry, {bool getSiteUrl = true}) async {
+    String thumbnailLocalPath = "";
+
+    if (blogEntry.thumbnailUrl.isNotEmpty) {
+      thumbnailLocalPath = await FileDownloader.downloadImage(blogEntry.thumbnailUrl);
+    }
+
+    if (thumbnailLocalPath.isEmpty) {
+      thumbnailLocalPath = await _getLogoLocalPath();
+    }
+
+    // Format the blog content
+    String content = blogEntry.content;
+    String dotsLine = "";
+    for (int i = 0; i < blogEntry.profileName.length; i++) {
+      dotsLine = "$dotsLine.";
+    }
+    String formattedContent = "${blogEntry.title}\n\n$content\n\n${blogEntry.profileName}\n$dotsLine";
+
+    // Generate deep link
+    String deepLink = getSiteUrl
+        ? AppProperties.getSiteUrl()
+        : DeeplinkUtilities.generateDeepLink(host: 'share', type: 'blog', id: blogEntry.id);
+
+    String sharedText = '$formattedContent\n\n'
+        '${MessageTranslationConstants.shareAppMsg.tr}\n\n'
+        '${AppTranslationConstants.explorePlatform.tr}: $deepLink';
+
+    ShareResult shareResult = await SharePlus.instance.share(
+      ShareParams(
+        text: sharedText,
+        files: [XFile(thumbnailLocalPath)],
+        previewThumbnail: XFile(thumbnailLocalPath),
+      ),
+    );
+
+    if (shareResult.status == ShareResultStatus.success && shareResult.raw != "null") {
+      Sint.snackbar(
+        MessageTranslationConstants.sharedApp.tr,
+        MessageTranslationConstants.sharedAppMsg.tr,
+        snackPosition: SnackPosition.bottom,
+      );
     }
   }
 

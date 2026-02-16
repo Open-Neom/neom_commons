@@ -22,6 +22,10 @@ class GenresGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Return empty widget if no genres
+    if (genres.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     double gridHeight = AppTheme.fullHeight(context);
     int gridItems = genres.length;
@@ -38,7 +42,7 @@ class GenresGridView extends StatelessWidget {
     } else {
       gridHeight = (AppTheme.fullHeight(context)/8) / (crossAxisCount/gridItems).ceil();
     }
-    return genres.isNotEmpty ? Container(
+    return Container(
       constraints: BoxConstraints(maxHeight: AppTheme.fullHeight(context)/10,),
       child: SingleChildScrollView(
         child: Container(
@@ -70,7 +74,7 @@ class GenresGridView extends StatelessWidget {
           ),
         ),
       ),
-    ) : const SizedBox.shrink();
+    );
   }
 
 }

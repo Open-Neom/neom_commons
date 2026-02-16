@@ -28,6 +28,9 @@ class AppColor {
       case AppInUse.o:
         mainColor = const Color.fromRGBO(79, 25, 100, 1);
         break;
+      case AppInUse.i:
+        mainColor = const Color.fromRGBO(28, 50, 55, 1);
+        break;
       default:
         mainColor = const Color.fromRGBO(79, 25, 100, 1);
     }

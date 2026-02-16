@@ -1,7 +1,7 @@
-import 'package:sint/sint.dart';
 import 'package:intl/intl.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/instrument.dart';
+import 'package:sint/sint.dart';
 
 import 'constants/app_constants.dart';
 import 'url_utilities.dart';

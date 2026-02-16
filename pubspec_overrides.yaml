@@ -3,4 +3,3 @@ dependency_overrides:
     path: ../neom_core
   sint:
     path: ../sint
-#  package_info_plus: 9.0.0

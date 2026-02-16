@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sint/sint.dart';
 import 'package:neom_core/utils/constants/core_constants.dart';
+import 'package:sint/sint.dart';
 
 import 'theme/app_theme.dart';
 

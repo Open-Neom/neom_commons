@@ -121,6 +121,7 @@ class AppTranslationConstants {
   static const String hour = "hour";
   static const String inbox = 'inbox';
   static const String inDownloads = "inDownloads";
+  static const String initializing = 'initializing';
   static const String inspiration = 'inspiration';
   static const String instagram = 'instagram';
   static const String instrument = 'instrument';
@@ -218,6 +219,7 @@ class AppTranslationConstants {
   static const String readings = 'readings';
   static const String readlists = 'readlists';
   static const String reason = "reason";
+  static const String recording = 'recording';
   static const String rehearsal = "rehearsal";
   static const String releaseItem = 'releaseItem';
   static const String releases = 'releases';
@@ -225,6 +227,7 @@ class AppTranslationConstants {
   static const String report = 'report';
   static const String requests = "requests";
   static const String reset = "reset";
+  static const String retryUpload = 'retryUpload';
   static const String rootFrequency = 'rootFrequency';
   static const String safety = 'safety';
   static const String save = 'save';
@@ -272,6 +275,7 @@ class AppTranslationConstants {
   static const String toPause = "toPause";
   static const String toPlay = "toPlay";
   static const String toPost = "toPost";
+  static const String toPublish = "toPublish";
   static const String toRemove = 'toRemove';
   static const String toShare = 'toShare';
   static const String toStart = 'toStart';
@@ -290,6 +294,9 @@ class AppTranslationConstants {
   static const String unlike = "unlike";
   static const String update = "update";
   static const String updatePhone = "updatePhone";
+  static const String uploading = 'uploading';
+  static const String uploadError = 'uploadError';
+  static const String uploadErrorTryLater = 'uploadErrorTryLater';
   static const String username = 'username';
   static const String users = 'users';
   static const String using = "using";
@@ -449,4 +456,10 @@ class AppTranslationConstants {
   static const String typing = "typing";
   static const String read = "read";
 
+  static const String digitalSalesModel = 'digitalSalesModel';
+  static const String digitalSalesModelMsg = 'digitalSalesModelMsg';
+  static const String physicalSalesModel = 'physicalSalesModel';
+  static const String physicalSalesModelMsg = 'physicalSalesModelMsg';
+
 }
+
