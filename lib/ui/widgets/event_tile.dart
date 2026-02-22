@@ -88,13 +88,21 @@ class EventTile extends StatelessWidget {
             flex: 1,
             child: ClipRRect(
                 borderRadius: const BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
-                child: CachedNetworkImage(
-                    imageUrl: event.imgUrl.isNotEmpty ? event.imgUrl
-                        : AppProperties.getNoImageUrl(),
-                    // height: 120,
-                    // width: 120,
-                    fit: BoxFit.cover
-                )
+                child: kIsWeb
+                    ? Image.network(
+                        event.imgUrl.isNotEmpty ? event.imgUrl
+                            : AppProperties.getNoImageUrl(),
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Image.network(
+                          AppProperties.getNoImageUrl(),
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: event.imgUrl.isNotEmpty ? event.imgUrl
+                            : AppProperties.getNoImageUrl(),
+                        fit: BoxFit.cover,
+                      )
             ),
           )
         ],

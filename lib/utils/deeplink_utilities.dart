@@ -49,7 +49,7 @@ class DeeplinkUtilities {
 
   static String generateDeepLink({required String host,
     required String type, required String id}) {
-    // Define tu esquema único aquí (debe ser único para tu app)
+    // Define tu esquema único aquí (debe ser único para tu core)
 
     String myScheme = AppProperties.getAppName().toLowerCase();
     const String myHost = 'share';

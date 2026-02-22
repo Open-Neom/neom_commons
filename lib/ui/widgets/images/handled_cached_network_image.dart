@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neom_core/app_properties.dart';
@@ -107,22 +108,44 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
 
   @override
   Widget build(BuildContext context) {
-    final content = CachedNetworkImage(
-      key: ValueKey('$_effectiveUrl-$_retryCount'),
-      imageUrl: _effectiveUrl,
-      height: widget.height,
-      width: widget.width,
-      fit: widget.fit,
-      fadeInDuration: widget.fadeInDuration,
-      placeholder: (context, url) => _buildPlaceholder(),
-      progressIndicatorBuilder: widget.showProgress
-          ? (context, url, progress) => _buildProgressIndicator(progress)
-          : null,
-      errorWidget: (context, url, error) {
-        _errorMessage = error.toString();
-        return _buildErrorWidget();
-      },
-    );
+    final Widget content;
+
+    if (kIsWeb) {
+      // On web, use Image.network which renders as an HTML <img> tag
+      // and doesn't have CORS restrictions like CachedNetworkImage's canvas approach
+      content = Image.network(
+        _effectiveUrl,
+        key: ValueKey('$_effectiveUrl-$_retryCount'),
+        height: widget.height,
+        width: widget.width,
+        fit: widget.fit,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return _buildPlaceholder();
+        },
+        errorBuilder: (context, error, stackTrace) {
+          _errorMessage = error.toString();
+          return _buildErrorWidget();
+        },
+      );
+    } else {
+      content = CachedNetworkImage(
+        key: ValueKey('$_effectiveUrl-$_retryCount'),
+        imageUrl: _effectiveUrl,
+        height: widget.height,
+        width: widget.width,
+        fit: widget.fit,
+        fadeInDuration: widget.fadeInDuration,
+        placeholder: (context, url) => _buildPlaceholder(),
+        progressIndicatorBuilder: widget.showProgress
+            ? (context, url, progress) => _buildProgressIndicator(progress)
+            : null,
+        errorWidget: (context, url, error) {
+          _errorMessage = error.toString();
+          return _buildErrorWidget();
+        },
+      );
+    }
 
     final wrappedContent = widget.borderRadius != null
         ? ClipRRect(borderRadius: widget.borderRadius!, child: content)
@@ -303,6 +326,26 @@ class CachedCircleAvatar extends StatelessWidget {
           Icons.person,
           size: radius,
           color: Colors.grey[600],
+        ),
+      );
+    }
+
+    if (kIsWeb) {
+      return CircleAvatar(
+        radius: radius,
+        backgroundColor: backgroundColor ?? Colors.grey[800],
+        child: ClipOval(
+          child: Image.network(
+            imageUrl,
+            width: radius * 2,
+            height: radius * 2,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => Icon(
+              Icons.person,
+              size: radius,
+              color: Colors.grey[600],
+            ),
+          ),
         ),
       );
     }

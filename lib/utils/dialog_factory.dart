@@ -1,10 +1,11 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sint/sint.dart';
 
 import '../ui/theme/app_color.dart';
 
-/// Factory for creating consistent dialogs across the app.
+/// Factory for creating consistent dialogs across the core.
 /// Eliminates code duplication for common dialog patterns.
 ///
 /// Usage:
@@ -31,6 +32,32 @@ import '../ui/theme/app_color.dart';
 class DialogFactory {
   DialogFactory._();
 
+  /// Adaptive show: uses showDialog on web, showModalBottomSheet on mobile.
+  static Future<T?> _showAdaptive<T>({
+    required BuildContext context,
+    required Widget Function(BuildContext) builder,
+    bool isScrollControlled = true,
+  }) {
+    if (kIsWeb) {
+      return showDialog<T>(
+        context: context,
+        builder: (ctx) => Dialog(
+          backgroundColor: Colors.transparent,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: builder(ctx),
+          ),
+        ),
+      );
+    }
+    return showModalBottomSheet<T>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: isScrollControlled,
+      builder: builder,
+    );
+  }
+
   /// Shows a dropdown selection dialog with confirm/cancel buttons.
   static Future<T?> showDropdownDialog<T>({
     required BuildContext context,
@@ -50,10 +77,8 @@ class DialogFactory {
         ? items.where((item) => !excludeItems.contains(item)).toList()
         : items;
 
-    return showModalBottomSheet<T>(
+    return _showAdaptive<T>(
       context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
           return _DialogContainer(
@@ -128,10 +153,8 @@ class DialogFactory {
     bool isDestructive = false,
     IconData? icon,
   }) async {
-    final result = await showModalBottomSheet<bool>(
+    final result = await _showAdaptive<bool>(
       context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
       builder: (context) => _DialogContainer(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -226,10 +249,8 @@ class DialogFactory {
   }) async {
     final controller = TextEditingController(text: initialValue);
 
-    return showModalBottomSheet<String>(
+    return _showAdaptive<String>(
       context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
       builder: (context) => Padding(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -383,16 +404,18 @@ class _DialogHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Drag handle
-        Container(
-          width: 40,
-          height: 4,
-          decoration: BoxDecoration(
-            color: Colors.grey[600],
-            borderRadius: BorderRadius.circular(2),
+        // Drag handle (mobile only)
+        if (!kIsWeb) ...[
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[600],
+              borderRadius: BorderRadius.circular(2),
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
+        ],
         Text(
           title,
           style: const TextStyle(

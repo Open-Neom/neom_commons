@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:neom_core/app_config.dart';
@@ -63,7 +64,7 @@ class AppUtilities {
         String textConfirm = 'OK', // Default text for confirm button
         String textCancel = 'Cancel', // Default text for cancel button
       }) async {
-    if (title.isEmpty) title = AppProperties.getAppName(); // Use default app name if title is empty
+    if (title.isEmpty) title = AppProperties.getAppName(); // Use default core name if title is empty
 
     return showDialog<bool?>( // Specify the return type of showDialog
       context: context,
@@ -113,15 +114,19 @@ class AppUtilities {
     return "APP_ITEM_HERO_TAG_$index";
   }
 
-  static Future<CachedNetworkImageProvider> handleCachedImageProvider(String imageUrl) async {
+  static Future<ImageProvider> handleCachedImageProvider(String imageUrl) async {
+
+    if(imageUrl.isEmpty) {
+      imageUrl = AppProperties.getAppLogoUrl();
+    }
+
+    if (kIsWeb) {
+      return NetworkImage(imageUrl);
+    }
 
     CachedNetworkImageProvider cachedNetworkImageProvider = const CachedNetworkImageProvider("");
 
     try {
-      if(imageUrl.isEmpty) {
-        imageUrl = AppProperties.getAppLogoUrl();
-      }
-
       Uri uri = Uri.parse(imageUrl);
 
       if(uri.host.isNotEmpty) {

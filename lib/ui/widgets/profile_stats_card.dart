@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neom_core/app_properties.dart';
@@ -125,25 +126,34 @@ class _ProfileStatsCardState extends State<ProfileStatsCard>
     return Row(
       children: [
         if (widget.showAvatar) ...[
-          CachedNetworkImage(
-            imageUrl: widget.profile.photoUrl.isNotEmpty
-                ? widget.profile.photoUrl
-                : AppProperties.getAppLogoUrl(),
-            imageBuilder: (context, imageProvider) => CircleAvatar(
-              radius: widget.compact ? 20 : 28,
-              backgroundImage: imageProvider,
-            ),
-            placeholder: (context, url) => CircleAvatar(
-              radius: widget.compact ? 20 : 28,
-              child: const CircularProgressIndicator(strokeWidth: 2),
-            ),
-            errorWidget: (context, url, error) => CircleAvatar(
-              radius: widget.compact ? 20 : 28,
-              backgroundImage: CachedNetworkImageProvider(
-                AppProperties.getAppLogoUrl(),
+          kIsWeb
+            ? CircleAvatar(
+                radius: widget.compact ? 20 : 28,
+                backgroundImage: NetworkImage(
+                  widget.profile.photoUrl.isNotEmpty
+                      ? widget.profile.photoUrl
+                      : AppProperties.getAppLogoUrl(),
+                ),
+              )
+            : CachedNetworkImage(
+                imageUrl: widget.profile.photoUrl.isNotEmpty
+                    ? widget.profile.photoUrl
+                    : AppProperties.getAppLogoUrl(),
+                imageBuilder: (context, imageProvider) => CircleAvatar(
+                  radius: widget.compact ? 20 : 28,
+                  backgroundImage: imageProvider,
+                ),
+                placeholder: (context, url) => CircleAvatar(
+                  radius: widget.compact ? 20 : 28,
+                  child: const CircularProgressIndicator(strokeWidth: 2),
+                ),
+                errorWidget: (context, url, error) => CircleAvatar(
+                  radius: widget.compact ? 20 : 28,
+                  backgroundImage: CachedNetworkImageProvider(
+                    AppProperties.getAppLogoUrl(),
+                  ),
+                ),
               ),
-            ),
-          ),
           const SizedBox(width: 12),
         ],
         if (widget.showName)

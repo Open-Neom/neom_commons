@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neom_commons/app_flavour.dart';
@@ -230,6 +231,23 @@ class _PostTileState extends State<PostTile> with SingleTickerProviderStateMixin
             : AppProperties.getNoImageUrl();
     }
 
+    if (kIsWeb) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey[900],
+            child: const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white30))),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) => Container(
+          color: Colors.grey[900],
+          child: const Icon(Icons.broken_image_outlined, color: Colors.white30, size: 32),
+        ),
+      );
+    }
     return CachedNetworkImage(
       imageUrl: imageUrl,
       fit: BoxFit.cover,
@@ -474,26 +492,39 @@ class _QuickPreviewDialog extends StatelessWidget {
                 Flexible(
                   child: AspectRatio(
                     aspectRatio: post.aspectRatio > 0 ? post.aspectRatio : 1,
-                    child: CachedNetworkImage(
-                      imageUrl: _getPreviewUrl(),
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: Colors.grey[800],
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white30,
+                    child: kIsWeb
+                      ? Image.network(
+                          _getPreviewUrl(),
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(color: Colors.grey[800], child: const Center(child: CircularProgressIndicator(color: Colors.white30)));
+                          },
+                          errorBuilder: (context, error, stackTrace) => Container(
+                            color: Colors.grey[800],
+                            child: const Icon(Icons.broken_image, color: Colors.white30, size: 48),
+                          ),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: _getPreviewUrl(),
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            color: Colors.grey[800],
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white30,
+                              ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            color: Colors.grey[800],
+                            child: const Icon(
+                              Icons.broken_image,
+                              color: Colors.white30,
+                              size: 48,
+                            ),
                           ),
                         ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Colors.grey[800],
-                        child: const Icon(
-                          Icons.broken_image,
-                          color: Colors.white30,
-                          size: 48,
-                        ),
-                      ),
-                    ),
                   ),
                 ),
 

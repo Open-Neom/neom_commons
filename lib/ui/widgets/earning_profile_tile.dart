@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
@@ -28,21 +29,27 @@ class EarningProfileTile extends StatelessWidget {
 
     double appCoinProfit = profit / double.parse(AppProperties.getAppCoinValue());
     return ListTile(
-      leading: CachedNetworkImage(
-        imageUrl: mate.photoUrl.isNotEmpty ? mate.photoUrl : AppProperties.getAppLogoUrl(),
-        placeholder: (context, url) => const CircleAvatar(
-          child: CircularProgressIndicator(),
-        ),
-        errorWidget: (context, url, error) {
-          AppConfig.logger.w("Error loading image: $error");
-          return CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(AppProperties.getAppLogoUrl()),
-          );
-        },
-        imageBuilder: (context, imageProvider) => CircleAvatar(
-          backgroundImage: imageProvider,
-        ),
-      ),
+      leading: kIsWeb
+        ? CircleAvatar(
+            backgroundImage: NetworkImage(
+              mate.photoUrl.isNotEmpty ? mate.photoUrl : AppProperties.getAppLogoUrl(),
+            ),
+          )
+        : CachedNetworkImage(
+            imageUrl: mate.photoUrl.isNotEmpty ? mate.photoUrl : AppProperties.getAppLogoUrl(),
+            placeholder: (context, url) => const CircleAvatar(
+              child: CircularProgressIndicator(),
+            ),
+            errorWidget: (context, url, error) {
+              AppConfig.logger.w("Error loading image: $error");
+              return CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(AppProperties.getAppLogoUrl()),
+              );
+            },
+            imageBuilder: (context, imageProvider) => CircleAvatar(
+              backgroundImage: imageProvider,
+            ),
+          ),
       title: Row(
         children: [
           Flexible(

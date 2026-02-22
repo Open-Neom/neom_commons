@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:sint/sint.dart';
@@ -26,11 +27,14 @@ class CircleAvatarRoutingImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: CircleAvatar(
-        backgroundImage: CachedNetworkImageProvider(mediaUrl.isNotEmpty
-          ? mediaUrl : AppProperties.getNoImageUrl(),
-          maxHeight: height,
-          maxWidth: width,
-        ),
+        backgroundImage: kIsWeb
+          ? NetworkImage(mediaUrl.isNotEmpty
+              ? mediaUrl : AppProperties.getNoImageUrl())
+          : CachedNetworkImageProvider(mediaUrl.isNotEmpty
+              ? mediaUrl : AppProperties.getNoImageUrl(),
+              maxHeight: height,
+              maxWidth: width,
+            ),
         radius: radius,
       ),
       onTap: () => enableRouting

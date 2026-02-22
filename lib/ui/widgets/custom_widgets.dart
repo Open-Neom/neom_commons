@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
@@ -67,6 +68,13 @@ SizedBox sizedBox({double height = 5, String title = ""}) {
 }
 
 Widget customNetworkImage(String path, {BoxFit fit = BoxFit.contain}) {
+  if (kIsWeb) {
+    return Image.network(
+      path,
+      fit: fit,
+      errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+    );
+  }
   return CachedNetworkImage(
     fit: fit,
     imageUrl: path,

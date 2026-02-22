@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../../../utils/constants/app_assets.dart';
@@ -56,6 +57,12 @@ class NeomImageCard extends StatelessWidget {
                   }
                   return Image(fit: BoxFit.cover, image: placeholderImage,);
                 },
+              )
+            else if (kIsWeb)
+              Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Image(fit: BoxFit.cover, image: placeholderImage,),
               )
             else
               CachedNetworkImage(

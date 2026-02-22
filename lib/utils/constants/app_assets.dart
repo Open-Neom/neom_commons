@@ -5,8 +5,8 @@ class AppAssets {
 
   static const String icon = "assets/appIcon.png";
   static const String iconWhite = "assets/appIcon_white.png";
-  static const String isologoAppWhite = "assets/logos/isologo-app-white.png";
-  static const String logo = "assets/logos/logo-app.png";
+  static const String isologoAppWhite = "assets/logos/isologo-core-white.png";
+  static const String logo = "assets/logos/logo-core.png";
   static const String logoCompanyWhite = "assets/logos/logo-company-white.png";
   static const String logoSloganSpanish = "assets/logos/logo-slogan-spanish.png";
   static const String logoSloganEnglish = "assets/logos/logo-slogan-english.png";
