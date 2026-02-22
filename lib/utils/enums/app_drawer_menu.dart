@@ -22,7 +22,9 @@ enum AppDrawerMenu {
   inspiration("inspiration"),
   nupale("nupale"),
   casete("casete"),
-  games("games");
+  games("games"),
+  vst("vst"),
+  daw("daw");
 
 
   final String value;

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:neom_core/app_config.dart';
@@ -59,6 +60,10 @@ class AppDrawer extends StatelessWidget {
                         drawerRowOption(AppDrawerMenu.inspiration, const Icon(FontAwesomeIcons.filePen), context),
                       if(AppFlavour.showBands() && controller.appProfile.value?.type == ProfileType.appArtist && controller.user?.userRole != UserRole.subscriber)
                         drawerRowOption(AppDrawerMenu.bands, const Icon(Icons.people), context),
+                      if(AppFlavour.showVst())
+                        drawerRowOption(AppDrawerMenu.vst, const Icon(FontAwesomeIcons.guitar), context),
+                      if(AppFlavour.showDaw())
+                        drawerRowOption(AppDrawerMenu.daw, const Icon(FontAwesomeIcons.sliders), context),
                       if(AppFlavour.isNeomApp())
                         Column(
                           children: [
@@ -145,8 +150,11 @@ class AppDrawer extends StatelessWidget {
                   border: Border.all(color: Colors.white, width: 2),
                   borderRadius: BorderRadius.circular(28),
                   image: DecorationImage(
-                    image: CachedNetworkImageProvider(controller.appProfile.value!.photoUrl.isNotEmpty
-                        ? controller.appProfile.value!.photoUrl : AppProperties.getAppLogoUrl()),
+                    image: kIsWeb
+                        ? NetworkImage(controller.appProfile.value!.photoUrl.isNotEmpty
+                            ? controller.appProfile.value!.photoUrl : AppProperties.getAppLogoUrl())
+                        : CachedNetworkImageProvider(controller.appProfile.value!.photoUrl.isNotEmpty
+                            ? controller.appProfile.value!.photoUrl : AppProperties.getAppLogoUrl()),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -333,8 +341,13 @@ class AppDrawer extends StatelessWidget {
               Sint.toNamed(AppRouteConstants.caseteHome);
             case AppDrawerMenu.games:
               Sint.toNamed(AppRouteConstants.games);
-              // Sint.toNamed(AppRouteConstants.caseteStats);
-              // TODO: Handle this case.
+              break;
+            case AppDrawerMenu.vst:
+              Sint.toNamed(AppRouteConstants.vstHome);
+              break;
+            case AppDrawerMenu.daw:
+              Sint.toNamed(AppRouteConstants.dawProjects);
+              break;
           }
         }
       },

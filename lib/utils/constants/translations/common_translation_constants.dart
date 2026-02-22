@@ -379,25 +379,13 @@ class CommonTranslationConstants {
   static const String clipPhrase13 = 'clipPhrase13';
   static const String clipPhrase14 = 'clipPhrase14';
   static const String clipPhrase15 = 'clipPhrase15';
-  static const String clipPhrase16 = 'clipPhrase16';
-  static const String clipPhrase17 = 'clipPhrase17';
-  static const String clipPhrase18 = 'clipPhrase18';
-  static const String clipPhrase19 = 'clipPhrase19';
-  static const String clipPhrase20 = 'clipPhrase20';
-  static const String clipPhrase21 = 'clipPhrase21';
-  static const String clipPhrase22 = 'clipPhrase22';
-  static const String clipPhrase23 = 'clipPhrase23';
-  static const String clipPhrase24 = 'clipPhrase24';
-  static const String clipPhrase25 = 'clipPhrase25';
-  static const String clipPhrase26 = 'clipPhrase26';
-  static const String clipPhrase27 = 'clipPhrase27';
-  static const String clipPhrase28 = 'clipPhrase28';
-  static const String clipPhrase29 = 'clipPhrase29';
-  static const String clipPhrase30 = 'clipPhrase30';
 
   //GAMES
+  static const String buildYourStory = 'buildYourStory';
+  static const String buildYourStoryDesc = 'buildYourStoryDesc';
   static const String literaryGames = 'literaryGames';
   static const String wordChain = 'wordChain';
+  static const String wordChainChallenge = 'wordChainChallenge';
   static const String wordChainDesc = 'wordChainDesc';
   static const String storyBuilder = 'storyBuilder';
   static const String storyBuilderDesc = 'storyBuilderDesc';

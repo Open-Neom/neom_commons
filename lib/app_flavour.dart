@@ -561,13 +561,13 @@ class AppFlavour {
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
-        //TODO implement for spiritual app
+        //TODO implement for spiritual core
       case AppInUse.e:
         Sint.toNamed(AppRouteConstants.pdfViewer, arguments: [suggestedItem, true, true]);
       case AppInUse.g:
-        //TODO implement for music app
+        //TODO implement for music core
       case AppInUse.o:
-        //TODO implement for neom app
+        //TODO implement for neom core
       default:
         break;
     }
@@ -650,6 +650,24 @@ class AppFlavour {
         return false;
       case AppInUse.o:
         return false;
+      default:
+        return false;
+    }
+  }
+
+  static bool showVst() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.g:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool showDaw() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.g:
+        return true;
       default:
         return false;
     }
