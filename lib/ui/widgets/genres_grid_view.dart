@@ -56,13 +56,16 @@ class GenresGridView extends StatelessWidget {
               String genre = genres[index];
               return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     DotContainer(color: color),
-                    Text((genre.length < AppConstants.maxGenreNameLength
-                        ? genre :  genre.substring(0, AppConstants.maxGenreNameLength)).capitalize,
-                      style: TextStyle(color: color, fontSize: fontSize,),
-                      overflow: TextOverflow.ellipsis,
-                    )
+                    Flexible(
+                      child: Text((genre.length < AppConstants.maxGenreNameLength
+                          ? genre :  genre.substring(0, AppConstants.maxGenreNameLength)).capitalize,
+                        style: TextStyle(color: color, fontSize: fontSize,),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ]
               );
             },

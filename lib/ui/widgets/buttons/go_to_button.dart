@@ -22,7 +22,7 @@ class GoToButton extends StatelessWidget {
       height: AppTheme.fullHeight(context) * 0.06,
       width: AppTheme.fullWidth(context) * 0.58,
       decoration: BoxDecoration(
-          color: AppColor.main50,
+          color: AppColor.surfaceCard,
           borderRadius: BorderRadius.circular(20.0),
           boxShadow: const [
             BoxShadow(

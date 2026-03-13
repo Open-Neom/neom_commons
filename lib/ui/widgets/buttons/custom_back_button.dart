@@ -18,9 +18,9 @@ class CustomBackButton extends StatelessWidget {
           padding: const EdgeInsets.all(AppTheme.padding10),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColor.main25,
+              color: AppColor.surfaceDim,
               border: Border.all(
-                color: AppColor.main50,
+                color: AppColor.surfaceCard,
               ),
               borderRadius: BorderRadius.circular(20.0)
             ),

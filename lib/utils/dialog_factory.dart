@@ -103,7 +103,7 @@ class DialogFactory {
                   child: DropdownButton<T>(
                     value: currentSelection,
                     isExpanded: true,
-                    dropdownColor: AppColor.main75,
+                    dropdownColor: AppColor.surfaceElevated,
                     underline: const SizedBox.shrink(),
                     icon: const Icon(Icons.keyboard_arrow_down_rounded),
                     style: const TextStyle(color: Colors.white, fontSize: 16),
@@ -334,7 +334,7 @@ class DialogFactory {
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: AppColor.main50,
+              color: AppColor.surfaceCard,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
@@ -378,7 +378,7 @@ class _DialogContainer extends StatelessWidget {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColor.main50,
+        color: AppColor.surfaceCard,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: Colors.white.withValues(alpha: 0.1),

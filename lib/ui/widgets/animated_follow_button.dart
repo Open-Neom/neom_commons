@@ -46,6 +46,13 @@ class _AnimatedFollowButtonState extends State<AnimatedFollowButton>
   bool _isHovering = false;
   bool _wasFollowing = false;
 
+  void _setHovering(bool value) {
+    if (_isHovering == value) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => _isHovering = value);
+    });
+  }
+
   final List<_HeartParticle> _particles = [];
   final math.Random _random = math.Random();
 
@@ -134,8 +141,8 @@ class _AnimatedFollowButtonState extends State<AnimatedFollowButton>
       onTapCancel: _onTapCancel,
       onTap: _onTap,
       child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovering = true),
-        onExit: (_) => setState(() => _isHovering = false),
+        onEnter: (_) => _setHovering(true),
+        onExit: (_) => _setHovering(false),
         child: AnimatedBuilder(
           animation: Listenable.merge([_scaleAnimation, _heartBurstAnimation]),
           builder: (context, child) {

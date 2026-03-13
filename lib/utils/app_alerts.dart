@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:neom_commons/ui/widgets/custom_image.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
@@ -34,7 +34,7 @@ class AppAlerts {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColor.getMain(),
+          backgroundColor: AppColor.scaffold,
           title: Text(title),
           content: Text(message),
           actions: <Widget>[
@@ -56,7 +56,7 @@ class AppAlerts {
     return await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColor.getMain(),
+        backgroundColor: AppColor.scaffold,
         title: Text(AppProperties.getAppName().capitalize),
         content: Text(CommonTranslationConstants.wantToCloseApp.tr),
         actions: <Widget>[
@@ -100,7 +100,7 @@ class AppAlerts {
                       padding: const EdgeInsets.only(top: 10),
                       margin: const EdgeInsets.symmetric(horizontal: 15),
                       decoration: BoxDecoration(
-                          color: AppColor.main95,
+                          color: AppColor.surfaceBright,
                           borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0))
                       ),
                       child: ListView.separated(
@@ -114,7 +114,7 @@ class AppAlerts {
                               leading: IconButton(
                                 icon: CircleAvatar(
                                     maxRadius: 60,
-                                    backgroundImage: CachedNetworkImageProvider(
+                                    backgroundImage: platformImageProvider(
                                         profile.photoUrl.isNotEmpty
                                             ? profile.photoUrl
                                             : AppProperties.getNoImageUrl()
@@ -149,7 +149,7 @@ class AppAlerts {
                     ),
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 15),
-                      color: AppColor.main95,
+                      color: AppColor.surfaceBright,
                       child: ListTile(
                         leading: Container(
                           decoration: BoxDecoration(
@@ -192,7 +192,7 @@ class AppAlerts {
     return Alert(
         context: context,
         style: AlertStyle(
-            backgroundColor: AppColor.main50,
+            backgroundColor: AppColor.scaffold,
             titleStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
             titleTextAlign: TextAlign.justify
         ),
@@ -304,7 +304,7 @@ class AppAlerts {
     Alert(
         context: context,
         style: AlertStyle(
-          backgroundColor: AppColor.main50,
+          backgroundColor: AppColor.scaffold,
           titleStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
         title: CommonTranslationConstants.blockProfile.tr,
@@ -349,7 +349,7 @@ class AppAlerts {
     Alert(
         context: context,
         style: AlertStyle(
-          backgroundColor: AppColor.main50,
+          backgroundColor: AppColor.scaffold,
           titleStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
         title: AppTranslationConstants.sendReport.tr,

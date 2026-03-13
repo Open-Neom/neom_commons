@@ -2,9 +2,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:neom_commons/ui/widgets/custom_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
@@ -71,7 +70,7 @@ class AppUtilities {
       barrierDismissible: false, // User must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColor.getMain(), // Consistent with showAlert
+          backgroundColor: AppColor.scaffold, // Consistent with showAlert
           title: Text(title),
           content: Text(message),
           actions: <Widget>[
@@ -120,21 +119,15 @@ class AppUtilities {
       imageUrl = AppProperties.getAppLogoUrl();
     }
 
-    if (kIsWeb) {
-      return NetworkImage(imageUrl);
-    }
-
-    CachedNetworkImageProvider cachedNetworkImageProvider = const CachedNetworkImageProvider("");
-
     try {
       Uri uri = Uri.parse(imageUrl);
 
       if(uri.host.isNotEmpty) {
         http.Response response = await http.get(uri);
         if (response.statusCode == 200) {
-          cachedNetworkImageProvider = CachedNetworkImageProvider(imageUrl);
+          return platformImageProvider(imageUrl);
         } else {
-          cachedNetworkImageProvider = CachedNetworkImageProvider(AppProperties.getAppLogoUrl());
+          return platformImageProvider(AppProperties.getAppLogoUrl());
         }
       }
 
@@ -142,7 +135,7 @@ class AppUtilities {
       AppConfig.logger.e(e.toString());
     }
 
-    return cachedNetworkImageProvider;
+    return platformImageProvider(AppProperties.getAppLogoUrl());
   }
 
   static Map<String, AppProfile> filterByName(Map<String, AppProfile> profiles, String name) {
@@ -271,15 +264,18 @@ class AppUtilities {
   static void gotoItemDetails(dynamic item) {
     MediaItemType? itemType;
     String itemUrl = "";
+    String slug = '';
 
     try {
-      // 1. Extraer URL y tipo base según el objeto
+      // 1. Extraer URL, tipo y slug según el objeto
       if (item is AppReleaseItem) {
         itemUrl = item.previewUrl;
         itemType = item.mediaType;
+        slug = item.slug;
       } else if (item is AppMediaItem) {
         itemUrl = item.url;
         itemType = item.type;
+        slug = item.slug;
       }
 
       // 2. Sobrescribir tipo si la URL indica algo distinto (detección inteligente)
@@ -297,14 +293,14 @@ class AppUtilities {
 
       bool isMain = mainTypes.contains(itemType);
 
-      // 4. Navegación final
+      // 4. Navegación final (slug-first para web/deeplinks)
       String route = isMain
-          ? AppFlavour.getMainItemDetailsRoute(type: itemType)
-          : AppFlavour.getSecondaryItemDetailsRoute();
+          ? AppFlavour.getMainItemDetailsRoute(item.id, type: itemType, slug: slug)
+          : AppFlavour.getSecondaryItemDetailsRoute(item.id, slug: slug);
 
       // Caso especial: Navegar directamente al visor PDF si es un PDF detectado
       if (itemType == MediaItemType.pdf) {
-        Sint.toNamed(AppRouteConstants.bookDetails, arguments: [item]);
+        Sint.toNamed(AppRouteConstants.bookPath(item.id, slug: slug), arguments: [item]);
       } else {
         Sint.toNamed(route, arguments: [item]);
       }
@@ -317,7 +313,9 @@ class AppUtilities {
   static MediaItemType? getMediaTypeFromUrl(String url) {
     if (url.isEmpty) return null;
 
-    final String path = url.toLowerCase();
+    final String lowerUrl = url.toLowerCase();
+    // Strip query params for Firebase Storage URLs
+    final String path = Uri.tryParse(lowerUrl)?.path ?? lowerUrl;
 
     // Lógica de detección por extensión
     if (path.endsWith('.pdf')) return MediaItemType.pdf;
@@ -326,7 +324,7 @@ class AppUtilities {
           ? MediaItemType.audiobook
           : MediaItemType.song;
     }
-    if (path.contains('youtube.com') || path.contains('youtu.be') || path.endsWith('.mp4')) {
+    if (lowerUrl.contains('youtube.com') || lowerUrl.contains('youtu.be') || path.endsWith('.mp4')) {
       return MediaItemType.video;
     }
 

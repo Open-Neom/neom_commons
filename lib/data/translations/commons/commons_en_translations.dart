@@ -1,6 +1,4 @@
-import 'package:neom_commons/utils/constants/translations/app_translation_constants.dart';
 import 'package:neom_commons/utils/constants/translations/common_translation_constants.dart';
-import 'package:neom_commons/utils/constants/translations/message_translation_constants.dart';
 
 class CommonsEnTranslations {
 
@@ -57,21 +55,6 @@ class CommonsEnTranslations {
     CommonTranslationConstants.clipPhrase13: 'Local signals, universal impact.',
     CommonTranslationConstants.clipPhrase14: 'The talent that vibrates in your sector.',
     CommonTranslationConstants.clipPhrase15: 'Sync with creators in your network.',
-    CommonTranslationConstants.clipPhrase16: 'Sound from your city\'s matrix.',
-    CommonTranslationConstants.clipPhrase17: 'Scan the nearby sound waves.',
-    CommonTranslationConstants.clipPhrase18: 'Where the local scene becomes data.',
-    CommonTranslationConstants.clipPhrase19: 'Initiate the new sequence.',
-    CommonTranslationConstants.clipPhrase20: 'Dare to process a different sound.',
-    CommonTranslationConstants.clipPhrase21: 'Connect with every sonic pulse.',
-    CommonTranslationConstants.clipPhrase22: 'The input your system needed.',
-    CommonTranslationConstants.clipPhrase23: 'Explore. Decode. Connect.',
-    CommonTranslationConstants.clipPhrase24: 'Your next favorite track is on the network.',
-    CommonTranslationConstants.clipPhrase25: 'Feel the energy of pure code.',
-    CommonTranslationConstants.clipPhrase26: 'Give a signal to the authentically new.',
-    CommonTranslationConstants.clipPhrase27: 'The music that hacks the system.',
-    CommonTranslationConstants.clipPhrase28: 'Where sonic authenticity is born.',
-    CommonTranslationConstants.clipPhrase29: 'Passion compiled into music.',
-    CommonTranslationConstants.clipPhrase30: 'Every clip, a data packet with a soul.',
     CommonTranslationConstants.comingEvents: 'Upcoming Events',
     CommonTranslationConstants.commentPrefs: 'Comment Preferences',
     CommonTranslationConstants.commonTarget: 'General',
@@ -131,6 +114,7 @@ class CommonsEnTranslations {
     CommonTranslationConstants.finishingAccount: 'We are finishing your account, please wait\u2026',
     CommonTranslationConstants.finishingSpotifySync: 'Finishing Spotify sync',
     CommonTranslationConstants.fullScreen: 'Full screen',
+    CommonTranslationConstants.loadingWork: 'Loading work',
     CommonTranslationConstants.gatewayPaymentUnderConstructionMsg: 'The feature to pay with a credit or debit card is still under development. Please change your payment method to NeomCoins!',
     CommonTranslationConstants.getDefaultNameDesc: 'Get default name and description',
     CommonTranslationConstants.goBackHome: 'Go back home',
@@ -387,6 +371,34 @@ class CommonsEnTranslations {
     CommonTranslationConstants.writeThought: 'Write a thought',
     CommonTranslationConstants.yourCardWasDeclined: 'Your card was declined',
     CommonTranslationConstants.yourNeom: 'Your session',
+
+    // --- CONTENT MODERATION ---
+    CommonTranslationConstants.suspendContent: 'Suspend content',
+    CommonTranslationConstants.unsuspendContent: 'Unsuspend content',
+    CommonTranslationConstants.deleteContent: 'Delete content',
+    CommonTranslationConstants.suspendContentMsg: 'Content will be hidden from all users.',
+    CommonTranslationConstants.deleteContentMsg: 'This action cannot be undone.',
+    CommonTranslationConstants.contentSuspended: 'Content suspended',
+    CommonTranslationConstants.contentUnsuspended: 'Content unsuspended',
+    CommonTranslationConstants.contentDeleted: 'Content deleted',
+    CommonTranslationConstants.suspendReason: 'Reason for suspension (optional)',
+    CommonTranslationConstants.moderateContent: 'Moderate content',
+    CommonTranslationConstants.confirmSuspend: 'Confirm suspension',
+    CommonTranslationConstants.confirmDelete: 'Confirm deletion',
+    CommonTranslationConstants.edited: 'Edited',
+    CommonTranslationConstants.editCaption: 'Edit caption',
+    CommonTranslationConstants.postUpdated: 'Post updated',
+
+    // Event enhancements
+    CommonTranslationConstants.eventFinished: 'Finished',
+    CommonTranslationConstants.daysLeft: 'days',
+    CommonTranslationConstants.hoursLeft: 'hours',
+    CommonTranslationConstants.minutesLeft: 'minutes',
+    CommonTranslationConstants.startsToday: 'Today',
+    CommonTranslationConstants.startsSoon: 'Soon',
+    CommonTranslationConstants.shareEvent: 'Share event',
+    CommonTranslationConstants.attending: 'attending',
+    CommonTranslationConstants.andMore: 'and more',
   };
 
 }

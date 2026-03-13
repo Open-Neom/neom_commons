@@ -1,6 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:neom_commons/ui/widgets/custom_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
@@ -64,6 +63,8 @@ class AppDrawer extends StatelessWidget {
                         drawerRowOption(AppDrawerMenu.vst, const Icon(FontAwesomeIcons.guitar), context),
                       if(AppFlavour.showDaw())
                         drawerRowOption(AppDrawerMenu.daw, const Icon(FontAwesomeIcons.sliders), context),
+                      if(AppFlavour.showLearning())
+                        drawerRowOption(AppDrawerMenu.learning, const Icon(Icons.school), context),
                       if(AppFlavour.isNeomApp())
                         Column(
                           children: [
@@ -115,8 +116,16 @@ class AppDrawer extends StatelessWidget {
                           const Divider(),
                         ],
                       ),
+                      if((controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.erp.value)
+                        Column(
+                          children: [
+                            const Divider(),
+                            drawerRowOption(AppDrawerMenu.erpDashboard, const Icon(Icons.analytics), context),
+                            drawerRowOption(AppDrawerMenu.hubDashboard, const Icon(Icons.hub), context),
+                          ],
+                        ),
                       if(Sint.isRegistered<SettingsService>()) drawerRowOption(AppDrawerMenu.settings, const Icon(Icons.settings), context),
-                      if(Sint.isRegistered<LoginService>()) Column(
+                      if(Sint.isRegistered<LoginService>() && !AppConfig.instance.isGuestMode) Column(
                         children: [
                           const Divider(),
                           drawerRowOption(AppDrawerMenu.logout, const Icon(Icons.logout), context),
@@ -150,10 +159,7 @@ class AppDrawer extends StatelessWidget {
                   border: Border.all(color: Colors.white, width: 2),
                   borderRadius: BorderRadius.circular(28),
                   image: DecorationImage(
-                    image: kIsWeb
-                        ? NetworkImage(controller.appProfile.value!.photoUrl.isNotEmpty
-                            ? controller.appProfile.value!.photoUrl : AppProperties.getAppLogoUrl())
-                        : CachedNetworkImageProvider(controller.appProfile.value!.photoUrl.isNotEmpty
+                    image: platformImageProvider(controller.appProfile.value!.photoUrl.isNotEmpty
                             ? controller.appProfile.value!.photoUrl : AppProperties.getAppLogoUrl()),
                     fit: BoxFit.cover,
                   ),
@@ -342,11 +348,20 @@ class AppDrawer extends StatelessWidget {
             case AppDrawerMenu.games:
               Sint.toNamed(AppRouteConstants.games);
               break;
+            case AppDrawerMenu.learning:
+              Sint.toNamed(AppRouteConstants.learning);
+              break;
             case AppDrawerMenu.vst:
               Sint.toNamed(AppRouteConstants.vstHome);
               break;
             case AppDrawerMenu.daw:
               Sint.toNamed(AppRouteConstants.dawProjects);
+              break;
+            case AppDrawerMenu.erpDashboard:
+              Sint.toNamed(AppRouteConstants.erpDashboard);
+              break;
+            case AppDrawerMenu.hubDashboard:
+              Sint.toNamed(AppRouteConstants.hubDashboard);
               break;
           }
         }

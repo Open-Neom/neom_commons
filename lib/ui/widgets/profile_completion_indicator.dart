@@ -19,6 +19,7 @@ class ProfileCompletionIndicator extends StatefulWidget {
   final VoidCallback? onBioTap;
   final VoidCallback? onLocationTap;
   final VoidCallback? onGenresTap;
+  final VoidCallback? onSlugTap;
   final bool showTips;
   final bool compact;
 
@@ -29,6 +30,7 @@ class ProfileCompletionIndicator extends StatefulWidget {
     this.onBioTap,
     this.onLocationTap,
     this.onGenresTap,
+    this.onSlugTap,
     this.showTips = true,
     this.compact = false,
     super.key,
@@ -89,6 +91,12 @@ class _ProfileCompletionIndicatorState extends State<ProfileCompletionIndicator>
         icon: Icons.location_on_rounded,
         isComplete: widget.profile.position != null,
         onTap: widget.onLocationTap,
+      ),
+      _CompletionItem(
+        label: 'URL personalizada',
+        icon: Icons.link_rounded,
+        isComplete: widget.profile.slug.isNotEmpty,
+        onTap: widget.onSlugTap,
       ),
     ];
   }

@@ -5,34 +5,31 @@ class AppTheme {
 
   static BoxDecoration appBoxDecoration = BoxDecoration(
     gradient: LinearGradient(colors: [
-      Color.lerp(AppColor.getMain(), Colors.black, 0.2)!,
-      // Mezcla el color secundario con negro
-      Color.lerp(AppColor.main95, Colors.black, 0.2)!
-      // AppColor.getMain(),
-      // AppColor.main95
+      AppColor.scaffold,
+      AppColor.surfaceDim,
     ],
       begin: FractionalOffset.topRight,
-      end: FractionalOffset.bottomLeft, //FractionalOffset(1.0, 1.0)
+      end: FractionalOffset.bottomLeft,
     ),
   );
 
   static BoxDecoration appBoxDecoration75 = BoxDecoration(
     gradient: LinearGradient(colors: [
-      AppColor.getMain(),
-      AppColor.main75
+      AppColor.surfaceElevated,
+      AppColor.surfaceCard,
     ],
       begin: FractionalOffset.topRight,
-      end: FractionalOffset.bottomLeft, //FractionalOffset(1.0, 1.0)
+      end: FractionalOffset.bottomLeft,
     ),
   );
 
   static BoxDecoration appBoxDecorationFull = BoxDecoration(
     gradient: LinearGradient(colors: [
-      AppColor.getMain(),
-      AppColor.getMain()
+      AppColor.surfaceBright,
+      AppColor.surfaceElevated,
     ],
       begin: FractionalOffset.topRight,
-      end: FractionalOffset.bottomLeft, //FractionalOffset(1.0, 1.0)
+      end: FractionalOffset.bottomLeft,
     ),
   );
 
@@ -53,7 +50,7 @@ class AppTheme {
   );
 
   static final kBoxDecorationStyle = BoxDecoration(
-    color: AppColor.boxDecoration,
+    color: AppColor.surfaceDim,
     borderRadius: BorderRadius.circular(10.0),
     boxShadow: const [
       BoxShadow(
@@ -104,7 +101,7 @@ class AppTheme {
   static final BoxDecoration boxDecoration =
     BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(20)),
-      color: AppColor.main25,
+      color: AppColor.surfaceDim,
       border: Border.all(width: 0.5, style: BorderStyle.solid, color: Colors.white),
     );
 
@@ -112,7 +109,7 @@ class AppTheme {
   static final BoxDecoration selectedBoxDecoration =
      BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(20)),
-        color: AppColor.main50,
+        color: AppColor.surfaceCard,
         border: Border.all(width: 0.5, style: BorderStyle.solid, color: Colors.white));
 
   static final BoxDecoration messageBoxDecorationSelf = BoxDecoration(
@@ -120,7 +117,7 @@ class AppTheme {
           topLeft: Radius.circular(23),
           topRight: Radius.circular(23),
           bottomLeft: Radius.circular(23)),
-      color: Colors.white.withAlpha(26)
+      color: AppColor.white10,
   );
 
   static final BoxDecoration messageBoxDecoration = BoxDecoration(
@@ -128,7 +125,7 @@ class AppTheme {
       topLeft: Radius.circular(23),
       topRight: Radius.circular(23),
       bottomRight: Radius.circular(23)),
-      color: Colors.white.withAlpha(26)
+      color: AppColor.white10,
   );
 
   static const SizedBox heightSpace100 = SizedBox(height: 100);

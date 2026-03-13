@@ -299,4 +299,100 @@ class SkeletonLayouts {
       }),
     );
   }
+
+  /// Dashboard KPI cards skeleton (2 or 4 columns)
+  static Widget dashboardKpis({int count = 4, bool isWide = false}) {
+    return GridView.count(
+      crossAxisCount: isWide ? 4 : 2,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      childAspectRatio: isWide ? 2.2 : 2.4,
+      children: List.generate(count, (_) => _kpiCardSkeleton()),
+    );
+  }
+
+  static Widget _kpiCardSkeleton() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withAlpha(13),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withAlpha(20)),
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(children: [
+            SkeletonLoader(width: 16, height: 16, borderRadius: 4),
+            SizedBox(width: 6),
+            Expanded(child: SkeletonLoader(height: 10, borderRadius: 4)),
+          ]),
+          SizedBox(height: 10),
+          SkeletonLoader(width: 90, height: 20, borderRadius: 6),
+          SizedBox(height: 6),
+          SkeletonLoader(width: 60, height: 8, borderRadius: 4),
+        ],
+      ),
+    );
+  }
+
+  /// Dashboard full-page skeleton (KPIs + chart + sections)
+  static Widget dashboardFull({bool isWide = false}) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section header
+          const SkeletonLoader(width: 200, height: 20, borderRadius: 6),
+          const SizedBox(height: 4),
+          const SkeletonLoader(width: 160, height: 10, borderRadius: 4),
+          const SizedBox(height: 16),
+          // KPI cards
+          dashboardKpis(count: 4, isWide: isWide),
+          const SizedBox(height: 20),
+          // Section header 2
+          const SkeletonLoader(width: 180, height: 20, borderRadius: 6),
+          const SizedBox(height: 12),
+          dashboardKpis(count: 4, isWide: isWide),
+          const SizedBox(height: 24),
+          // Chart placeholder
+          Container(
+            height: 240,
+            decoration: BoxDecoration(
+              color: Colors.white.withAlpha(13),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.all(16),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SkeletonLoader(width: 140, height: 16, borderRadius: 4),
+                Spacer(),
+                SkeletonLoader(height: 150, borderRadius: 8),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          // Two cards side by side
+          if (isWide)
+            const Row(
+              children: [
+                Expanded(child: SkeletonLoader(height: 200, borderRadius: 16)),
+                SizedBox(width: 16),
+                Expanded(child: SkeletonLoader(height: 200, borderRadius: 16)),
+              ],
+            )
+          else ...[
+            const SkeletonLoader(height: 200, borderRadius: 16),
+            const SizedBox(height: 16),
+            const SkeletonLoader(height: 200, borderRadius: 16),
+          ],
+        ],
+      ),
+    );
+  }
 }

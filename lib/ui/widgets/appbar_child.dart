@@ -21,7 +21,7 @@ class AppBarChild extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
 
-    color ??= AppColor.appBar;
+    color ??= AppColor.surfaceElevated;
     return AppBar(
       leading: leadingWidget,
       title: Row(

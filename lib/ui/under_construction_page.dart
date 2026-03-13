@@ -15,7 +15,7 @@ class UnderConstructionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: color ?? AppColor.main50,
+      backgroundColor: color ?? AppColor.surfaceCard,
       body: Container(
         width: AppTheme.fullWidth(context),
         decoration: color == null ? AppTheme.appBoxDecoration : const BoxDecoration(),

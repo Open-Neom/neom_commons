@@ -33,7 +33,7 @@ Widget buildActionChip({
   required Enum appEnum, required Function controllerFunction,
   bool isActive = true, bool isSelected = false}) {
   return ActionChip(
-    backgroundColor: isSelected ? AppColor.bondiBlue : AppColor.bottomNavigationBar,
+    backgroundColor: isSelected ? AppColor.bondiBlue : AppColor.surfaceElevated,
     shape: AppTheme.outlinedBorderChip,
     label: Text((appEnum).name.tr.capitalizeFirst,
       style: TextStyle(
@@ -55,7 +55,7 @@ Widget buildTextActionChip({
   required String text, required Function controllerFunction,
   bool isActive = true, bool isSelected = false}) {
   return ActionChip(
-    backgroundColor: isSelected ? AppColor.bondiBlue : AppColor.bottomNavigationBar,
+    backgroundColor: isSelected ? AppColor.bondiBlue : AppColor.surfaceElevated,
     shape: AppTheme.outlinedBorderChip,
     padding: const EdgeInsets.symmetric(horizontal: 10),
     label: Text(text.tr.capitalizeFirst,
@@ -78,7 +78,7 @@ Widget buildIconActionChip({
   required Icon icon, required Function controllerFunction,
   bool isActive = true, bool isSelected = false}) {
   return ActionChip(
-    backgroundColor: isSelected ? AppColor.bondiBlue : AppColor.bottomNavigationBar,
+    backgroundColor: isSelected ? AppColor.bondiBlue : AppColor.surfaceElevated,
     shape: AppTheme.outlinedBorderChip,
     padding: const EdgeInsets.symmetric(horizontal: 10),
     label: icon,

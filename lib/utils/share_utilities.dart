@@ -1,12 +1,14 @@
-import 'dart:io';
-
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:neom_core/utils/platform/core_io.dart';
+import 'package:intl/intl.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/blog_entry.dart';
+import 'package:neom_core/domain/model/event.dart';
 import 'package:neom_core/domain/model/post.dart';
 import 'package:neom_core/utils/constants/core_constants.dart';
+import 'package:neom_core/utils/enums/app_locale.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/enums/post_type.dart';
 import 'package:path_provider/path_provider.dart';
@@ -36,7 +38,7 @@ class ShareUtilities {
     }
   }
 
-  static Future<void> shareAppWithPost(Post post, {bool getSiteUrl = true}) async {
+  static Future<void> shareAppWithPost(Post post) async {
 
     String thumbnailLocalPath = "";
 
@@ -65,14 +67,12 @@ class ShareUtilities {
       caption = "$caption\n\n${post.profileName}\n$dotsLine";
     }
 
-    // 2. GENERAR EL LINK ESPECÍFICO DEL POST
-    String deepLink = getSiteUrl ? AppProperties.getSiteUrl() :
-      DeeplinkUtilities.generateDeepLink(host: 'share', type: 'post', id: post.id);
+    // Vanity URL: emxi.org/p/{postId}
+    String vanityUrl = DeeplinkUtilities.generateVanityUrl(type: 'post', id: post.id);
 
-    // Construcción del texto a compartir
     String sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
         '${MessageTranslationConstants.shareAppMsg.tr}\n\n'
-        '${AppTranslationConstants.explorePlatform.tr}: $deepLink'; // Aquí ponemos el link directo
+        '${AppTranslationConstants.explorePlatform.tr}: $vanityUrl';
 
     shareResult = await SharePlus.instance.share(
       ShareParams(
@@ -90,7 +90,7 @@ class ShareUtilities {
 
   }
 
-  static Future<void> shareAppWithMediaItem(AppMediaItem mediaItem, {bool getSiteUrl = true}) async {
+  static Future<void> shareAppWithMediaItem(AppMediaItem mediaItem) async {
 
     String thumbnailLocalPath = "";
 
@@ -114,36 +114,27 @@ class ShareUtilities {
       caption = "$caption\n\n${mediaItem.ownerName}\n$dotsLine";
     }
 
+    // Vanity URL: emxi.org/{slug} or emxi.org/item/{id}
+    String vanityUrl = DeeplinkUtilities.generateVanityUrl(
+      type: 'media', slug: mediaItem.slug, id: mediaItem.id,
+    );
 
-    // 3. GENERAR EL LINK ESPECÍFICO DEL MEDIA ITEM
-    String deepLink = getSiteUrl ? AppProperties.getSiteUrl() :
-      DeeplinkUtilities.generateDeepLink(host: 'share', type: 'media', id: mediaItem.id);
-    String sharedText;
-
-    // Lógica para el mensaje
     String messageTr = thumbnailLocalPath.isNotEmpty
         ? MessageTranslationConstants.shareMediaItem.tr
         : MessageTranslationConstants.shareMediaItemMsg.tr;
 
-    sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
-        '$messageTr\n\n'
-        'Escuchar aquí: $deepLink';
-
+    String sharedText;
     List<XFile> sharedFiles = [];
-    if(thumbnailLocalPath.isNotEmpty) {
-
-    }
-
 
     if(thumbnailLocalPath.isNotEmpty) {
       sharedFiles.add(XFile(thumbnailLocalPath));
       sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
-              '${MessageTranslationConstants.shareMediaItem.tr}\n'
-              '\n${AppProperties.getLinksUrl()}\n';
+              '$messageTr\n\n'
+              '$vanityUrl\n';
     } else {
       sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
-          '${MessageTranslationConstants.shareMediaItemMsg.tr}\n'
-          '\n${AppProperties.getLinksUrl()}\n';
+          '$messageTr\n\n'
+          '$vanityUrl\n';
     }
 
     shareResult = await SharePlus.instance.share(
@@ -158,7 +149,7 @@ class ShareUtilities {
   }
 
   /// Share a BlogEntry with optional thumbnail.
-  static Future<void> shareBlogEntry(BlogEntry blogEntry, {bool getSiteUrl = true}) async {
+  static Future<void> shareBlogEntry(BlogEntry blogEntry) async {
     String thumbnailLocalPath = "";
 
     if (blogEntry.thumbnailUrl.isNotEmpty) {
@@ -177,20 +168,117 @@ class ShareUtilities {
     }
     String formattedContent = "${blogEntry.title}\n\n$content\n\n${blogEntry.profileName}\n$dotsLine";
 
-    // Generate deep link
-    String deepLink = getSiteUrl
-        ? AppProperties.getSiteUrl()
-        : DeeplinkUtilities.generateDeepLink(host: 'share', type: 'blog', id: blogEntry.id);
+    // Vanity URL: emxi.org/blog/{slug} or emxi.org/blog/{id}
+    String vanityUrl = DeeplinkUtilities.generateVanityUrl(
+      type: 'blog', slug: blogEntry.slug, id: blogEntry.id,
+    );
 
     String sharedText = '$formattedContent\n\n'
         '${MessageTranslationConstants.shareAppMsg.tr}\n\n'
-        '${AppTranslationConstants.explorePlatform.tr}: $deepLink';
+        '${AppTranslationConstants.explorePlatform.tr}: $vanityUrl';
 
     ShareResult shareResult = await SharePlus.instance.share(
       ShareParams(
         text: sharedText,
         files: [XFile(thumbnailLocalPath)],
         previewThumbnail: XFile(thumbnailLocalPath),
+      ),
+    );
+
+    if (shareResult.status == ShareResultStatus.success && shareResult.raw != "null") {
+      Sint.snackbar(
+        MessageTranslationConstants.sharedApp.tr,
+        MessageTranslationConstants.sharedAppMsg.tr,
+        snackPosition: SnackPosition.bottom,
+      );
+    }
+  }
+
+  /// Share a shop product (AppReleaseItem or ShopMerchItem) with vanity URL.
+  static Future<void> shareProduct({
+    required String productId,
+    required String name,
+    required String imgUrl,
+    required double price,
+    required String ownerName,
+    String type = 'product', // 'product' for release, 'merch' for merch
+  }) async {
+    String thumbnailLocalPath = "";
+
+    if (imgUrl.isNotEmpty) {
+      thumbnailLocalPath = await FileDownloader.downloadImage(
+          imgUrl, imgName: "${ownerName}_$name");
+    }
+    if (thumbnailLocalPath.isEmpty) {
+      thumbnailLocalPath = await _getLogoLocalPath();
+    }
+
+    // Vanity URL: emxi.org/shop/{productId}
+    String vanityUrl = DeeplinkUtilities.generateVanityUrl(type: type, id: productId);
+
+    String priceText = '\$${price.toStringAsFixed(0)} MXN';
+    String sharedText = '$name\n'
+        'por $ownerName\n'
+        '$priceText\n\n'
+        '${MessageTranslationConstants.shareAppMsg.tr}\n\n'
+        '${AppTranslationConstants.explorePlatform.tr}: $vanityUrl';
+
+    ShareResult shareResult = await SharePlus.instance.share(
+      ShareParams(
+        text: sharedText,
+        files: [XFile(thumbnailLocalPath)],
+        previewThumbnail: XFile(thumbnailLocalPath),
+      ),
+    );
+
+    if (shareResult.status == ShareResultStatus.success &&
+        shareResult.raw != "null") {
+      Sint.snackbar(
+        MessageTranslationConstants.sharedApp.tr,
+        MessageTranslationConstants.sharedAppMsg.tr,
+        snackPosition: SnackPosition.bottom,
+      );
+    }
+  }
+
+  /// Share an Event with date, place, and vanity URL.
+  static Future<void> shareEvent(Event event) async {
+    String thumbnailLocalPath = "";
+
+    if (event.imgUrl.isNotEmpty) {
+      thumbnailLocalPath = await FileDownloader.downloadImage(
+          event.imgUrl, imgName: "${event.ownerName}_${event.name}");
+    }
+    if (thumbnailLocalPath.isEmpty) {
+      thumbnailLocalPath = await _getLogoLocalPath();
+    }
+
+    // Vanity URL: emxi.org/{slug} or emxi.org/e/{eventId}
+    String vanityUrl = DeeplinkUtilities.generateVanityUrl(type: 'event', id: event.id, slug: event.slug);
+
+    String dateText = event.eventDate > 0
+        ? DateFormat.yMMMd(AppLocale.spanish.code)
+            .format(DateTime.fromMillisecondsSinceEpoch(event.eventDate))
+        : '';
+    String placeText = event.place?.name ?? '';
+
+    String sharedText = '${event.name}\n'
+        '${dateText.isNotEmpty ? "$dateText\n" : ""}'
+        '${placeText.isNotEmpty ? "$placeText\n" : ""}'
+        '${event.ownerName.isNotEmpty ? "por ${event.ownerName}\n" : ""}\n'
+        '${MessageTranslationConstants.shareAppMsg.tr}\n\n'
+        '${AppTranslationConstants.explorePlatform.tr}: $vanityUrl';
+
+    List<XFile> sharedFiles = [];
+    if (thumbnailLocalPath.isNotEmpty) {
+      sharedFiles.add(XFile(thumbnailLocalPath));
+    }
+
+    ShareResult shareResult = await SharePlus.instance.share(
+      ShareParams(
+        text: sharedText,
+        files: sharedFiles.isNotEmpty ? sharedFiles : null,
+        previewThumbnail: sharedFiles.isNotEmpty ? sharedFiles.first : null,
       ),
     );
 

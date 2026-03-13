@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:neom_core/app_config.dart';
-import 'dart:io';
+import 'package:neom_core/utils/platform/core_io.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'file_system_utilities.dart';

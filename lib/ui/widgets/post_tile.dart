@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:neom_commons/ui/widgets/custom_image.dart';
+import 'package:neom_commons/ui/widgets/images/handled_cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:neom_commons/app_flavour.dart';
 import 'package:neom_commons/ui/theme/app_color.dart';
@@ -77,9 +77,9 @@ class _PostTileState extends State<PostTile> with SingleTickerProviderStateMixin
   void _onTap() {
     HapticFeedback.lightImpact();
     if (widget.post.type == PostType.releaseItem && widget.post.referenceId.isNotEmpty) {
-      Sint.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [widget.post.referenceId]);
+      Sint.toNamed(AppFlavour.getMainItemDetailsRoute(widget.post.referenceId), arguments: [widget.post.referenceId]);
     } else {
-      Sint.toNamed(AppRouteConstants.postDetailsFullScreen, arguments: [widget.post]);
+      Sint.toNamed(AppRouteConstants.postFullScreenPath(widget.post.id), arguments: [widget.post]);
     }
   }
 
@@ -231,47 +231,10 @@ class _PostTileState extends State<PostTile> with SingleTickerProviderStateMixin
             : AppProperties.getNoImageUrl();
     }
 
-    if (kIsWeb) {
-      return Image.network(
-        imageUrl,
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            color: Colors.grey[900],
-            child: const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white30))),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) => Container(
-          color: Colors.grey[900],
-          child: const Icon(Icons.broken_image_outlined, color: Colors.white30, size: 32),
-        ),
-      );
-    }
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
+    return HandledCachedNetworkImage(
+      imageUrl,
       fit: BoxFit.cover,
-      placeholder: (context, url) => Container(
-        color: Colors.grey[900],
-        child: const Center(
-          child: SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: Colors.white30,
-            ),
-          ),
-        ),
-      ),
-      errorWidget: (context, url, error) => Container(
-        color: Colors.grey[900],
-        child: const Icon(
-          Icons.broken_image_outlined,
-          color: Colors.white30,
-          size: 32,
-        ),
-      ),
+      enableFullScreen: false,
     );
   }
 }
@@ -450,7 +413,7 @@ class _QuickPreviewDialog extends StatelessWidget {
                       CircleAvatar(
                         radius: 16,
                         backgroundImage: post.profileImgUrl.isNotEmpty
-                            ? CachedNetworkImageProvider(post.profileImgUrl)
+                            ? platformImageProvider(post.profileImgUrl)
                             : null,
                         child: post.profileImgUrl.isEmpty
                             ? const Icon(Icons.person, size: 16)
@@ -492,38 +455,10 @@ class _QuickPreviewDialog extends StatelessWidget {
                 Flexible(
                   child: AspectRatio(
                     aspectRatio: post.aspectRatio > 0 ? post.aspectRatio : 1,
-                    child: kIsWeb
-                      ? Image.network(
+                    child: HandledCachedNetworkImage(
                           _getPreviewUrl(),
                           fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Container(color: Colors.grey[800], child: const Center(child: CircularProgressIndicator(color: Colors.white30)));
-                          },
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            color: Colors.grey[800],
-                            child: const Icon(Icons.broken_image, color: Colors.white30, size: 48),
-                          ),
-                        )
-                      : CachedNetworkImage(
-                          imageUrl: _getPreviewUrl(),
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: Colors.grey[800],
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                color: Colors.white30,
-                              ),
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => Container(
-                            color: Colors.grey[800],
-                            child: const Icon(
-                              Icons.broken_image,
-                              color: Colors.white30,
-                              size: 48,
-                            ),
-                          ),
+                          enableFullScreen: false,
                         ),
                   ),
                 ),

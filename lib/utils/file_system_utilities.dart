@@ -1,6 +1,6 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:neom_core/app_config.dart';
+import 'package:neom_core/utils/platform/core_io.dart';
 import 'package:path/path.dart' as p; // Importa el paquete path con un prefijo
 import 'package:path_provider/path_provider.dart';
 
@@ -18,7 +18,7 @@ class FileSystemUtilities {
     try {
       AppConfig.logger.i("File Path: $filePath");
 
-      if(Platform.isAndroid) {
+      if(!kIsWeb && Platform.isAndroid) {
         file = File(filePath);
       } else {
         file = await File.fromUri(Uri.parse(filePath)).create();

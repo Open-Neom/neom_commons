@@ -407,5 +407,34 @@ class CommonTranslationConstants {
 
   static const String fullScreen = 'fullScreen';
   static const String exitFullScreen = 'exitFullScreen';
+  static const String loadingWork = 'loadingWork';
+
+  // Content moderation
+  static const String suspendContent = 'suspendContent';
+  static const String unsuspendContent = 'unsuspendContent';
+  static const String deleteContent = 'deleteContent';
+  static const String suspendContentMsg = 'suspendContentMsg';
+  static const String deleteContentMsg = 'deleteContentMsg';
+  static const String contentSuspended = 'contentSuspended';
+  static const String contentUnsuspended = 'contentUnsuspended';
+  static const String contentDeleted = 'contentDeleted';
+  static const String suspendReason = 'suspendReason';
+  static const String moderateContent = 'moderateContent';
+  static const String confirmSuspend = 'confirmSuspend';
+  static const String confirmDelete = 'confirmDelete';
+  static const String edited = 'edited';
+  static const String editCaption = 'editCaption';
+  static const String postUpdated = 'postUpdated';
+
+  // Event enhancements
+  static const String eventFinished = 'eventFinished';
+  static const String daysLeft = 'daysLeft';
+  static const String hoursLeft = 'hoursLeft';
+  static const String minutesLeft = 'minutesLeft';
+  static const String startsToday = 'startsToday';
+  static const String startsSoon = 'startsSoon';
+  static const String shareEvent = 'shareEvent';
+  static const String attending = 'attending';
+  static const String andMore = 'andMore';
 
 }

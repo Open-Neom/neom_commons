@@ -23,8 +23,11 @@ enum AppDrawerMenu {
   nupale("nupale"),
   casete("casete"),
   games("games"),
+  learning("learning"),
   vst("vst"),
-  daw("daw");
+  daw("daw"),
+  erpDashboard("erpDashboard"),
+  hubDashboard("hubDashboard");
 
 
   final String value;

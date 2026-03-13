@@ -6,6 +6,9 @@ import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:sint/sint.dart';
 
+import 'web_network_image_stub.dart'
+    if (dart.library.html) 'web_network_image_impl.dart';
+
 /// Enhanced cached network image with skeleton loading, retry mechanism,
 /// and better error handling.
 ///
@@ -30,7 +33,7 @@ class HandledCachedNetworkImage extends StatefulWidget {
 
   const HandledCachedNetworkImage(
     this.mediaUrl, {
-    this.fit = BoxFit.fill,
+    this.fit = BoxFit.cover,
     this.height,
     this.width,
     this.enableFullScreen = true,
@@ -111,22 +114,14 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
     final Widget content;
 
     if (kIsWeb) {
-      // On web, use Image.network which renders as an HTML <img> tag
-      // and doesn't have CORS restrictions like CachedNetworkImage's canvas approach
-      content = Image.network(
-        _effectiveUrl,
-        key: ValueKey('$_effectiveUrl-$_retryCount'),
+      // On web, use native HTML <img> via HtmlElementView to bypass CanvasKit CORS
+      content = buildWebNativeImage(
+        imageUrl: _effectiveUrl,
         height: widget.height,
         width: widget.width,
         fit: widget.fit,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return _buildPlaceholder();
-        },
-        errorBuilder: (context, error, stackTrace) {
-          _errorMessage = error.toString();
-          return _buildErrorWidget();
-        },
+        placeholder: _buildPlaceholder(),
+        errorWidget: _buildErrorWidget(),
       );
     } else {
       content = CachedNetworkImage(
@@ -151,10 +146,16 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
         ? ClipRRect(borderRadius: widget.borderRadius!, child: content)
         : content;
 
-    return GestureDetector(
-      onTap: _handleTap,
-      child: wrappedContent,
-    );
+    // Only wrap in GestureDetector when there's a tap action to handle.
+    // This prevents absorbing taps from parent GestureDetectors.
+    if (widget.function != null || widget.enableFullScreen) {
+      return GestureDetector(
+        onTap: _handleTap,
+        child: wrappedContent,
+      );
+    }
+
+    return wrappedContent;
   }
 
   Widget _buildPlaceholder() {

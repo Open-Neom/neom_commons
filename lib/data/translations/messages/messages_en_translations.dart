@@ -1,5 +1,3 @@
-import 'package:neom_commons/utils/constants/translations/app_translation_constants.dart';
-import 'package:neom_commons/utils/constants/translations/common_translation_constants.dart';
 import 'package:neom_commons/utils/constants/translations/message_translation_constants.dart';
 
 class MessagesEnTranslations {

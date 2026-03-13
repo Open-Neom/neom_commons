@@ -1,6 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:neom_commons/ui/widgets/images/handled_cached_network_image.dart';
 
 import '../theme/app_theme.dart';
 
@@ -68,28 +67,9 @@ SizedBox sizedBox({double height = 5, String title = ""}) {
 }
 
 Widget customNetworkImage(String path, {BoxFit fit = BoxFit.contain}) {
-  if (kIsWeb) {
-    return Image.network(
-      path,
-      fit: fit,
-      errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
-    );
-  }
-  return CachedNetworkImage(
+  return HandledCachedNetworkImage(
+    path,
     fit: fit,
-    imageUrl: path,
-    imageBuilder: (context, imageProvider) => Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-          image: imageProvider,
-          fit: fit,
-        ),
-      ),
-    ),
-    placeholderFadeInDuration: const Duration(milliseconds: 250),
-    placeholder: (context, url) => Container(
-      color: const Color(0xffeeeeee),
-    ),
-    errorWidget: (context, url, error) => const Icon(Icons.error),
+    enableFullScreen: false,
   );
 }

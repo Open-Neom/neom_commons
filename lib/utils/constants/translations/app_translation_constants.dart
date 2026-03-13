@@ -31,6 +31,7 @@ class AppTranslationConstants {
   static const String bartersNetwork = 'bartersNetwork';
   static const String basic = 'basic';
   static const String binauralBeat = 'binauralBeat';
+  static const String book = 'book';
   static const String bookShop = 'bookShop';
   static const String bookshelf = 'bookshelf';
   static const String by = 'by';
@@ -49,6 +50,7 @@ class AppTranslationConstants {
   static const String comment = "comment";
   static const String comments = "comments";
   static const String comingSoon = 'comingSoon';
+  static const String community = 'community';
   static const String connect = 'connect';
   static const String contactUs = 'contactUs';
   static const String contribution = "contribution";
@@ -128,9 +130,11 @@ class AppTranslationConstants {
   static const String instruments = "instruments";
   static const String instrumentsPreferences = "instrumentsPreferences";
   static const String invalidUrl = "invalidUrl";
+  static const String invitation = 'invitation';
   static const String invitations = "invitations";
   static const String invite = 'invite';
   static const String invited = 'invited';
+  static const String item = 'item';
   static const String itemlists = 'itemlists';
   static const String language = 'language';
   static const String lastName = 'lastName';
@@ -146,6 +150,7 @@ class AppTranslationConstants {
   static const String loginSignup = 'loginSignup';
   static const String loose = 'loose';
   static const String main = 'main';
+  static const String mate = 'mate';
   static const String mainFrequency = 'mainFrequency';
   static const String mainInstrument = "mainInstrument";
   static const String maximum = "maximum";
@@ -178,6 +183,7 @@ class AppTranslationConstants {
   static const String of = 'of';
   static const String ok = 'ok';
   static const String or = 'or';
+  static const String order = 'order';
   static const String others = 'others';
   static const String outOf = 'outOf';
   static const String page = 'page';
@@ -204,8 +210,10 @@ class AppTranslationConstants {
   static const String price = "price";
   static const String pricePerHour = 'pricePerHour';
   static const String privacy = "privacy";
+  static const String product = 'product';
   static const String professional = 'professional';
   static const String profile = "profile";
+  static const String profiles = "profiles";
   static const String profileNotFound = "profileNotFound";
   static const String profileType = 'profileType';
   static const String publish = 'publish';
@@ -216,6 +224,7 @@ class AppTranslationConstants {
   static const String rates = "rates";
   static const String readMore = 'readMore';
   static const String readOn = 'readOn';
+  static const String reading = 'reading';
   static const String readings = 'readings';
   static const String readlists = 'readlists';
   static const String reason = "reason";
@@ -225,6 +234,7 @@ class AppTranslationConstants {
   static const String releases = 'releases';
   static const String remove = "remove";
   static const String report = 'report';
+  static const String request = 'request';
   static const String requests = "requests";
   static const String reset = "reset";
   static const String retryUpload = 'retryUpload';
@@ -233,6 +243,10 @@ class AppTranslationConstants {
   static const String save = 'save';
   static const String score = "score";
   static const String search = "search";
+  static const String searchHintCyberneom = 'searchHintCyberneom';
+  static const String searchHintDefault = 'searchHintDefault';
+  static const String searchHintEmxi = 'searchHintEmxi';
+  static const String searchHintGigmeout = 'searchHintGigmeout';
   static const String second = 'second';
   static const String seconds = 'seconds';
   static const String select = 'select';
@@ -284,6 +298,7 @@ class AppTranslationConstants {
   static const String toUnblock = 'toUnblock';
   static const String toUpdate = 'toUpdate';
   static const String total = "total";
+  static const String transaction = 'transaction';
   static const String tryAgain = 'tryAgain';  
   static const String trialEnded = 'trialEnded';  
   static const String trialEndedMessage = 'trialEndedMessage';

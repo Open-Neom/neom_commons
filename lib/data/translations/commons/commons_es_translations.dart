@@ -1,5 +1,5 @@
-import 'package:neom_commons/utils/constants/translations/app_translation_constants.dart';
-import 'package:neom_commons/utils/constants/translations/common_translation_constants.dart';
+import '../../../utils/constants/translations/app_translation_constants.dart';
+import '../../../utils/constants/translations/common_translation_constants.dart';
 
 class CommonsEsTranslations {
 
@@ -49,23 +49,8 @@ class CommonsEsTranslations {
     CommonTranslationConstants.clipPhrase13: "Se\u00f1ales locales, impacto universal.",
     CommonTranslationConstants.clipPhrase14: "El talento que vibra en tu sector.",
     CommonTranslationConstants.clipPhrase15: "Sincroniza con creadores de tu red.",
-    CommonTranslationConstants.clipPhrase16: "Sonido desde la matriz de tu ciudad.",
-    CommonTranslationConstants.clipPhrase17: "Escanea las ondas sonoras cercanas.",
-    CommonTranslationConstants.clipPhrase18: "Donde la escena local se vuelve data.",
-    CommonTranslationConstants.clipPhrase19: "Inicia la nueva secuencia.",
     CommonTranslationConstants.clipPhrase1: "El c\u00f3digo fuente del nuevo sonido.",
-    CommonTranslationConstants.clipPhrase20: "Atr\u00e9vete a procesar un sonido diferente.",
-    CommonTranslationConstants.clipPhrase21: "Conecta con cada pulso s\u00f3nico.",
-    CommonTranslationConstants.clipPhrase22: "El input que tu sistema necesitaba.",
-    CommonTranslationConstants.clipPhrase23: "Explora. Decodifica. Conecta.",
-    CommonTranslationConstants.clipPhrase24: "Tu pr\u00f3ximo track favorito est\u00e1 en la red.",
-    CommonTranslationConstants.clipPhrase25: "Siente la energ\u00eda del c\u00f3digo puro.",
-    CommonTranslationConstants.clipPhrase26: "Dale se\u00f1al a lo aut\u00e9nticamente nuevo.",
-    CommonTranslationConstants.clipPhrase27: "La m\u00fasica que hackea el sistema.",
-    CommonTranslationConstants.clipPhrase28: "Donde nace la nueva autenticidad s\u00f3nica.",
-    CommonTranslationConstants.clipPhrase29: "Pasi\u00f3n que se compila en m\u00fasica.",
     CommonTranslationConstants.clipPhrase2: "El futuro del audio se sintetiza aqu\u00ed.",
-    CommonTranslationConstants.clipPhrase30: "Cada clip, un paquete de datos con alma.",
     CommonTranslationConstants.clipPhrase3: "Nuevas frecuencias, espectros por descubrir.",
     CommonTranslationConstants.clipPhrase4: "Donde los nuevos creadores compilan su futuro.",
     CommonTranslationConstants.clipPhrase5: "El pulso independiente en su estado m\u00e1s puro.",
@@ -385,6 +370,64 @@ class CommonsEsTranslations {
     CommonTranslationConstants.bookTherapy: 'Libroterapia',
     CommonTranslationConstants.bookTherapyDesc: 'Libros recomendados según tu estado de ánimo',
     CommonTranslationConstants.addNewItemlist: "Crear lista",
+
+    CommonTranslationConstants.becomeSponsor: "Convertirse en Patrocinador",
+    CommonTranslationConstants.eventmates: "Compañeros de evento",
+    CommonTranslationConstants.itemmates: "Neomis",
+    CommonTranslationConstants.listeningSessions: "Sesiones de escucha",
+    CommonTranslationConstants.listenOnSpotify: "Escuchar en Spotify",
+    CommonTranslationConstants.playlistSynchFinished: "Sincronización de playlist finalizada",
+    CommonTranslationConstants.searchMeditators: "Buscar meditadores",
+    CommonTranslationConstants.searchSpotifyPlaylist: "Buscar playlist de Spotify",
+    CommonTranslationConstants.sendRequest: "Enviar solicitud",
+    CommonTranslationConstants.subscriptionMainDesc: "Acceso total a las funciones premium de Cyberneom",
+    CommonTranslationConstants.subscriptionMainName: "Suscripción Cyberneom",
+    CommonTranslationConstants.suggestedArticle: "Artículo sugerido",
+    CommonTranslationConstants.suggestedMeditation: "Meditación sugerida",
+    CommonTranslationConstants.suggestedSong: "Frecuencia sugerida",
+    CommonTranslationConstants.thanksForFinishingItem: "Gracias por completar esta sesión",
+    CommonTranslationConstants.unblockedProfile: "Perfil desbloqueado",
+
+    // --- GAMES ---
+    CommonTranslationConstants.literaryGames: "Juegos literarios",
+    CommonTranslationConstants.wordChain: "Cadena de palabras",
+    CommonTranslationConstants.verseScramble: "Versos revueltos",
+    CommonTranslationConstants.librinder: "Librinder",
+
+
+    // --- INTERFACE ---
+    CommonTranslationConstants.fullScreen: "Pantalla completa",
+    CommonTranslationConstants.exitFullScreen: "Salir de pantalla completa",
+    CommonTranslationConstants.loadingWork: "Cargando Obra",
+    CommonTranslationConstants.words: "Palabras",
+
+    // --- CONTENT MODERATION ---
+    CommonTranslationConstants.suspendContent: "Suspender contenido",
+    CommonTranslationConstants.unsuspendContent: "Reactivar contenido",
+    CommonTranslationConstants.deleteContent: "Eliminar contenido",
+    CommonTranslationConstants.suspendContentMsg: "El contenido sera ocultado de todos los usuarios.",
+    CommonTranslationConstants.deleteContentMsg: "Esta accion no se puede deshacer.",
+    CommonTranslationConstants.contentSuspended: "Contenido suspendido",
+    CommonTranslationConstants.contentUnsuspended: "Contenido reactivado",
+    CommonTranslationConstants.contentDeleted: "Contenido eliminado",
+    CommonTranslationConstants.suspendReason: "Razon de suspension (opcional)",
+    CommonTranslationConstants.moderateContent: "Moderar contenido",
+    CommonTranslationConstants.confirmSuspend: "Confirmar suspension",
+    CommonTranslationConstants.confirmDelete: "Confirmar eliminacion",
+    CommonTranslationConstants.edited: "Editado",
+    CommonTranslationConstants.editCaption: "Editar texto",
+    CommonTranslationConstants.postUpdated: "Publicacion actualizada",
+
+    // Event enhancements
+    CommonTranslationConstants.eventFinished: "Finalizado",
+    CommonTranslationConstants.daysLeft: "dias",
+    CommonTranslationConstants.hoursLeft: "horas",
+    CommonTranslationConstants.minutesLeft: "minutos",
+    CommonTranslationConstants.startsToday: "Hoy",
+    CommonTranslationConstants.startsSoon: "Pronto",
+    CommonTranslationConstants.shareEvent: "Compartir evento",
+    CommonTranslationConstants.attending: "asistiran",
+    CommonTranslationConstants.andMore: "y mas",
   };
 
 }

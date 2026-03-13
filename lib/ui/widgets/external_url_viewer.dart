@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_color.dart';
 import '../../utils/external_utilities.dart';
 import '../../utils/url_utilities.dart';
 
@@ -23,23 +24,23 @@ class ExternalUrlViewer extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.public, size: 15, color: Colors.blue), // Icono pequeño de mundo
+                const Icon(Icons.public, size: 15, color: AppColor.dodgetBlue),
                 const SizedBox(width: 5),
                 Flexible(
                   child: Text(
                     (Uri.tryParse(url)?.host.isNotEmpty ?? false)
                         ? Uri.tryParse(url)!.host : url,
                     style: const TextStyle(
-                      color: Colors.blue,
+                      color: AppColor.dodgetBlue,
                       fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline, // Subrayado clásico de link
-                      decorationColor: Colors.blue,
+                      decoration: TextDecoration.underline,
+                      decorationColor: AppColor.dodgetBlue,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const SizedBox(width: 5),
-                const Icon(Icons.open_in_new, size: 12, color: Colors.blueGrey), // Icono de "abrir externo"
+                Icon(Icons.open_in_new, size: 12, color: AppColor.dodgetBlue.withAlpha(180)),
               ],
             ),
           ),

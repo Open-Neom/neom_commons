@@ -31,7 +31,7 @@ class OnGoingState extends State<OnGoingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.main50,
+      backgroundColor: AppColor.scaffold,
       body: PageView.builder(
         itemBuilder: (context,index){
           return SingleChildScrollView(

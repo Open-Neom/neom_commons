@@ -1,6 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:neom_commons/ui/widgets/images/handled_cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
@@ -106,7 +105,7 @@ class _ProfileStatsCardState extends State<ProfileStatsCard>
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            color: AppColor.main25,
+            color: AppColor.surfaceDim,
             border: Border.all(color: Colors.white24, width: 0.5),
           ),
           child: Column(
@@ -126,33 +125,11 @@ class _ProfileStatsCardState extends State<ProfileStatsCard>
     return Row(
       children: [
         if (widget.showAvatar) ...[
-          kIsWeb
-            ? CircleAvatar(
-                radius: widget.compact ? 20 : 28,
-                backgroundImage: NetworkImage(
-                  widget.profile.photoUrl.isNotEmpty
-                      ? widget.profile.photoUrl
-                      : AppProperties.getAppLogoUrl(),
-                ),
-              )
-            : CachedNetworkImage(
+          CachedCircleAvatar(
                 imageUrl: widget.profile.photoUrl.isNotEmpty
                     ? widget.profile.photoUrl
                     : AppProperties.getAppLogoUrl(),
-                imageBuilder: (context, imageProvider) => CircleAvatar(
-                  radius: widget.compact ? 20 : 28,
-                  backgroundImage: imageProvider,
-                ),
-                placeholder: (context, url) => CircleAvatar(
-                  radius: widget.compact ? 20 : 28,
-                  child: const CircularProgressIndicator(strokeWidth: 2),
-                ),
-                errorWidget: (context, url, error) => CircleAvatar(
-                  radius: widget.compact ? 20 : 28,
-                  backgroundImage: CachedNetworkImageProvider(
-                    AppProperties.getAppLogoUrl(),
-                  ),
-                ),
+                radius: widget.compact ? 20 : 28,
               ),
           const SizedBox(width: 12),
         ],

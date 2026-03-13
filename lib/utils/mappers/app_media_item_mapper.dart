@@ -58,7 +58,8 @@ class AppMediaItemMapper {
         likes: releaseItem.likedProfiles?.length ?? 0,
         state: releaseItem.state,
         mediaSource: AppMediaSource.internal,
-        type: releaseItem.type == ReleaseType.episode ? MediaItemType.podcast : releaseItem.type == ReleaseType.chapter ? MediaItemType.audiobook : releaseItem.mediaType
+        type: releaseItem.type == ReleaseType.episode ? MediaItemType.podcast : releaseItem.type == ReleaseType.chapter ? MediaItemType.audiobook : releaseItem.mediaType,
+        slug: releaseItem.slug,
       );
     } catch (e) {
       throw Exception('Error parsing item: $e');
@@ -107,12 +108,14 @@ class AppMediaItemMapper {
     List<AppMediaItem> appMediaItems = [];
 
     if(itemlist.appMediaItems != null) {
-      appMediaItems.addAll(itemlist.appMediaItems!);
+      appMediaItems.addAll(itemlist.appMediaItems!.where((item) => item.isAudioContent));
     }
 
     if(itemlist.appReleaseItems != null) {
       for (var element in itemlist.appReleaseItems!) {
-        appMediaItems.add(AppMediaItemMapper.fromAppReleaseItem(element));
+        if (element.isAudioContent) {
+          appMediaItems.add(AppMediaItemMapper.fromAppReleaseItem(element));
+        }
       }
     }
 

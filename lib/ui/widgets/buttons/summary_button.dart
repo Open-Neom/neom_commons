@@ -19,7 +19,7 @@ class SummaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: color ?? AppColor.main75,
+          color: color ?? AppColor.surfaceElevated,
           borderRadius: BorderRadius.circular(20.0),
           boxShadow: const [
             BoxShadow(

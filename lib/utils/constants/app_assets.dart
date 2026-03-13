@@ -5,8 +5,8 @@ class AppAssets {
 
   static const String icon = "assets/appIcon.png";
   static const String iconWhite = "assets/appIcon_white.png";
-  static const String isologoAppWhite = "assets/logos/isologo-core-white.png";
-  static const String logo = "assets/logos/logo-core.png";
+  static const String isologoAppWhite = "assets/logos/isologo-app-white.png";
+  static const String logo = "assets/logos/logo-app.png";
   static const String logoCompanyWhite = "assets/logos/logo-company-white.png";
   static const String logoSloganSpanish = "assets/logos/logo-slogan-spanish.png";
   static const String logoSloganEnglish = "assets/logos/logo-slogan-english.png";
@@ -24,14 +24,6 @@ class AppAssets {
   static const String noImageFound = 'assets/images/no_image_found.png';
 
   static const String eventType = "assets/images/eventType/";
-  // static const String rehearsal = "assets/images/eventType/rehearsal.png";
-  // static const String gig = "assets/images/eventType/gig.png";
-  // static const String jamming = "assets/images/eventType/jamming.png";
-  // static const String festival = "assets/images/eventType/festival.png";
-  // static const String clinic = "assets/images/eventType/clinic.png";
-  // static const String lesson = "assets/images/eventType/lesson.png";
-  // static const String meetup = "assets/images/eventType/meetup.png";
-  // static const String talk = "assets/images/eventType/talk.png";
 
   static const String microphone = "assets/images/events/microphone.png";
   static const String pray = "assets/images/events/pray.png";

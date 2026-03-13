@@ -1,8 +1,8 @@
-import 'dart:io';
+import 'package:neom_core/utils/platform/core_io.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:neom_commons/ui/widgets/images/handled_cached_network_image.dart';
 
 import '../../../utils/constants/app_assets.dart';
 import '../../../utils/enums/image_quality.dart';
@@ -48,8 +48,8 @@ class NeomImageCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            if (localImage)
-              Image.file(File(imageUrl,),
+            if (localImage && !kIsWeb)
+              Image.file(File(imageUrl) as dynamic,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stacktrace) {
                   if (localErrorFunction != null) {
@@ -58,18 +58,11 @@ class NeomImageCard extends StatelessWidget {
                   return Image(fit: BoxFit.cover, image: placeholderImage,);
                 },
               )
-            else if (kIsWeb)
-              Image.network(
+            else
+              HandledCachedNetworkImage(
                 imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Image(fit: BoxFit.cover, image: placeholderImage,),
-              )
-            else
-              CachedNetworkImage(
-                fit: BoxFit.cover,
-                errorWidget: (context, _, _) => Image(fit: BoxFit.cover, image: placeholderImage,),
-                imageUrl: imageUrl,
-                placeholder: (context, url) => Image(fit: BoxFit.cover, image: placeholderImage,),
+                enableFullScreen: false,
               ),
             if (selected)
               Container(

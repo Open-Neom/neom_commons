@@ -1,6 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:neom_commons/ui/widgets/images/handled_cached_network_image.dart';
 import 'package:sint/sint.dart';
 
 class CachedNetworkRoutingImage extends StatelessWidget {
@@ -17,19 +16,11 @@ class CachedNetworkRoutingImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-            child: kIsWeb
-              ? Image.network(
-                  mediaUrl,
-                  fit: fit,
-                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
-                )
-              : CachedNetworkImage(
-                  imageUrl: mediaUrl,
-                  fit: fit,
-                  errorWidget: (context,url,error) => const Icon(
-                    Icons.error,
-                  ),
-                ),
+            child: HandledCachedNetworkImage(
+              mediaUrl,
+              fit: fit,
+              enableFullScreen: false,
+            ),
           onTap: () => {
             if(toNamed.isNotEmpty)
               Sint.toNamed(toNamed, arguments: [referenceId]),

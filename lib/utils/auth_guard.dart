@@ -26,6 +26,9 @@ class AuthGuard {
   }
 
   /// Verifica si el usuario está autenticado realmente.
+  /// Public para que controllers puedan hacer guards silenciosos (sin UI).
+  static bool get isAuthenticated => _userIsLoggedIn();
+
   static bool _userIsLoggedIn() {
     try {
       // 1. Si el servicio no está inyectado, no hay usuario.
@@ -43,7 +46,7 @@ class AuthGuard {
   static void showGuestModal(BuildContext context, {String? redirectRoute, dynamic arguments}) {
     Sint.dialog(
       AlertDialog(
-        backgroundColor: AppColor.getMain(),
+        backgroundColor: AppColor.scaffold,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         title: Text(AppTranslationConstants.accountRequired.tr,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)

@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
+import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
@@ -16,6 +17,7 @@ import 'package:neom_core/utils/enums/subscription_level.dart';
 import 'package:neom_core/utils/enums/verification_level.dart';
 import 'package:sint/sint.dart';
 
+import 'ui/splash_animations.dart';
 import 'ui/theme/app_color.dart';
 import 'ui/theme/app_theme.dart';
 import 'ui/widgets/title_subtitle_row.dart';
@@ -35,6 +37,31 @@ class AppFlavour {
       height: AppConfig.instance.appInUse == AppInUse.g ? 50 : 150,
       width: 150,
     );
+  }
+
+  /// Returns the splash animation delegate for the current app flavour.
+  ///
+  /// Each app has a unique visual effect:
+  /// - **Gigmeout** (g): Sound wave rings expanding outward
+  /// - **Emxi** (e): Rising page particles with sway
+  /// - **Cyberneom** (c): Nebula stardust spirals
+  /// - **Srznik** (d): Digital pulse rings with grid dots
+  /// - **neom_app_lite** (o): Breathing circle with minimal particles
+  static SplashAnimationDelegate getSplashAnimation() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.g:
+        return SoundWaveDelegate();
+      case AppInUse.e:
+        return RisingPagesDelegate();
+      case AppInUse.c:
+        return NebulaDelegate();
+      case AppInUse.d:
+        return DigitalPulseDelegate();
+      case AppInUse.o:
+        return BreathingCircleDelegate();
+      default:
+        return OrbitingParticlesDelegate();
+    }
   }
 
   static IconData getAppItemIcon() {
@@ -77,7 +104,7 @@ class AppFlavour {
     }
   }
 
-  static String getMainItemDetailsRoute({MediaItemType? type}) {
+  static String getMainItemDetailsRoute(String id, {MediaItemType? type, String slug = ''}) {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
         return AppRouteConstants.audioPlayerMedia;
@@ -90,7 +117,7 @@ class AppFlavour {
           return AppRouteConstants.audioPlayerMedia;
         }
         // Por defecto para libros o PDF
-        return AppRouteConstants.bookDetails;
+        return AppRouteConstants.bookPath(id, slug: slug);
       case AppInUse.c:
         return AppRouteConstants.audioPlayerMedia;
       default:
@@ -98,12 +125,12 @@ class AppFlavour {
     }
   }
 
-  static String getSecondaryItemDetailsRoute({MediaItemType? type}) {
+  static String getSecondaryItemDetailsRoute(String id, {MediaItemType? type, String slug = ''}) {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.e:
       // Si el item secundario es un PDF, vamos a detalles, si no, al player.
         if (type == MediaItemType.book || type == MediaItemType.pdf) {
-          return AppRouteConstants.bookDetails;
+          return AppRouteConstants.bookPath(id, slug: slug);
         }
         return AppRouteConstants.audioPlayerMedia;
       case AppInUse.g:
@@ -327,6 +354,21 @@ class AppFlavour {
     }
   }
 
+  /// Returns the search bar hint text for the audio player, customized per app.
+  /// Each app has content aligned with its brand identity.
+  static String getAudioSearchHint() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.g:
+        return AppTranslationConstants.searchHintGigmeout.tr;
+      case AppInUse.e:
+        return AppTranslationConstants.searchHintEmxi.tr;
+      case AppInUse.c:
+        return AppTranslationConstants.searchHintCyberneom.tr;
+      default:
+        return AppTranslationConstants.searchHintDefault.tr;
+    }
+  }
+
   static Widget getVerificationIcon(VerificationLevel level, {double? size}) {
 
     Widget icon = Icon(Icons.check_circle_outline, size: size);
@@ -412,21 +454,7 @@ class AppFlavour {
   }
 
   static Color getBackgroundColor() {
-
-    switch(AppConfig.instance.appInUse) {
-      case AppInUse.c:
-        return AppColor.main50;
-      case AppInUse.e:
-        return AppColor.darkBackground;
-      case AppInUse.g:
-        return AppColor.main50;
-      case AppInUse.o:
-        return AppColor.main50;
-      default:
-        break;
-    }
-
-    return AppColor.getMain();
+    return AppColor.scaffold;
   }
 
   static bool gotoDetails() {
@@ -471,7 +499,7 @@ class AppFlavour {
       case AppInUse.c:
         return true;
       case AppInUse.e:
-        return false;
+        return true;
       case AppInUse.g:
         return false;
       case AppInUse.o:
@@ -563,7 +591,7 @@ class AppFlavour {
       case AppInUse.c:
         //TODO implement for spiritual core
       case AppInUse.e:
-        Sint.toNamed(AppRouteConstants.pdfViewer, arguments: [suggestedItem, true, true]);
+        Sint.toNamed(AppRouteConstants.readingPath(suggestedItem.id, slug: suggestedItem.slug), arguments: [suggestedItem, true, true]);
       case AppInUse.g:
         //TODO implement for music core
       case AppInUse.o:
@@ -666,6 +694,16 @@ class AppFlavour {
 
   static bool showDaw() {
     switch(AppConfig.instance.appInUse) {
+      case AppInUse.g:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool showLearning() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.e:
       case AppInUse.g:
         return true;
       default:
@@ -779,21 +817,31 @@ class AppFlavour {
 
   }
 
-  static void navigateToShelfItem(AppReleaseItem releaseItem) {
+  static Future<void> navigateToShelfItem(AppReleaseItem releaseItem) async {
     if(Sint.isRegistered(tag: AppPageIdConstants.mediaPlayer)) {
       Sint.delete(tag: AppPageIdConstants.mediaPlayer);
     }
+
+    // If previewUrl is empty, try fetching complete data from Firestore
+    if (releaseItem.previewUrl.isEmpty && releaseItem.id.isNotEmpty) {
+      try {
+        final fullItem = await AppReleaseItemFirestore().retrieve(releaseItem.id);
+        if (fullItem.id.isNotEmpty) {
+          releaseItem = fullItem;
+        }
+      } catch (_) {}
+    }
+
     switch(AppConfig.instance.appInUse) {
       case AppInUse.e:
-        if(releaseItem.previewUrl.isNotEmpty) {
-          if(releaseItem.previewUrl.contains(".pdf")) {
-            Sint.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [releaseItem], preventDuplicates: false);
-            Sint.toNamed(AppRouteConstants.pdfViewer, arguments: [releaseItem, true]);
-          } else {
-            AppUtilities.gotoItemDetails(releaseItem);
-          }
+        if(releaseItem.previewUrl.isNotEmpty && releaseItem.isBookContent) {
+          Sint.toNamed(AppRouteConstants.readingPath(releaseItem.id, slug: releaseItem.slug), arguments: [releaseItem, true], preventDuplicates: false);
+        } else if(releaseItem.previewUrl.isNotEmpty) {
+          AppUtilities.gotoItemDetails(releaseItem);
         } else if (releaseItem.webPreviewUrl?.isNotEmpty ?? false) {
           ExternalUtilities.launchURL(releaseItem.webPreviewUrl!);
+        } else {
+          Sint.toNamed(AppFlavour.getMainItemDetailsRoute(releaseItem.id, slug: releaseItem.slug), arguments: [releaseItem], preventDuplicates: false);
         }
       case AppInUse.c:
       case AppInUse.g:
@@ -803,17 +851,19 @@ class AppFlavour {
     }
   }
 
-  static void navigateToReleaseItem(String referenceId) {
+  static Future<void> navigateToReleaseItem(String referenceId) async {
     if(Sint.isRegistered(tag: AppPageIdConstants.mediaPlayer)) {
       Sint.delete(tag: AppPageIdConstants.mediaPlayer);
     }
-    switch(AppConfig.instance.appInUse) {
-      case AppInUse.e:
-      case AppInUse.c:
-      case AppInUse.g:
-      case AppInUse.o:
-      default:
-      Sint.toNamed(AppFlavour.getMainItemDetailsRoute(), arguments: [referenceId], preventDuplicates: false);
+    try {
+      final releaseItem = await AppReleaseItemFirestore().retrieve(referenceId);
+      if (releaseItem != null && releaseItem.id.isNotEmpty) {
+        navigateToShelfItem(releaseItem);
+      } else {
+        Sint.toNamed(AppFlavour.getMainItemDetailsRoute(referenceId), arguments: [referenceId], preventDuplicates: false);
+      }
+    } catch (e) {
+      Sint.toNamed(AppFlavour.getMainItemDetailsRoute(referenceId), arguments: [referenceId], preventDuplicates: false);
     }
   }
 
