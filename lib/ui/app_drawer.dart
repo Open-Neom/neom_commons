@@ -65,6 +65,8 @@ class AppDrawer extends StatelessWidget {
                         drawerRowOption(AppDrawerMenu.daw, const Icon(FontAwesomeIcons.sliders), context),
                       if(AppFlavour.showLearning())
                         drawerRowOption(AppDrawerMenu.learning, const Icon(Icons.school), context),
+                      if(AppFlavour.showServices())
+                        drawerRowOption(AppDrawerMenu.appItemQuotation, const Icon(Icons.calculate_outlined), context),
                       if(AppFlavour.isNeomApp())
                         Column(
                           children: [
@@ -98,7 +100,6 @@ class AppDrawer extends StatelessWidget {
                           if(AppFlavour.showServices())
                             Column(
                               children: [
-                                drawerRowOption(AppDrawerMenu.appItemQuotation, const Icon(Icons.attach_money), context),
                                 drawerRowOption(AppDrawerMenu.services, const Icon(Icons.room_service), context),
                                 const Divider(),
                               ],
@@ -361,7 +362,7 @@ class AppDrawer extends StatelessWidget {
               Sint.toNamed(AppRouteConstants.erpDashboard);
               break;
             case AppDrawerMenu.hubDashboard:
-              Sint.toNamed(AppRouteConstants.hubDashboard);
+              Sint.toNamed(AppRouteConstants.erpDashboard);
               break;
           }
         }

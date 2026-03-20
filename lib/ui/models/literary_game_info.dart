@@ -22,13 +22,13 @@ class LiteraryGameInfo {
 
   /// All available literary games.
   static const List<LiteraryGameInfo> allGames = [
-    // 1. Libroverso (FindYourBook)
+    // 1. Libroverso
     LiteraryGameInfo(
       titleKey: CommonTranslationConstants.bookverse,
       descriptionKey: CommonTranslationConstants.bookverseDesc,
       icon: Icons.explore,
       color: Colors.indigoAccent,
-      route: AppRouteConstants.gamesFindYourBook,
+      route: AppRouteConstants.gamesLibroverso,
     ),
     // 2. Frasedrez (LiteraryChess)
     LiteraryGameInfo(

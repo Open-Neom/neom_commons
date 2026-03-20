@@ -399,6 +399,21 @@ class CommonsEnTranslations {
     CommonTranslationConstants.shareEvent: 'Share event',
     CommonTranslationConstants.attending: 'attending',
     CommonTranslationConstants.andMore: 'and more',
+
+    // --- GAMES ---
+    CommonTranslationConstants.bookverse: 'Libroverso',
+    CommonTranslationConstants.bookverseDesc: 'Let a book find you through the cosmos',
+    CommonTranslationConstants.cosmosLiterario: 'Literary Cosmos',
+    CommonTranslationConstants.cosmosLiterarioDesc: 'Watch 20 books orbit and reorder based on your word choices',
+    CommonTranslationConstants.literaryChess: 'Literary Chess',
+    CommonTranslationConstants.literaryChessDesc: 'Combine strategy and literary knowledge',
+    CommonTranslationConstants.librinderDesc: 'Find your next perfect read',
+    CommonTranslationConstants.quoteQuest: 'Quote Quest',
+    CommonTranslationConstants.quoteQuestDesc: 'Discover and complete famous literary quotes',
+    CommonTranslationConstants.verseScramble: 'Verse Scramble',
+    CommonTranslationConstants.verseScrambleDesc: 'Rearrange verses to form complete poems',
+    CommonTranslationConstants.bookTherapy: 'Book Therapy',
+    CommonTranslationConstants.bookTherapyDesc: 'Books recommended based on your mood',
   };
 
 }

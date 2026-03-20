@@ -397,6 +397,8 @@ class CommonTranslationConstants {
   static const String literaryChessDesc = 'literaryChessDesc';
   static const String bookverse = 'bookverse';
   static const String bookverseDesc = 'bookverseDesc';
+  static const String cosmosLiterario = 'cosmosLiterario';
+  static const String cosmosLiterarioDesc = 'cosmosLiterarioDesc';
   static const String librinder = 'librinder';
   static const String librinderDesc = 'librinderDesc';
   static const String bookTherapy = 'bookTherapy';

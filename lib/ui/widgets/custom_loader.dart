@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:neom_core/app_config.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/utils/platform/core_io.dart';
 import '../theme/app_theme.dart';
 
@@ -39,8 +40,8 @@ class CustomLoader {
   void hideLoader() {
     try {
       _overlayEntry.remove();
-    } catch (e) {
-      AppConfig.logger.e("Exception:: $e");
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'hideLoader');
     }
   }
 

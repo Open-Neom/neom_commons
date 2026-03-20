@@ -1,5 +1,5 @@
-import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/base_item.dart';
 import 'package:neom_core/domain/model/external_item.dart';
@@ -25,8 +25,8 @@ class BaseItemMapper {
         metaOwner: releaseItem.metaOwner,
         publishedYear: releaseItem.createdTime
       );
-    } catch (e) {
-      AppConfig.logger.e("Error mapping AppReleaseItem to BaseItem: $e");
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'fromAppReleaseItem');
       throw Exception('Error parsing item: $e');
     }
   }
@@ -49,8 +49,8 @@ class BaseItemMapper {
           metaOwner: mediaItem.metaOwner,
           publishedYear: mediaItem.publishedYear ?? 0
       );
-    } catch (e) {
-      AppConfig.logger.e(e.toString());
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'fromAppMediaItem');
       throw Exception('Error mapping external item to BaseItem: $e');
     }
   }
@@ -73,8 +73,8 @@ class BaseItemMapper {
         metaOwner: externalItem.metaOwner,
         publishedYear: externalItem.publishedYear ?? 0
       );
-    } catch (e) {
-      AppConfig.logger.e(e.toString());
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'fromExternalItem');
       throw Exception('Error mapping external item to BaseItem: $e');
     }
   }
@@ -99,8 +99,8 @@ class BaseItemMapper {
         metaOwner: null,
         publishedYear: 0,
       );
-    } catch (e) {
-      AppConfig.logger.e("Error mapping ChamberPreset to BaseItem: $e");
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'fromChamberPreset');
       throw Exception('Error mapping chamber preset to BaseItem: $e');
     }
   }
@@ -117,8 +117,8 @@ class BaseItemMapper {
       } else if(item is ExternalItem) {
         baseItem = fromExternalItem(item);
       }
-    } catch (e) {
-      AppConfig.logger.e("Error mapping ChamberPreset to BaseItem: $e");
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'fromDynamicItem');
       throw Exception('Error mapping chamber preset to BaseItem: $e');
     }
 

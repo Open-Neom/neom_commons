@@ -1,5 +1,6 @@
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/external_item.dart';
 import 'package:neom_core/domain/model/item_list.dart';
@@ -14,7 +15,8 @@ class AppMediaItemMapper {
     List<AppMediaItem> items = [];
     try {
 
-    } catch (e) {
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'listFromMap');
       throw Exception('Error parsing item: $e');
     }
 
@@ -25,7 +27,8 @@ class AppMediaItemMapper {
     List<AppMediaItem> items = [];
     try {
 
-    } catch (e) {
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'listFromList');
       throw Exception('Error parsing item: $e');
     }
 
@@ -61,7 +64,8 @@ class AppMediaItemMapper {
         type: releaseItem.type == ReleaseType.episode ? MediaItemType.podcast : releaseItem.type == ReleaseType.chapter ? MediaItemType.audiobook : releaseItem.mediaType,
         slug: releaseItem.slug,
       );
-    } catch (e) {
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'fromAppReleaseItem');
       throw Exception('Error parsing item: $e');
     }
   }
@@ -97,8 +101,8 @@ class AppMediaItemMapper {
           mediaSource: AppMediaSource.external,
           type: externalItem.type
       );
-    } catch (e) {
-      AppConfig.logger.e(e.toString());
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'fromExternalItem');
       throw Exception('Error mapping external item to AppMediaItem: $e');
     }
   }

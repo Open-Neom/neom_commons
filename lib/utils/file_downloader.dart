@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:neom_core/app_config.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/utils/platform/core_io.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -21,7 +22,8 @@ class FileDownloader {
         file = File("${dir.path}/$filename");
         await file.writeAsBytes(response.bodyBytes, flush: true);
       }
-    } catch (e) {
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'getPdfFromUrl');
       throw Exception('Error parsing asset file!');
     }
 
@@ -44,8 +46,8 @@ class FileDownloader {
         await jpegFileRef.writeAsBytes(response.bodyBytes);
         AppConfig.logger.i("Image downloaded to path $localPath successfully.");
       }
-    } catch (e) {
-      AppConfig.logger.e(e.toString());
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'downloadImage');
     }
     return localPath;
   }

@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:neom_commons/ui/widgets/custom_image.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/model/subscription_plan.dart';
 import 'package:neom_core/domain/use_cases/mate_service.dart';
@@ -112,13 +113,11 @@ class AppAlerts {
                             AppProfile profile = userServiceImpl.user.profiles.elementAt(index);
                             return ListTile(
                               leading: IconButton(
-                                icon: CircleAvatar(
-                                    maxRadius: 60,
-                                    backgroundImage: platformImageProvider(
-                                        profile.photoUrl.isNotEmpty
-                                            ? profile.photoUrl
-                                            : AppProperties.getNoImageUrl()
-                                    )
+                                icon: platformCircleAvatar(
+                                    imageUrl: profile.photoUrl.isNotEmpty
+                                        ? profile.photoUrl
+                                        : AppProperties.getNoImageUrl(),
+                                    radius: 60,
                                 ),
                                 onPressed: () async {
                                   Navigator.pop(context);
@@ -172,8 +171,8 @@ class AppAlerts {
                   ],
                 ));
           });
-    } catch(e) {
-      AppConfig.logger.e(e.toString());
+    } catch(e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'selectProfileModal');
     }
   }
 

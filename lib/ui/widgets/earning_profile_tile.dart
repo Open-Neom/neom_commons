@@ -28,10 +28,8 @@ class EarningProfileTile extends StatelessWidget {
 
     double appCoinProfit = profit / double.parse(AppProperties.getAppCoinValue());
     return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: platformImageProvider(
-          mate.photoUrl.isNotEmpty ? mate.photoUrl : AppProperties.getAppLogoUrl(),
-        ),
+      leading: platformCircleAvatar(
+        imageUrl: mate.photoUrl.isNotEmpty ? mate.photoUrl : AppProperties.getAppLogoUrl(),
       ),
       title: Row(
         children: [

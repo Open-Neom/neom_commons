@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:sint/sint.dart';
 
@@ -36,8 +37,8 @@ class AuthGuard {
       final userService = Sint.find<UserService>();
       // 2. Debe tener un ID y NO estar en modo invitado explícito.
       return userService.user.id.isNotEmpty && !AppConfig.instance.isGuestMode;
-    } catch (e) {
-      AppConfig.logger.e("Error checking auth status: $e");
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'userIsLoggedIn');
       return false;
     }
   }

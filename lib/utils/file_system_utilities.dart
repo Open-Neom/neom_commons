@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:neom_core/app_config.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/utils/platform/core_io.dart';
 import 'package:path/path.dart' as p; // Importa el paquete path con un prefijo
 import 'package:path_provider/path_provider.dart';
@@ -23,8 +24,8 @@ class FileSystemUtilities {
       } else {
         file = await File.fromUri(Uri.parse(filePath)).create();
       }
-    } catch (e) {
-      AppConfig.logger.e('Error getting File');
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'getFileFromPath');
     }
 
     return file;

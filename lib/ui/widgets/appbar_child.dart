@@ -3,6 +3,10 @@ import 'package:sint/sint.dart';
 import '../theme/app_color.dart';
 import '../theme/app_theme.dart';
 
+/// @deprecated Use [SintAppBar] from `package:sint/sint.dart` instead.
+/// SintAppBar provides Sint-aware back navigation, web URL sync, and
+/// fallback routing. This class will be removed in a future version.
+@Deprecated('Use SintAppBar from package:sint/sint.dart instead')
 // ignore: must_be_immutable
 class AppBarChild extends StatelessWidget implements PreferredSizeWidget {
 

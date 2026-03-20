@@ -2,11 +2,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:neom_commons/ui/widgets/custom_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
@@ -119,6 +121,12 @@ class AppUtilities {
       imageUrl = AppProperties.getAppLogoUrl();
     }
 
+    // On web, skip the http.get validation — it doubles fetch requests
+    // and triggers 429 rate limits from Google CDN. Just return the provider directly.
+    if (kIsWeb) {
+      return platformImageProvider(imageUrl);
+    }
+
     try {
       Uri uri = Uri.parse(imageUrl);
 
@@ -131,8 +139,8 @@ class AppUtilities {
         }
       }
 
-    } catch (e){
-      AppConfig.logger.e(e.toString());
+    } catch (e, st){
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'handleCachedImageProvider');
     }
 
     return platformImageProvider(AppProperties.getAppLogoUrl());
@@ -150,8 +158,8 @@ class AppUtilities {
           }
         }
       }
-    } catch (e) {
-      AppConfig.logger.e(e.toString());
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'filterByName');
     }
 
     return filteredProfiles;
@@ -174,8 +182,8 @@ class AppUtilities {
           }
         }
       }
-    } catch (e) {
-      AppConfig.logger.e(e.toString());
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'filterByNameOrInstrument');
     }
 
     return filteredProfiles;
@@ -305,8 +313,8 @@ class AppUtilities {
         Sint.toNamed(route, arguments: [item]);
       }
 
-    } catch (e) {
-      AppConfig.logger.e("Error en navegación dinámica: $e");
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'gotoItemDetails');
     }
   }
 

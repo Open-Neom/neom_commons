@@ -149,6 +149,23 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
     // Only wrap in GestureDetector when there's a tap action to handle.
     // This prevents absorbing taps from parent GestureDetectors.
     if (widget.function != null || widget.enableFullScreen) {
+      if (kIsWeb) {
+        // On web, HtmlElementView absorbs pointer events even with
+        // pointerEvents:'none' on the <img>. Use a Stack with a
+        // transparent overlay so the GestureDetector sits above the
+        // platform view and receives taps.
+        return Stack(
+          children: [
+            wrappedContent,
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: _handleTap,
+              ),
+            ),
+          ],
+        );
+      }
       return GestureDetector(
         onTap: _handleTap,
         child: wrappedContent,

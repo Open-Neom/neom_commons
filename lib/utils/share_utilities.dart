@@ -3,6 +3,7 @@ import 'package:neom_core/utils/platform/core_io.dart';
 import 'package:intl/intl.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/blog_entry.dart';
 import 'package:neom_core/domain/model/event.dart';
@@ -304,8 +305,8 @@ class ShareUtilities {
       await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
       return file.path;
-    } catch (e) {
-      AppConfig.logger.e("Error loading asset logo: $e");
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'getLogoLocalPath');
       return "";
     }
   }

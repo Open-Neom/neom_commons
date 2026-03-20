@@ -32,7 +32,7 @@ class NeomBottomAppBar extends StatefulWidget {
     this.backgroundColor,
     this.showText = true,
   }) {
-    assert(items.length > 1 && items.length <= 5);
+    assert(items.length > 1 && items.length <= 6);
   }
 
   @override

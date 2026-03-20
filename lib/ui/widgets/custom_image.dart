@@ -46,10 +46,12 @@ Widget platformNetworkImage({
 }
 
 /// Platform-aware image provider.
-/// Returns NetworkImage on web (avoids CORS/EncodingError with CanvasKit)
-/// and CachedNetworkImageProvider on mobile (disk caching).
-/// Use this wherever you need an ImageProvider (CircleAvatar.backgroundImage,
-/// DecorationImage.image, etc.)
+/// On web: returns NetworkImage (works for same-origin and CORS-enabled URLs
+/// like Google, Firebase Storage, etc.). For cross-origin URLs without CORS,
+/// use platformNetworkImage() or platformCircleAvatar() instead.
+/// On mobile: returns CachedNetworkImageProvider for disk caching.
+/// NOTE: Do NOT use webHtmlElementStrategy: prefer — it loads via HTML <img>
+/// but then fails with EncodingError when extracting pixels for Canvas painting.
 ImageProvider platformImageProvider(String imageUrl, {int? maxHeight, int? maxWidth}) {
   final optimizedUrl = _optimizeGoogleImageUrl(imageUrl);
   if (kIsWeb) {
@@ -71,6 +73,86 @@ String _optimizeGoogleImageUrl(String url, {int size = 96}) {
   if (url.contains(RegExp(r'=s\d+'))) return url;
   // Append size parameter
   return '$url=s$size';
+}
+
+/// Platform-aware circular avatar for network images.
+/// On web: uses Image.network + ClipOval (Flutter-rendered, properly clippable).
+/// On mobile: uses standard CircleAvatar with CachedNetworkImageProvider.
+/// Use this instead of CircleAvatar(backgroundImage: platformImageProvider(...))
+Widget platformCircleAvatar({
+  required String imageUrl,
+  double radius = 20,
+  Color? backgroundColor,
+  Widget? child,
+}) {
+  final bgColor = backgroundColor ?? Colors.grey[800];
+  final fallbackChild = child ?? Icon(Icons.person, size: radius);
+  final optimizedUrl = _optimizeGoogleImageUrl(imageUrl);
+
+  if (kIsWeb) {
+    // On web, use Image.network (Flutter-rendered) instead of HtmlElementView.
+    // HtmlElementView creates a platform view that floats above the Flutter
+    // canvas, making ClipOval ineffective. Image.network goes through
+    // Flutter's rendering pipeline and can be properly clipped into a circle.
+    if (optimizedUrl.isEmpty) {
+      return CircleAvatar(
+        radius: radius,
+        backgroundColor: bgColor,
+        child: fallbackChild,
+      );
+    }
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: bgColor,
+      child: ClipOval(
+        child: Image.network(
+          optimizedUrl,
+          width: radius * 2,
+          height: radius * 2,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => fallbackChild,
+        ),
+      ),
+    );
+  }
+  return CircleAvatar(
+    radius: radius,
+    backgroundColor: bgColor,
+    backgroundImage: optimizedUrl.isNotEmpty
+        ? CachedNetworkImageProvider(optimizedUrl)
+        : null,
+    child: imageUrl.isEmpty ? fallbackChild : child,
+  );
+}
+
+/// Platform-aware BoxDecoration with network image.
+/// On web: returns plain decoration (no image) since DecorationImage
+/// paints on Canvas which requires CORS. Use a Stack with
+/// platformNetworkImage instead for web backgrounds.
+/// On mobile: returns BoxDecoration with DecorationImage.
+BoxDecoration? platformDecorationImage({
+  required String imageUrl,
+  BoxFit fit = BoxFit.cover,
+  ColorFilter? colorFilter,
+  BorderRadius? borderRadius,
+  Color? color,
+}) {
+  if (imageUrl.isEmpty) return null;
+  if (kIsWeb) {
+    // On web, DecorationImage paints on Canvas → CORS error.
+    // Return decoration without image; caller should layer
+    // platformNetworkImage in a Stack.
+    return BoxDecoration(borderRadius: borderRadius, color: color);
+  }
+  return BoxDecoration(
+    borderRadius: borderRadius,
+    color: color,
+    image: DecorationImage(
+      image: CachedNetworkImageProvider(_optimizeGoogleImageUrl(imageUrl)),
+      fit: fit,
+      colorFilter: colorFilter,
+    ),
+  );
 }
 
 Widget cachedNetworkProfileImage(String profileId, String mediaUrl) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:neom_core/app_config.dart';
 import 'package:neom_core/data/firestore/profile_firestore.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
@@ -70,8 +70,8 @@ class LikeButtonState extends State<LikeButton>
       final UserService userServiceImpl = Sint.find<UserService>();
       profile = userServiceImpl.profile;
       liked = profile.favoriteItems?.contains(widget.appMediaItem?.id) ?? false;
-    } catch (e) {
-      AppConfig.logger.e('Error in likeButton: $e');
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'likeButtonBuild');
     }
     return ScaleTransition(
       scale: _scale,
@@ -96,8 +96,8 @@ class LikeButtonState extends State<LikeButton>
               profile.favoriteItems?.add(itemId);
               ProfileFirestore().addFavoriteItem(profile.id, itemId);
             }
-          } catch(e) {
-            AppConfig.logger.e(e.toString());
+          } catch(e, st) {
+            NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'likeButtonOnPressed');
           }
 
           if (!liked) {

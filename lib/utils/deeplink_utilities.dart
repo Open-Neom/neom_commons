@@ -1,6 +1,7 @@
 import 'package:app_links/app_links.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/slug_router.dart';
 import 'package:sint/sint.dart';
@@ -116,8 +117,8 @@ class DeeplinkUtilities {
         navigateWithHomeBehind(AppRouteConstants.blogEntryPath(match.id, slug: match.slug), arguments: [match.entity]);
         return;
       }
-    } catch (e) {
-      AppConfig.logger.e("_resolveBlogLink error: $e");
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'resolveBlogLink');
     }
     Sint.offAllNamed(AppRouteConstants.home);
   }

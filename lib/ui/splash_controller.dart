@@ -1,5 +1,6 @@
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/use_cases/login_service.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/auth_status.dart';
@@ -67,8 +68,8 @@ class SplashController extends SintController {
           break;
       }
 
-    } catch (e) {
-      AppConfig.logger.e(e.toString());
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'splashOnInit');
     }
 
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:sint/sint.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,8 +25,8 @@ class GoSpotifyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     try {
 
-    } catch (e) {
-      AppConfig.logger.e('Error in likeButton: $e');
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'goSpotifyButtonBuild');
     }
     return IconButton(
         padding: padding,

@@ -27,7 +27,7 @@ enum AppDrawerMenu {
   vst("vst"),
   daw("daw"),
   erpDashboard("erpDashboard"),
-  hubDashboard("hubDashboard");
+  hubDashboard("erpHubDashboard");
 
 
   final String value;

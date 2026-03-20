@@ -25,12 +25,8 @@ class CircleAvatarRoutingImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: CircleAvatar(
-        backgroundImage: platformImageProvider(
-              mediaUrl.isNotEmpty ? mediaUrl : AppProperties.getNoImageUrl(),
-              maxHeight: height,
-              maxWidth: width,
-            ),
+      child: platformCircleAvatar(
+        imageUrl: mediaUrl.isNotEmpty ? mediaUrl : AppProperties.getNoImageUrl(),
         radius: radius,
       ),
       onTap: () => enableRouting

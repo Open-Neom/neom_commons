@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/model/place.dart';
 import 'package:neom_core/utils/constants/url_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -35,8 +36,8 @@ class ExternalUtilities {
       } else {
         AppConfig.logger.i('Could not launch $url');
       }
-    } catch(e) {
-      AppConfig.logger.e(e.toString());
+    } catch(e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'launchURL');
     }
   }
 
@@ -52,8 +53,8 @@ class ExternalUtilities {
       } else {
         AppConfig.logger.i('Could not launch $url');
       }
-    } catch(e) {
-      AppConfig.logger.e(e.toString());
+    } catch(e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'launchWhatsappURL');
     }
   }
 
@@ -80,8 +81,8 @@ class ExternalUtilities {
       String mapOptions = Uri.encodeComponent(mapsQuery);
       final String googleMapsUrl = '${UrlConstants.googleMapsURL}$mapOptions';
       launchURL(googleMapsUrl);
-    } catch(e) {
-      AppConfig.logger.e(e.toString());
+    } catch(e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'launchGoogleMaps');
     }
   }
 

@@ -399,6 +399,21 @@ class CommonsFrTranslations {
     CommonTranslationConstants.shareEvent: 'Partager l\'événement',
     CommonTranslationConstants.attending: 'participant',
     CommonTranslationConstants.andMore: 'et plus',
+
+    // --- JEUX ---
+    CommonTranslationConstants.bookverse: 'Libroverso',
+    CommonTranslationConstants.bookverseDesc: 'Laissez un livre vous trouver à travers le cosmos',
+    CommonTranslationConstants.cosmosLiterario: 'Cosmos Littéraire',
+    CommonTranslationConstants.cosmosLiterarioDesc: 'Regardez 20 livres orbiter et se réorganiser selon vos mots',
+    CommonTranslationConstants.literaryChess: 'Échecs Littéraires',
+    CommonTranslationConstants.literaryChessDesc: 'Combinez stratégie et connaissance littéraire',
+    CommonTranslationConstants.librinderDesc: 'Trouvez votre prochaine lecture parfaite',
+    CommonTranslationConstants.quoteQuest: 'Quête de Citations',
+    CommonTranslationConstants.quoteQuestDesc: 'Découvrez et complétez des citations littéraires célèbres',
+    CommonTranslationConstants.verseScramble: 'Vers Mélangés',
+    CommonTranslationConstants.verseScrambleDesc: 'Réarrangez les vers pour former des poèmes complets',
+    CommonTranslationConstants.bookTherapy: 'Bibliothérapie',
+    CommonTranslationConstants.bookTherapyDesc: 'Livres recommandés selon votre humeur',
   };
 
 }
