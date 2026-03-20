@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -30,6 +31,10 @@ import 'utils/constants/translations/common_translation_constants.dart';
 import 'utils/external_utilities.dart';
 
 class AppFlavour {
+
+  /// Whether the current user has admin-level access.
+  /// Set via `AppConfig.instance.isAdminMode` after login.
+  static bool _isAdminOrAbove() => AppConfig.instance.isAdminMode;
 
   static Widget getSplashImage() {
     return Image.asset(
@@ -684,21 +689,13 @@ class AppFlavour {
   }
 
   static bool showVst() {
-    switch(AppConfig.instance.appInUse) {
-      case AppInUse.g:
-        return true;
-      default:
-        return false;
-    }
+    if (AppConfig.instance.appInUse != AppInUse.g) return false;
+    return kDebugMode || _isAdminOrAbove();
   }
 
   static bool showDaw() {
-    switch(AppConfig.instance.appInUse) {
-      case AppInUse.g:
-        return true;
-      default:
-        return false;
-    }
+    if (AppConfig.instance.appInUse != AppInUse.g) return false;
+    return kDebugMode || _isAdminOrAbove();
   }
 
   static bool showLearning() {

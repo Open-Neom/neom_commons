@@ -386,6 +386,7 @@ class CoreFrTranslations {
     AppTranslationConstants.subscription: 'Abonnement',
     AppTranslationConstants.superAdmin: 'Super Admin',
     AppTranslationConstants.talk: 'Discussion',
+    AppTranslationConstants.virtualMeeting: 'R\u00e9union Virtuelle',
     AppTranslationConstants.tbc: 'À confirmer',
     AppTranslationConstants.tbd: 'À définir',
     AppTranslationConstants.teacher: 'Enseignant',

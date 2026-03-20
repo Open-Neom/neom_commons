@@ -386,6 +386,7 @@ class CoreEnTranslations {
     AppTranslationConstants.subscription: 'Subscription',
     AppTranslationConstants.superAdmin: 'Super Admin',
     AppTranslationConstants.talk: 'Talk',
+    AppTranslationConstants.virtualMeeting: 'Virtual Meeting',
     AppTranslationConstants.tbc: 'TBC',
     AppTranslationConstants.tbd: 'TBD',
     AppTranslationConstants.teacher: 'Teacher',

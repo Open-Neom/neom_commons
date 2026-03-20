@@ -451,6 +451,7 @@ class AppTranslationConstants {
   static const String camping = "camping";
   static const String therapy = "therapy";
   static const String practice = "practice";
+  static const String virtualMeeting = "virtualMeeting";
   static const String watching = "watching";
   static const String going = "going";
   static const String mealIncluded = "mealIncluded";

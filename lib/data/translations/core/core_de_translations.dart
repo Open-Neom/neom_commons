@@ -386,6 +386,7 @@ class CoreDeTranslations {
     AppTranslationConstants.subscription: 'Abonnement',
     AppTranslationConstants.superAdmin: 'Super Admin',
     AppTranslationConstants.talk: 'Gespräch',
+    AppTranslationConstants.virtualMeeting: 'Virtuelles Treffen',
     AppTranslationConstants.tbc: 'Wird bestätigt',
     AppTranslationConstants.tbd: 'Noch offen',
     AppTranslationConstants.teacher: 'Lehrer',

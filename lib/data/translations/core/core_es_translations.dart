@@ -324,6 +324,7 @@ class CoreEsTranslations {
     AppTranslationConstants.subscription: 'Suscripci\u00f3n',
     AppTranslationConstants.superAdmin: 'Super Administrador',
     AppTranslationConstants.talk: 'Charla',
+    AppTranslationConstants.virtualMeeting: 'Reuni\u00f3n Virtual',
     AppTranslationConstants.tbc: 'Por confirmar',
     AppTranslationConstants.tbd: 'Por definir',
     AppTranslationConstants.teacher: 'Maestro',
