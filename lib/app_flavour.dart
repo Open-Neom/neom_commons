@@ -756,6 +756,21 @@ class AppFlavour {
     }
   }
 
+  /// Whether this app shows ads. EMXI is exempt (brand sovereignty).
+  /// Cyberneom and Gigmeout show ads to non-subscribers.
+  static bool showAds() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c: // Cyberneom
+        return true;
+      case AppInUse.g: // Gigmeout
+        return true;
+      case AppInUse.e: // EMXI — ad-free sovereignty
+        return false;
+      default:
+        return false;
+    }
+  }
+
   static bool showWallet() {
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
