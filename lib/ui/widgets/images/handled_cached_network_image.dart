@@ -146,14 +146,11 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
         ? ClipRRect(borderRadius: widget.borderRadius!, child: content)
         : content;
 
-    // Only wrap in GestureDetector when there's a tap action to handle.
-    // This prevents absorbing taps from parent GestureDetectors.
-    if (widget.function != null || widget.enableFullScreen) {
-      if (kIsWeb) {
-        // On web, HtmlElementView absorbs pointer events even with
-        // pointerEvents:'none' on the <img>. Use a Stack with a
-        // transparent overlay so the GestureDetector sits above the
-        // platform view and receives taps.
+    // On web, HtmlElementView absorbs pointer events even with
+    // pointerEvents:'none' on the <img>. Always use a Stack overlay
+    // so taps reach either our handler or the parent GestureDetector.
+    if (kIsWeb) {
+      if (widget.function != null || widget.enableFullScreen) {
         return Stack(
           children: [
             wrappedContent,
@@ -166,6 +163,22 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
           ],
         );
       }
+      // No own tap handler — block platform view from stealing taps,
+      // let parent GestureDetector receive them instead.
+      return IgnorePointer(
+        ignoring: false,
+        child: Stack(
+          children: [
+            wrappedContent,
+            Positioned.fill(
+              child: Container(color: const Color(0x00000000)),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (widget.function != null || widget.enableFullScreen) {
       return GestureDetector(
         onTap: _handleTap,
         child: wrappedContent,
@@ -349,21 +362,20 @@ class CachedCircleAvatar extends StatelessWidget {
     }
 
     if (kIsWeb) {
-      return CircleAvatar(
-        radius: radius,
-        backgroundColor: backgroundColor ?? Colors.grey[800],
-        child: ClipOval(
-          child: Image.network(
-            imageUrl,
-            width: radius * 2,
-            height: radius * 2,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Icon(
-              Icons.person,
-              size: radius,
-              color: Colors.grey[600],
-            ),
-          ),
+      final diameter = radius * 2;
+      return Container(
+        width: diameter,
+        height: diameter,
+        decoration: BoxDecoration(
+          color: backgroundColor ?? Colors.grey[800],
+          shape: BoxShape.circle,
+        ),
+        child: buildWebNativeImage(
+          imageUrl: imageUrl,
+          width: diameter,
+          height: diameter,
+          fit: BoxFit.cover,
+          circular: true,
         ),
       );
     }

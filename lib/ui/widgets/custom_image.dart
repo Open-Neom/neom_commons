@@ -75,6 +75,72 @@ String _optimizeGoogleImageUrl(String url, {int size = 96}) {
   return '$url=s$size';
 }
 
+/// Web circle avatar with automatic retry on 429/CORS errors.
+/// First attempt uses the original URL (browser cache friendly).
+/// On failure, retries once after 2s with =s96 optimized URL.
+class _WebRetryCircleAvatar extends StatefulWidget {
+  final String imageUrl;
+  final double radius;
+  final Color? backgroundColor;
+  final Widget fallbackChild;
+
+  const _WebRetryCircleAvatar({
+    required this.imageUrl,
+    required this.radius,
+    this.backgroundColor,
+    required this.fallbackChild,
+  });
+
+  @override
+  State<_WebRetryCircleAvatar> createState() => _WebRetryCircleAvatarState();
+}
+
+class _WebRetryCircleAvatarState extends State<_WebRetryCircleAvatar> {
+  late String _currentUrl;
+  int _attempt = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentUrl = widget.imageUrl;
+  }
+
+  @override
+  void didUpdateWidget(_WebRetryCircleAvatar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.imageUrl != widget.imageUrl) {
+      _currentUrl = widget.imageUrl;
+      _attempt = 0;
+    }
+  }
+
+  void _onError(Object error, StackTrace? stackTrace) {
+    if (!mounted || _attempt >= 3) return;
+    _attempt++;
+    // Exponential backoff: 3s, 6s, 12s — gives Google time to un-throttle
+    final delay = Duration(seconds: 3 * _attempt);
+    Future.delayed(delay, () {
+      if (!mounted) return;
+      setState(() {
+        // Alternate between optimized and original URL
+        _currentUrl = _attempt.isOdd
+            ? _optimizeGoogleImageUrl(widget.imageUrl)
+            : widget.imageUrl;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: widget.radius,
+      backgroundColor: widget.backgroundColor,
+      backgroundImage: NetworkImage(_currentUrl),
+      onBackgroundImageError: _onError,
+    );
+  }
+}
+
 /// Platform-aware circular avatar for network images.
 /// On web: uses Image.network + ClipOval (Flutter-rendered, properly clippable).
 /// On mobile: uses standard CircleAvatar with CachedNetworkImageProvider.
@@ -87,34 +153,24 @@ Widget platformCircleAvatar({
 }) {
   final bgColor = backgroundColor ?? Colors.grey[800];
   final fallbackChild = child ?? Icon(Icons.person, size: radius);
-  final optimizedUrl = _optimizeGoogleImageUrl(imageUrl);
 
   if (kIsWeb) {
-    // On web, use Image.network (Flutter-rendered) instead of HtmlElementView.
-    // HtmlElementView creates a platform view that floats above the Flutter
-    // canvas, making ClipOval ineffective. Image.network goes through
-    // Flutter's rendering pipeline and can be properly clipped into a circle.
-    if (optimizedUrl.isEmpty) {
+    final webUrl = imageUrl.trim();
+    if (webUrl.isEmpty || !webUrl.startsWith('http')) {
       return CircleAvatar(
         radius: radius,
         backgroundColor: bgColor,
         child: fallbackChild,
       );
     }
-    return CircleAvatar(
+    return _WebRetryCircleAvatar(
+      imageUrl: webUrl,
       radius: radius,
       backgroundColor: bgColor,
-      child: ClipOval(
-        child: Image.network(
-          optimizedUrl,
-          width: radius * 2,
-          height: radius * 2,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => fallbackChild,
-        ),
-      ),
+      fallbackChild: fallbackChild,
     );
   }
+  final optimizedUrl = _optimizeGoogleImageUrl(imageUrl);
   return CircleAvatar(
     radius: radius,
     backgroundColor: bgColor,
