@@ -23,10 +23,12 @@ class CommonTranslationConstants {
   static const String couponAlreadyUsed = 'couponAlreadyUsed';
   static const String createAccount = 'createAccount';
   static const String createBlogEntry = 'createBlogEntry';
+  static const String coupons = 'coupons';
   static const String createCoupon = 'createCoupon';
   static const String createPlaylist = 'createPlaylist';
   static const String createPost = 'createPost';
   static const String createSponsor = 'createSponsor';
+  static const String sponsors = 'sponsors';
   static const String creatingAccount = 'creatingAccount';
   static const String creatingProfile = 'creatingProfile';
   static const String dateAndLocation = 'dateAndLocation';  
@@ -39,6 +41,7 @@ class CommonTranslationConstants {
   static const String eventReason = 'eventReason';
   static const String eventType = 'eventType';
   static const String eventmates = 'eventmates';
+  static const String freeAccount = 'freeAccount';
   static const String featureComingSoon = 'featureComingSoon';
   static const String fillRequiredFields = 'fillRequiredFields';
   static const String findItemmatesNearYourPlace = 'findItemmatesNearYourPlace';
@@ -168,6 +171,18 @@ class CommonTranslationConstants {
   static const String whereToGig = 'whereToGig';
   static const String writeThought = 'writeThought';
   static const String writeYourFeelingOrThinking = 'writeYourFeelingOrThinking';
+
+  // Sidebar / footer
+  static const String tools = 'tools';
+  static const String help = 'help';
+  static const String privacy = 'privacy';
+  static const String conditions = 'conditions';
+  static const String improveWriting = 'improveWriting';
+  static const String improveSkills = 'improveSkills';
+  static const String expandConsciousness = 'expandConsciousness';
+  static const String unlockAllTools = 'unlockAllTools';
+  static const String quotationTool = 'quotationTool';
+  static const String quotationToolDesc = 'quotationToolDesc';
 
   // Common phrases - multi-module usage
   static const String googleLogin = 'googleLogin';
@@ -438,5 +453,6 @@ class CommonTranslationConstants {
   static const String shareEvent = 'shareEvent';
   static const String attending = 'attending';
   static const String andMore = 'andMore';
+  static const String loading = 'loading';
 
 }

@@ -38,9 +38,7 @@ class ReadingProgressIndicator extends StatelessWidget {
   }
 
   String _buildLabel(int percent) {
-    final buffer = StringBuffer('Pag. ${progress.maxPageReached}');
-    if (progress.totalPages > 0) buffer.write('/${progress.totalPages}');
-    buffer.write('  $percent%');
+    final buffer = StringBuffer('$percent%');
     if (progress.hasReReads) buffer.write('  x${progress.sessionCount}');
     if (progress.lastReadTime > 0) {
       final lastRead = DateTime.fromMillisecondsSinceEpoch(progress.lastReadTime);

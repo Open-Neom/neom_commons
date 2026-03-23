@@ -72,7 +72,7 @@ class EarningProfileTile extends StatelessWidget {
         case VerificationLevel.professional:
         case VerificationLevel.premium:
         case VerificationLevel.platinum:
-          return Text(AppTranslationConstants.appMember.tr, style: TextStyle(color: Colors.blue));
+          return Text(AppTranslationConstants.appMember.tr, style: TextStyle(color: Colors.lightBlueAccent));
         default:
           return Text(CommonTranslationConstants.testPeriod.tr, style: TextStyle(color: Colors.orange));
       }

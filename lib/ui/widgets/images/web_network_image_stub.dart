@@ -8,8 +8,9 @@ Widget buildWebNativeImage({
   double? width,
   Widget? placeholder,
   Widget? errorWidget,
+  bool circular = false,
 }) {
-  return Image.network(
+  final child = Image.network(
     imageUrl,
     fit: fit,
     height: height,
@@ -21,4 +22,5 @@ Widget buildWebNativeImage({
     errorBuilder: (context, error, stackTrace) =>
         errorWidget ?? const Icon(Icons.image_not_supported),
   );
+  return circular ? ClipOval(child: child) : child;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sint/sint.dart';
 
 import '../../theme/app_color.dart';
 
@@ -77,7 +78,7 @@ class WebShortcutsHelp extends StatelessWidget {
                   ),
                   const Spacer(),
                   GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () => Sint.back(),
                     child: const Icon(Icons.close, color: Colors.white54, size: 20),
                   ),
                 ],

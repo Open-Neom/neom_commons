@@ -120,6 +120,6 @@ class AppPageIdConstants {
   static const String storyBuilder = 'storyBuilder';
   static const String storiesGallery = 'storiesGallery';
 
-  static const String itzliRemote = 'itzliRemote';
+  static const String saiaRemote = 'saiaRemote';
 
 }

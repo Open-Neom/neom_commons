@@ -57,7 +57,7 @@ class AuthGuard {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Sint.back(),
             child: Text(AppTranslationConstants.continueExploring.tr, style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
@@ -67,7 +67,7 @@ class AuthGuard {
                 shape: const StadiumBorder()
             ),
             onPressed: () {
-              // Navigator.pop(context);
+              // Sint.back();
 
               // 2. Apagar modo invitado (para que RootPage sepa que vamos al Login real)
               AppConfig.instance.isGuestMode = false;

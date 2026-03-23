@@ -59,7 +59,7 @@ class ContentModerationHelper {
       buttons: [
         DialogButton(
           color: AppColor.bondiBlue75,
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Sint.back(),
           child: Text(AppTranslationConstants.cancel.tr,
             style: const TextStyle(fontSize: 15),
           ),
@@ -67,7 +67,7 @@ class ContentModerationHelper {
         DialogButton(
           color: Colors.orange[700]!,
           onPressed: () async {
-            Navigator.pop(context);
+            Sint.back();
             final success = await onConfirm(reason);
             if (success) {
               AppUtilities.showSnackBar(

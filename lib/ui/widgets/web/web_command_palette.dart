@@ -87,7 +87,7 @@ class _WebCommandPaletteState extends State<WebCommandPalette> {
         } else if (event.logicalKey == LogicalKeyboardKey.enter && items.isNotEmpty) {
           _executeItem(items[_selectedIndex]);
         } else if (event.logicalKey == LogicalKeyboardKey.escape) {
-          Navigator.of(context).pop();
+          Sint.back();
         }
       },
       child: Center(
@@ -251,7 +251,7 @@ class _WebCommandPaletteState extends State<WebCommandPalette> {
   }
 
   void _executeItem(CommandPaletteItem item) {
-    Navigator.of(context).pop();
+    Sint.back();
     item.onSelect();
   }
 

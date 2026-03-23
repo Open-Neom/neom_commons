@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:neom_commons/ui/widgets/custom_image.dart';
 import 'package:neom_commons/ui/widgets/images/handled_cached_network_image.dart';
@@ -79,7 +80,10 @@ class _PostTileState extends State<PostTile> with SingleTickerProviderStateMixin
     if (widget.post.type == PostType.releaseItem && widget.post.referenceId.isNotEmpty) {
       Sint.toNamed(AppFlavour.getMainItemDetailsRoute(widget.post.referenceId), arguments: [widget.post.referenceId]);
     } else {
-      Sint.toNamed(AppRouteConstants.postFullScreenPath(widget.post.id), arguments: [widget.post]);
+      final route = kIsWeb
+          ? AppRouteConstants.postPath(widget.post.id)
+          : AppRouteConstants.postFullScreenPath(widget.post.id);
+      Sint.toNamed(route, arguments: [widget.post]);
     }
   }
 
@@ -382,7 +386,7 @@ class _QuickPreviewDialog extends StatelessWidget {
     final previewSize = screenSize.width * 0.85;
 
     return GestureDetector(
-      onTap: () => Navigator.pop(context),
+      onTap: () => Sint.back(),
       child: Center(
         child: Container(
           width: previewSize,

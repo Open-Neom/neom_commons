@@ -234,17 +234,20 @@ class _AnimatedFollowButtonState extends State<AnimatedFollowButton>
                     ),
                   ),
                   const SizedBox(width: 6),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    child: Text(
-                      _getButtonText(isFollowing, showUnfollow),
-                      key: ValueKey('text_${isFollowing}_$showUnfollow'),
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: isFollowing
-                            ? (showUnfollow ? Colors.red[400] : Colors.white70)
-                            : Colors.white,
+                  Flexible(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: Text(
+                        _getButtonText(isFollowing, showUnfollow),
+                        key: ValueKey('text_${isFollowing}_$showUnfollow'),
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: isFollowing
+                              ? (showUnfollow ? Colors.red[400] : Colors.white70)
+                              : Colors.white,
+                        ),
                       ),
                     ),
                   ),

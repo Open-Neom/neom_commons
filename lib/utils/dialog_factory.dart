@@ -130,9 +130,9 @@ class DialogFactory {
                   onConfirm: () {
                     HapticFeedback.lightImpact();
                     onConfirm(currentSelection);
-                    if (dismissOnConfirm) Navigator.pop(context, currentSelection);
+                    if (dismissOnConfirm) Sint.back(result: currentSelection);
                   },
-                  onCancel: () => Navigator.pop(context),
+                  onCancel: () => Sint.back(),
                 ),
               ],
             ),
@@ -222,9 +222,9 @@ class DialogFactory {
               isDestructive: isDestructive,
               onConfirm: () {
                 HapticFeedback.lightImpact();
-                Navigator.pop(context, true);
+                Sint.back(result: true);
               },
-              onCancel: () => Navigator.pop(context, false),
+              onCancel: () => Sint.back(result: false),
             ),
           ],
         ),
@@ -309,9 +309,9 @@ class DialogFactory {
                     }
                   }
                   HapticFeedback.lightImpact();
-                  Navigator.pop(context, value);
+                  Sint.back(result: value);
                 },
-                onCancel: () => Navigator.pop(context),
+                onCancel: () => Sint.back(),
               ),
             ],
           ),
@@ -361,7 +361,7 @@ class DialogFactory {
   /// Dismisses any open dialog.
   static void dismissDialog(BuildContext context) {
     if (Navigator.canPop(context)) {
-      Navigator.pop(context);
+      Sint.back();
     }
   }
 }

@@ -96,10 +96,10 @@ class AppColor {
   static const Color ceriseRed = Color.fromRGBO(224, 36, 94, 1.0);
   static const Color red = Colors.red;
   static const Color mystic = Color.fromRGBO(230, 236, 240, 1.0);
-  static const Color bondiBlue = Color.fromRGBO(12, 18, 84, 1.0);
-  static const Color bondiBlue25 = Color.fromRGBO(12, 18, 84, 0.25);
-  static const Color bondiBlue50 = Color.fromRGBO(12, 18, 84, 0.50);
-  static const Color bondiBlue75 = Color.fromRGBO(12, 18, 84, 0.75);
+  static const Color bondiBlue = Color.fromRGBO(50, 100, 215, 1.0);
+  static const Color bondiBlue25 = Color.fromRGBO(50, 100, 215, 0.25);
+  static const Color bondiBlue50 = Color.fromRGBO(50, 100, 215, 0.50);
+  static const Color bondiBlue75 = Color.fromRGBO(50, 100, 215, 0.75);
   static const Color dodgetBlue = Color.fromRGBO(29, 162, 240, 1.0);
 
   static const Color textColor = Color.fromRGBO(250, 250, 250, 0.95);

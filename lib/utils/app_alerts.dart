@@ -44,7 +44,7 @@ class AppAlerts {
                   style: const TextStyle(color: AppColor.white)
               ),
               onPressed: () {
-                Navigator.pop(context);
+                Sint.back();
               },
             ),
           ],
@@ -66,14 +66,14 @@ class AppAlerts {
               AppTranslationConstants.no.tr,
               style: const TextStyle(color: AppColor.white),
             ),
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => Sint.back(result: false),
           ),
           TextButton(
             child: Text(
               AppTranslationConstants.yes.tr,
               style: const TextStyle(color: AppColor.white),
             ),
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => Sint.back(result: true),
           ),
         ],
       ),
@@ -120,9 +120,9 @@ class AppAlerts {
                                     radius: 60,
                                 ),
                                 onPressed: () async {
-                                  Navigator.pop(context);
+                                  Sint.back();
                                   if(currentProfileId != profile.id) {
-                                    Navigator.pop(context);
+                                    Sint.back();
                                     await userServiceImpl.changeProfile(profile);
                                   }
                                 },
@@ -136,9 +136,9 @@ class AppAlerts {
                               ),
                               subtitle: Text("${profile.type.name.tr.capitalize} - ${profile.mainFeature.tr.capitalize}"),
                               onTap: () async {
-                                Navigator.pop(context);
+                                Sint.back();
                                 if(currentProfileId != profile.id) {
-                                  Navigator.pop(context);
+                                  Sint.back();
                                   await userServiceImpl.changeProfile(profile);
                                 }
                               },
@@ -163,7 +163,7 @@ class AppAlerts {
                         ),
                         subtitle: const Text("Agrega un perfil adicional para manejar distintas cuentas."),
                         onTap: () {
-                          Navigator.pop(context);
+                          Sint.back();
                           Sint.toNamed(AppRouteConstants.introProfile);
                         },
                       ),
@@ -320,7 +320,7 @@ class AppAlerts {
         buttons: [
           DialogButton(
             color: AppColor.bondiBlue75,
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Sint.back(),
             child: Text(AppTranslationConstants.goBack.tr,
               style: const TextStyle(fontSize: 15),
             ),
@@ -329,8 +329,8 @@ class AppAlerts {
             color: AppColor.bondiBlue75,
             onPressed: () async {
               await mateServiceImpl.block(postOwnerId);
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Sint.back();
+                Sint.back();
                 AppUtilities.showSnackBar(message: MessageTranslationConstants.blockedProfileMsg);
             },
             child: Text(AppTranslationConstants.toBlock.tr,
@@ -394,8 +394,8 @@ class AppAlerts {
             onPressed: () async {
               if(!reportServiceImpl.isButtonDisabled) {
                 reportServiceImpl.sendReport(referenceType, referenceId);
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Sint.back();
+                Sint.back();
                 AppUtilities.showSnackBar(message: CommonTranslationConstants.hasSentReport);
               }
             },

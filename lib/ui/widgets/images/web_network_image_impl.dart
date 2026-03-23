@@ -28,13 +28,15 @@ Widget buildWebNativeImage({
   double? width,
   Widget? placeholder,
   Widget? errorWidget,
+  bool circular = false,
 }) {
   if (imageUrl.isEmpty || imageUrl == 'null') {
     return errorWidget ?? const SizedBox.shrink();
   }
 
   final optimizedUrl = _optimizeGoogleUrl(imageUrl);
-  final viewType = 'web-img-${optimizedUrl.hashCode}';
+  final suffix = circular ? '-circle' : '';
+  final viewType = 'web-img$suffix-${optimizedUrl.hashCode}';
 
   if (!_registeredFactories.contains(viewType)) {
     _registeredFactories.add(viewType);
@@ -48,6 +50,10 @@ Widget buildWebNativeImage({
           ..style.objectFit = _boxFitToCss(fit)
           ..style.display = 'block'
           ..style.pointerEvents = 'none';
+
+        if (circular) {
+          img.style.borderRadius = '50%';
+        }
 
         // On error (429, 404, CORS, etc.), hide the broken image icon
         // and show a neutral background instead.
