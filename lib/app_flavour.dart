@@ -434,9 +434,11 @@ class AppFlavour {
       case AppInUse.g:
         profileTypes = [ProfileType.facilitator, ProfileType.host, ProfileType.band, ProfileType.appArtist];
       case AppInUse.e:
+        profileTypes = [ProfileType.appArtist, ProfileType.facilitator, ProfileType.host, ProfileType.band, ProfileType.broadcaster];
+        break;
       case AppInUse.c:
       default:
-      profileTypes = [ProfileType.facilitator, ProfileType.host];
+        profileTypes = [ProfileType.facilitator, ProfileType.host];
         break;
     }
 
@@ -798,6 +800,30 @@ class AppFlavour {
     }
   }
 
+  /// Directory is available in all main apps (e, c, g).
+  static bool showDirectory() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.e:
+        return true;
+      case AppInUse.c:
+        return true;
+      case AppInUse.g:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  /// Booking is only available in Gigmeout (venue/rehearsal booking).
+  static bool showBooking() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.g:
+        return true;
+      default:
+        return false;
+    }
+  }
+
   static Object? getCaseteItem() {
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
@@ -915,6 +941,42 @@ class AppFlavour {
         return SizedBox.shrink();
     }
 
+  }
+
+  /// Returns the translation key for the single release type name per app flavour.
+  static String getSingleTypeName() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e: return 'singleTypeNameE';
+      case AppInUse.c: return 'singleTypeNameC';
+      default: return 'singleTypeNameG';
+    }
+  }
+
+  /// Returns the translation key for the album release type name per app flavour.
+  static String getAlbumTypeName() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e: return 'albumTypeNameE';
+      case AppInUse.c: return 'albumTypeNameC';
+      default: return 'albumTypeNameG';
+    }
+  }
+
+  /// Returns the translation key for the single release type description per app flavour.
+  static String getSingleTypeDesc() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e: return 'singleTypeDescE';
+      case AppInUse.c: return 'singleTypeDescC';
+      default: return 'singleTypeDescG';
+    }
+  }
+
+  /// Returns the translation key for the album release type description per app flavour.
+  static String getAlbumTypeDesc() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e: return 'albumTypeDescE';
+      case AppInUse.c: return 'albumTypeDescC';
+      default: return 'albumTypeDescG';
+    }
   }
 
 }

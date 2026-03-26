@@ -440,6 +440,13 @@ class AppTranslationConstants {
   static const String privateSpace = "privateSpace";
   static const String publicSpace = "publicSpace";
   static const String restaurant = "restaurant";
+  static const String publisher = "publisher";
+  static const String printing = "printing";
+  static const String podcaster = "podcaster";
+  static const String recordStudio = "recordStudio";
+  static const String soundRental = "soundRental";
+  static const String rehearsalRoom = "rehearsalRoom";
+  static const String manager = "manager";
   static const String lesson = "lesson";
   static const String meetup = "meetup";
   static const String talk = "talk";

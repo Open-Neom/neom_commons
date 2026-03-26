@@ -377,6 +377,11 @@ class CommonTranslationConstants {
   static const String premiumPlanMsg = 'premiumPlanMsg';
   static const String publishPlanMsg = 'publishPlanMsg';
 
+  // Subscription cancellation
+  static const String cancellationScheduled = 'cancellationScheduled';
+  static const String subscriptionActiveUntil = 'subscriptionActiveUntil';
+  static const String cancellationError = 'cancellationError';
+
   // Clips Editor
   static const String clipEditor = 'clipEditor';
   static const String clipPhrase1 = 'clipPhrase1';

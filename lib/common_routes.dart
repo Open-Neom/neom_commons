@@ -3,6 +3,7 @@ import 'package:sint/sint.dart';
 
 import 'ui/previous_version_page.dart';
 import 'ui/splash_page.dart';
+import 'ui/terms_conditions_page.dart';
 import 'ui/under_construction_page.dart';
 
 class CommonRoutes {
@@ -25,6 +26,10 @@ class CommonRoutes {
       name: AppRouteConstants.underConstruction,
       page: () => const UnderConstructionPage(),
       transition: Transition.zoom,
+    ),
+    SintPage(
+      name: AppRouteConstants.termsConditions,
+      page: () => const TermsConditionsPage(),
     ),
   ];
 

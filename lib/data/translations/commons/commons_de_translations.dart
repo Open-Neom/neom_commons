@@ -375,7 +375,7 @@ class CommonsDeTranslations {
     CommonTranslationConstants.violence: 'Gewalt',
     CommonTranslationConstants.wantToCloseApp: 'Möchten Sie die Anwendung schließen?',
     CommonTranslationConstants.wantToCloseEditor: 'Möchten Sie den Editor schließen?',
-    CommonTranslationConstants.welcomeToApp: 'Willkommen bei Cyberneom',
+    CommonTranslationConstants.welcomeToApp: 'Willkommen',
     CommonTranslationConstants.whatFacilitatorType: 'Welche Art von Dienst bieten Sie an?',
     CommonTranslationConstants.wordChain: 'Wortkette',
     CommonTranslationConstants.wordChainChallenge: 'Wortketten-Herausforderung',

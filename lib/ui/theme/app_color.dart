@@ -120,7 +120,7 @@ class AppColor {
   static Color getReleaseShelfColor() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.e:
-        return bondiBlue75;
+        return const Color.fromRGBO(15, 30, 80, 1);
       case AppInUse.g:
         return const Color.fromRGBO(20, 38, 95, 1);
       case AppInUse.c:
@@ -135,6 +135,24 @@ class AppColor {
 
   static const Color darkBackground = Color.fromRGBO(20, 20, 20, 1);
 
+  /// Accent color used for primary CTA buttons (login, signup, etc.)
+  /// Each app gets its own vibrant accent to match its brand identity.
+  static Color getAccentColor() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.i:
+        return const Color(0xFF00FFFF); // Itzli cyan
+      case AppInUse.g:
+        return const Color.fromRGBO(65, 120, 255, 1); // Gigmeout blue
+      case AppInUse.e:
+        return const Color.fromRGBO(200, 50, 50, 1); // EMXI red
+      case AppInUse.c:
+      case AppInUse.o:
+        return const Color.fromRGBO(140, 60, 180, 1); // Cyberneom purple
+      default:
+        return Colors.white;
+    }
+  }
+
   // ── Semantic Surface Colors ──────────────────────────────────
   // Dark base tinted with the brand colour — matches Login Web style.
   // Apps with already-dark brand colours (e.g. Gigmeout navy) use a
@@ -146,6 +164,8 @@ class AppColor {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
         return 2.0;
+      case AppInUse.i:
+        return 2.5;
       default:
         return 1.0;
     }

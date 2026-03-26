@@ -68,21 +68,59 @@ Widget buildWebNativeImage({
 
   final Widget imageView = HtmlElementView(viewType: viewType);
 
-  // When explicit dimensions are provided, use SizedBox to constrain.
-  if (height != null || width != null) {
+  // When BOTH explicit dimensions are provided, use SizedBox to constrain.
+  if (height != null && width != null) {
     return SizedBox(
       height: height,
       width: width,
-      child: imageView,
+      child: Stack(
+        children: [
+          Positioned.fill(child: imageView),
+          Positioned.fill(child: ColoredBox(color: const Color(0x00000000))),
+        ],
+      ),
     );
   }
+  // When only one dimension is provided, fall through to LayoutBuilder
+  // which handles unbounded constraints safely.
 
-  // No explicit dimensions: use AspectRatio to prevent unbounded height
-  // in scrollable contexts (SliverList, Column, etc.) where HtmlElementView
-  // would otherwise expand to infinity.
-  return AspectRatio(
-    aspectRatio: 4 / 3,
-    child: imageView,
+  // ⚠️ DO NOT CHANGE THIS TO AspectRatio OR any other constrained wrapper.
+  // SizedBox.expand is REQUIRED so the HTML <img> fills its parent constraints
+  // (e.g. Stack/Positioned.fill in Librinder cards, profile covers, etc.).
+  // The CSS object-fit:cover handles scaling. If you wrap in AspectRatio,
+  // images won't cover full-bleed containers on web. — 2026-03-23
+  //
+  // HtmlElementView absorbs pointer events even with CSS pointerEvents:none.
+  // The transparent overlay lets parent GestureDetectors receive taps.
+  // Wrap in LayoutBuilder to get parent constraints.
+  // If parent provides finite constraints, expand to fill.
+  // If parent is unbounded (ListView/Column), use a default size.
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      final hasFiniteSize = constraints.hasBoundedHeight && constraints.hasBoundedWidth;
+      final effectiveWidth = width ?? (constraints.hasBoundedWidth ? constraints.maxWidth : 300.0);
+      final effectiveHeight = height ?? (constraints.hasBoundedHeight ? constraints.maxHeight : 200.0);
+      final child = Stack(
+        children: [
+          if (hasFiniteSize && width == null && height == null)
+            SizedBox.expand(child: imageView)
+          else
+            SizedBox(
+              width: effectiveWidth,
+              height: effectiveHeight,
+              child: imageView,
+            ),
+          Positioned.fill(
+            child: ColoredBox(color: const Color(0x00000000)),
+          ),
+        ],
+      );
+      return (hasFiniteSize && width == null && height == null) ? child : SizedBox(
+        width: effectiveWidth,
+        height: effectiveHeight,
+        child: child,
+      );
+    },
   );
 }
 

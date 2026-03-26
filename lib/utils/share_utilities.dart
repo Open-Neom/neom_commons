@@ -1,7 +1,7 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:neom_core/utils/platform/core_io.dart';
 import 'package:intl/intl.dart';
-import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
@@ -41,21 +41,6 @@ class ShareUtilities {
 
   static Future<void> shareAppWithPost(Post post) async {
 
-    String thumbnailLocalPath = "";
-
-    if(post.thumbnailUrl.isNotEmpty || post.mediaUrl.isNotEmpty ) {
-      String imgUrl = post.thumbnailUrl.isNotEmpty ? post.thumbnailUrl : post.mediaUrl;
-      if(imgUrl.isNotEmpty) {
-        thumbnailLocalPath = await FileDownloader.downloadImage(imgUrl);
-      }
-    }
-
-    if (thumbnailLocalPath.isEmpty) {
-      thumbnailLocalPath = await _getLogoLocalPath();
-    }
-
-    ShareResult? shareResult;
-
     String caption = post.caption;
     if(post.type == PostType.blogEntry) {
       if(caption.contains(CoreConstants.titleTextDivider)) {
@@ -75,11 +60,24 @@ class ShareUtilities {
         '${MessageTranslationConstants.shareAppMsg.tr}\n\n'
         '${AppTranslationConstants.explorePlatform.tr}: $vanityUrl';
 
-    shareResult = await SharePlus.instance.share(
+    // On web: share text only (no file system access).
+    // On mobile: download thumbnail and attach it.
+    List<XFile> sharedFiles = [];
+    if (!kIsWeb) {
+      final thumbnailLocalPath = await _getThumbnailPath(
+        post.thumbnailUrl.isNotEmpty ? post.thumbnailUrl : post.mediaUrl,
+      );
+      if (thumbnailLocalPath.isNotEmpty) {
+        sharedFiles.add(XFile(thumbnailLocalPath));
+      }
+    }
+
+    final shareResult = await SharePlus.instance.share(
       ShareParams(
         text: sharedText,
-        files: [XFile(thumbnailLocalPath)],
-        previewThumbnail: XFile(thumbnailLocalPath),
+        files: sharedFiles.isNotEmpty ? sharedFiles : null,
+        previewThumbnail: sharedFiles.isNotEmpty ? sharedFiles.first : null,
+        uri: kIsWeb ? Uri.tryParse(vanityUrl) : null,
       )
     );
 
@@ -93,16 +91,6 @@ class ShareUtilities {
 
   static Future<void> shareAppWithMediaItem(AppMediaItem mediaItem) async {
 
-    String thumbnailLocalPath = "";
-
-    if(mediaItem.imgUrl.isNotEmpty || (mediaItem.galleryUrls?.isNotEmpty ?? false) ) {
-      String imgUrl = mediaItem.imgUrl.isNotEmpty ? mediaItem.imgUrl : mediaItem.galleryUrls?.first ?? "";
-      if(imgUrl.isNotEmpty) {
-        thumbnailLocalPath = await FileDownloader.downloadImage(imgUrl, imgName: "${mediaItem.ownerName}_${mediaItem.name}");
-      }
-    }
-
-    ShareResult? shareResult;
     String caption = mediaItem.name;
     if(mediaItem.type == MediaItemType.song) {
       if(caption.contains(CoreConstants.titleTextDivider)) {
@@ -120,26 +108,36 @@ class ShareUtilities {
       type: 'media', slug: mediaItem.slug, id: mediaItem.id,
     );
 
-    String messageTr = thumbnailLocalPath.isNotEmpty
-        ? MessageTranslationConstants.shareMediaItem.tr
-        : MessageTranslationConstants.shareMediaItemMsg.tr;
+    String messageTr = MessageTranslationConstants.shareMediaItemMsg.tr;
 
-    String sharedText;
+    String sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
+        '$messageTr\n\n'
+        '$vanityUrl\n';
+
     List<XFile> sharedFiles = [];
-
-    if(thumbnailLocalPath.isNotEmpty) {
-      sharedFiles.add(XFile(thumbnailLocalPath));
-      sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
-              '$messageTr\n\n'
-              '$vanityUrl\n';
-    } else {
-      sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
-          '$messageTr\n\n'
-          '$vanityUrl\n';
+    if (!kIsWeb) {
+      String imgUrl = mediaItem.imgUrl.isNotEmpty
+          ? mediaItem.imgUrl
+          : mediaItem.galleryUrls?.firstOrNull ?? "";
+      final thumbnailLocalPath = await _getThumbnailPath(
+        imgUrl,
+        imgName: "${mediaItem.ownerName}_${mediaItem.name}",
+      );
+      if (thumbnailLocalPath.isNotEmpty) {
+        sharedFiles.add(XFile(thumbnailLocalPath));
+        messageTr = MessageTranslationConstants.shareMediaItem.tr;
+        sharedText = '$caption${caption.isNotEmpty ? "\n\n" : ""}'
+            '$messageTr\n\n'
+            '$vanityUrl\n';
+      }
     }
 
-    shareResult = await SharePlus.instance.share(
-        ShareParams(text: sharedText, files: sharedFiles)
+    final shareResult = await SharePlus.instance.share(
+        ShareParams(
+          text: sharedText,
+          files: sharedFiles.isNotEmpty ? sharedFiles : null,
+          uri: kIsWeb ? Uri.tryParse(vanityUrl) : null,
+        )
     );
 
     if(shareResult.status == ShareResultStatus.success && shareResult.raw != "null") {
@@ -151,15 +149,6 @@ class ShareUtilities {
 
   /// Share a BlogEntry with optional thumbnail.
   static Future<void> shareBlogEntry(BlogEntry blogEntry) async {
-    String thumbnailLocalPath = "";
-
-    if (blogEntry.thumbnailUrl.isNotEmpty) {
-      thumbnailLocalPath = await FileDownloader.downloadImage(blogEntry.thumbnailUrl);
-    }
-
-    if (thumbnailLocalPath.isEmpty) {
-      thumbnailLocalPath = await _getLogoLocalPath();
-    }
 
     // Format the blog content
     String content = blogEntry.content;
@@ -178,11 +167,20 @@ class ShareUtilities {
         '${MessageTranslationConstants.shareAppMsg.tr}\n\n'
         '${AppTranslationConstants.explorePlatform.tr}: $vanityUrl';
 
+    List<XFile> sharedFiles = [];
+    if (!kIsWeb) {
+      final thumbnailLocalPath = await _getThumbnailPath(blogEntry.thumbnailUrl);
+      if (thumbnailLocalPath.isNotEmpty) {
+        sharedFiles.add(XFile(thumbnailLocalPath));
+      }
+    }
+
     ShareResult shareResult = await SharePlus.instance.share(
       ShareParams(
         text: sharedText,
-        files: [XFile(thumbnailLocalPath)],
-        previewThumbnail: XFile(thumbnailLocalPath),
+        files: sharedFiles.isNotEmpty ? sharedFiles : null,
+        previewThumbnail: sharedFiles.isNotEmpty ? sharedFiles.first : null,
+        uri: kIsWeb ? Uri.tryParse(vanityUrl) : null,
       ),
     );
 
@@ -204,15 +202,6 @@ class ShareUtilities {
     required String ownerName,
     String type = 'product', // 'product' for release, 'merch' for merch
   }) async {
-    String thumbnailLocalPath = "";
-
-    if (imgUrl.isNotEmpty) {
-      thumbnailLocalPath = await FileDownloader.downloadImage(
-          imgUrl, imgName: "${ownerName}_$name");
-    }
-    if (thumbnailLocalPath.isEmpty) {
-      thumbnailLocalPath = await _getLogoLocalPath();
-    }
 
     // Vanity URL: emxi.org/shop/{productId}
     String vanityUrl = DeeplinkUtilities.generateVanityUrl(type: type, id: productId);
@@ -224,11 +213,20 @@ class ShareUtilities {
         '${MessageTranslationConstants.shareAppMsg.tr}\n\n'
         '${AppTranslationConstants.explorePlatform.tr}: $vanityUrl';
 
+    List<XFile> sharedFiles = [];
+    if (!kIsWeb) {
+      final thumbnailLocalPath = await _getThumbnailPath(imgUrl, imgName: "${ownerName}_$name");
+      if (thumbnailLocalPath.isNotEmpty) {
+        sharedFiles.add(XFile(thumbnailLocalPath));
+      }
+    }
+
     ShareResult shareResult = await SharePlus.instance.share(
       ShareParams(
         text: sharedText,
-        files: [XFile(thumbnailLocalPath)],
-        previewThumbnail: XFile(thumbnailLocalPath),
+        files: sharedFiles.isNotEmpty ? sharedFiles : null,
+        previewThumbnail: sharedFiles.isNotEmpty ? sharedFiles.first : null,
+        uri: kIsWeb ? Uri.tryParse(vanityUrl) : null,
       ),
     );
 
@@ -244,15 +242,6 @@ class ShareUtilities {
 
   /// Share an Event with date, place, and vanity URL.
   static Future<void> shareEvent(Event event) async {
-    String thumbnailLocalPath = "";
-
-    if (event.imgUrl.isNotEmpty) {
-      thumbnailLocalPath = await FileDownloader.downloadImage(
-          event.imgUrl, imgName: "${event.ownerName}_${event.name}");
-    }
-    if (thumbnailLocalPath.isEmpty) {
-      thumbnailLocalPath = await _getLogoLocalPath();
-    }
 
     // Vanity URL: emxi.org/{slug} or emxi.org/e/{eventId}
     String vanityUrl = DeeplinkUtilities.generateVanityUrl(type: 'event', id: event.id, slug: event.slug);
@@ -271,8 +260,13 @@ class ShareUtilities {
         '${AppTranslationConstants.explorePlatform.tr}: $vanityUrl';
 
     List<XFile> sharedFiles = [];
-    if (thumbnailLocalPath.isNotEmpty) {
-      sharedFiles.add(XFile(thumbnailLocalPath));
+    if (!kIsWeb) {
+      final thumbnailLocalPath = await _getThumbnailPath(
+        event.imgUrl, imgName: "${event.ownerName}_${event.name}",
+      );
+      if (thumbnailLocalPath.isNotEmpty) {
+        sharedFiles.add(XFile(thumbnailLocalPath));
+      }
     }
 
     ShareResult shareResult = await SharePlus.instance.share(
@@ -280,6 +274,7 @@ class ShareUtilities {
         text: sharedText,
         files: sharedFiles.isNotEmpty ? sharedFiles : null,
         previewThumbnail: sharedFiles.isNotEmpty ? sharedFiles.first : null,
+        uri: kIsWeb ? Uri.tryParse(vanityUrl) : null,
       ),
     );
 
@@ -292,18 +287,27 @@ class ShareUtilities {
     }
   }
 
+  // ── Private helpers (mobile only) ──
+
+  /// Download an image and return its local path. Falls back to the app logo.
+  /// Only called on mobile — web shares text+URL without file attachments.
+  static Future<String> _getThumbnailPath(String imgUrl, {String imgName = ''}) async {
+    String localPath = "";
+    if (imgUrl.isNotEmpty) {
+      localPath = await FileDownloader.downloadImage(imgUrl, imgName: imgName);
+    }
+    if (localPath.isEmpty) {
+      localPath = await _getLogoLocalPath();
+    }
+    return localPath;
+  }
+
   static Future<String> _getLogoLocalPath() async {
     try {
-      // Cargamos el asset como bytes
       final byteData = await rootBundle.load(AppAssets.icon);
-
-      // Obtenemos el directorio temporal del dispositivo
       final tempDir = await getTemporaryDirectory();
       final file = File('${tempDir.path}/logo_share.png');
-
-      // Escribimos el archivo
       await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-
       return file.path;
     } catch (e, st) {
       NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'getLogoLocalPath');

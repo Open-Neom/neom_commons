@@ -375,7 +375,7 @@ class CommonsFrTranslations {
     CommonTranslationConstants.violence: 'Violence',
     CommonTranslationConstants.wantToCloseApp: 'Voulez-vous fermer l\'application ?',
     CommonTranslationConstants.wantToCloseEditor: 'Voulez-vous fermer l\'éditeur ?',
-    CommonTranslationConstants.welcomeToApp: 'Bienvenue sur Cyberneom',
+    CommonTranslationConstants.welcomeToApp: 'Bienvenue',
     CommonTranslationConstants.whatFacilitatorType: 'Quel type de service proposez-vous ?',
     CommonTranslationConstants.wordChain: 'Chaîne de mots',
     CommonTranslationConstants.wordChainChallenge: 'Défi chaîne de mots',

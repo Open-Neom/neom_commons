@@ -57,7 +57,7 @@ class AuthGuard {
         ),
         actions: [
           TextButton(
-            onPressed: () => Sint.back(),
+            onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
             child: Text(AppTranslationConstants.continueExploring.tr, style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(

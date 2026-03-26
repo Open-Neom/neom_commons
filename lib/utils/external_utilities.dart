@@ -12,6 +12,11 @@ import 'url_utilities.dart';
 class ExternalUtilities {
 
   static void launchURL(String url, {bool openInApp = true, bool clearCache = false, bool clearCookies = false, bool sameTab = false}) async {
+    // Ensure URL has protocol — without it, canLaunchUrl and launchUrl fail
+    if (url.isNotEmpty && !url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('mailto:') && !url.startsWith('tel:')) {
+      url = 'https://$url';
+    }
+
     AppConfig.logger.d('Launching: $url - openInApp: $openInApp');
 
     try {
@@ -21,9 +26,12 @@ class ExternalUtilities {
           openInApp = false;
         }
 
-        if (kIsWeb && sameTab) {
-          // Si estás en la web, abre en la misma pestaña o en una nueva
-          // html.window.location.href = url; // Esto abrirá en la misma pestaña
+        if (kIsWeb) {
+          // Web: open in new tab (default) or same tab
+          await launchUrl(Uri.parse(url),
+            mode: LaunchMode.externalApplication,
+            webOnlyWindowName: sameTab ? '_self' : '_blank',
+          );
         } else {
           if(clearCache) await clearWebViewCache();
           if(clearCookies) await clearWebViewCookies();
