@@ -78,5 +78,7 @@ class AppAssets {
   static const String buyMeACoffeeButtonBlack = 'assets/images/music_player/xtras/buy_me_a_coffee_black_btn.png';
 
   static const String mainItemCover = 'assets/images/mainItemCover.png';
+  static const String saiaIcon = 'assets/saia/saia_icon.png';
+  static const String termsConditions = 'assets/legal/terms_conditions.md';
 
 }

@@ -376,6 +376,7 @@ class CoreFrTranslations {
     AppTranslationConstants.share: 'Partager',
     AppTranslationConstants.shop: 'Boutique',
     AppTranslationConstants.showMore: 'Afficher plus',
+    AppTranslationConstants.skip: 'Passer',
     AppTranslationConstants.single: 'single',
     AppTranslationConstants.size: 'Taille',
     AppTranslationConstants.slogan: 'Technologie, bien-être et foi',

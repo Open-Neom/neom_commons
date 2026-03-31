@@ -376,6 +376,7 @@ class CoreDeTranslations {
     AppTranslationConstants.share: 'Teilen',
     AppTranslationConstants.shop: 'Shop',
     AppTranslationConstants.showMore: 'Mehr anzeigen',
+    AppTranslationConstants.skip: 'Überspringen',
     AppTranslationConstants.single: 'Single',
     AppTranslationConstants.size: 'Größe',
     AppTranslationConstants.slogan: 'Technologie, Wohlbefinden und Glaube',

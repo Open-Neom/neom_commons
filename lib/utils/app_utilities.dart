@@ -12,6 +12,7 @@ import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
+import 'package:neom_core/domain/model/playable_item.dart';
 import 'package:neom_core/domain/model/item_found_in_list.dart';
 import 'package:neom_core/domain/model/item_list.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
@@ -270,49 +271,40 @@ class AppUtilities {
   }
 
   static void gotoItemDetails(dynamic item) {
-    MediaItemType? itemType;
-    String itemUrl = "";
-    String slug = '';
-
     try {
-      // 1. Extraer URL, tipo y slug según el objeto
-      if (item is AppReleaseItem) {
-        itemUrl = item.previewUrl;
-        itemType = item.mediaType;
-        slug = item.slug;
-      } else if (item is AppMediaItem) {
-        itemUrl = item.url;
-        itemType = item.type;
-        slug = item.slug;
+      // PlayableItem unified path — works for AppReleaseItem and AppMediaItem
+      if (item is PlayableItem) {
+        final String itemUrl = item.streamUrl;
+        final String slug = item.slug;
+        MediaItemType? itemType = item.mediaType;
+
+        // Override type if URL indicates something different
+        MediaItemType? detectedType = getMediaTypeFromUrl(itemUrl);
+        if (detectedType != null) itemType = detectedType;
+
+        // Main types: audio player or PDF viewer
+        const mainTypes = [
+          MediaItemType.song,
+          MediaItemType.pdf,
+          MediaItemType.audiobook,
+          MediaItemType.frequency,
+        ];
+
+        final bool isMain = mainTypes.contains(itemType);
+
+        if (itemType == MediaItemType.pdf) {
+          Sint.toNamed(AppRouteConstants.bookPath(item.id, slug: slug), arguments: [item]);
+        } else {
+          final String route = isMain
+              ? AppFlavour.getMainItemDetailsRoute(item.id, type: itemType, slug: slug)
+              : AppFlavour.getSecondaryItemDetailsRoute(item.id, slug: slug);
+          Sint.toNamed(route, arguments: [item]);
+        }
+        return;
       }
 
-      // 2. Sobrescribir tipo si la URL indica algo distinto (detección inteligente)
-      MediaItemType? detectedType = getMediaTypeFromUrl(itemUrl);
-      if (detectedType != null) itemType = detectedType;
-
-      // 3. Determinar si es Main o Secondary basado en el tipo detectado
-      // Tipos que suelen ser "Main" (Reproductor principal / Visor PDF)
-      List<MediaItemType> mainTypes = [
-        MediaItemType.song,
-        MediaItemType.pdf,
-        MediaItemType.audiobook,
-        MediaItemType.frequency
-      ];
-
-      bool isMain = mainTypes.contains(itemType);
-
-      // 4. Navegación final (slug-first para web/deeplinks)
-      String route = isMain
-          ? AppFlavour.getMainItemDetailsRoute(item.id, type: itemType, slug: slug)
-          : AppFlavour.getSecondaryItemDetailsRoute(item.id, slug: slug);
-
-      // Caso especial: Navegar directamente al visor PDF si es un PDF detectado
-      if (itemType == MediaItemType.pdf) {
-        Sint.toNamed(AppRouteConstants.bookPath(item.id, slug: slug), arguments: [item]);
-      } else {
-        Sint.toNamed(route, arguments: [item]);
-      }
-
+      // Fallback for non-PlayableItem types (ExternalItem, etc.)
+      Sint.toNamed(AppFlavour.getMainItemDetailsRoute(item.id), arguments: [item]);
     } catch (e, st) {
       NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'gotoItemDetails');
     }

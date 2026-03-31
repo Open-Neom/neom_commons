@@ -1,4 +1,3 @@
-import '../../../utils/constants/translations/app_translation_constants.dart';
 import '../../../utils/constants/translations/common_translation_constants.dart';
 
 class CommonsEsTranslations {

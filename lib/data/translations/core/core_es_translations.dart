@@ -317,6 +317,7 @@ class CoreEsTranslations {
     AppTranslationConstants.settings: 'Configuraciones',
     AppTranslationConstants.share: "Compartir",
     AppTranslationConstants.showMore: "Mostrar m\u00e1s",
+    AppTranslationConstants.skip: "Omitir",
     AppTranslationConstants.single: "single",
     AppTranslationConstants.size: "Tama\u00f1o",
     AppTranslationConstants.slogan: 'Tecnolog\u00eda, bienestar y fe',

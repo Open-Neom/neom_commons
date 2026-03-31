@@ -1,4 +1,4 @@
-import 'package:neom_commons/utils/constants/translations/message_translation_constants.dart';
+import '../../../utils/constants/translations/message_translation_constants.dart';
 
 class MessagesDeTranslations {
 

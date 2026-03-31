@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:neom_commons/ui/widgets/custom_image.dart';
-import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';

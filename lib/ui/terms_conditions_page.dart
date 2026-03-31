@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:sint/sint.dart';
 
+import '../utils/constants/app_assets.dart';
 import '../utils/constants/translations/common_translation_constants.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
@@ -34,8 +35,8 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
 
   Future<void> _loadTerms() async {
     try {
-      final assetPath = _getAssetPath();
-      final raw = await rootBundle.loadString(assetPath);
+
+      final raw = await rootBundle.loadString(AppAssets.termsConditions);
       final appName = AppProperties.getAppName();
       final email = _getContactEmail();
 
@@ -68,22 +69,6 @@ class _TermsConditionsPageState extends State<TermsConditionsPage> {
         return AppProperties.getEmail().isNotEmpty
             ? AppProperties.getEmail()
             : 'contacto@neom.app';
-    }
-  }
-
-  String _getAssetPath() {
-    final app = AppConfig.instance.appInUse;
-    switch (app) {
-      case AppInUse.e:
-        return 'packages/neom_commons/assets/legal/terms_emxi.md';
-      case AppInUse.g:
-        return 'packages/neom_commons/assets/legal/terms_gigmeout.md';
-      case AppInUse.c:
-        return 'packages/neom_commons/assets/legal/terms_cyberneom.md';
-      case AppInUse.i:
-        return 'packages/neom_commons/assets/legal/terms_itzli.md';
-      default:
-        return 'packages/neom_commons/assets/legal/terms_emxi.md';
     }
   }
 

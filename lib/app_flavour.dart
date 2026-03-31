@@ -7,6 +7,7 @@ import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
+import 'package:neom_core/domain/model/playable_item.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
 import 'package:neom_core/utils/enums/app_locale.dart';
@@ -728,7 +729,7 @@ class AppFlavour {
   static bool showNupale() {
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
-        return false;
+        return true;
       case AppInUse.e:
         return true;
       case AppInUse.g:
@@ -788,15 +789,85 @@ class AppFlavour {
   static bool showReleaseUpload() {
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
-        return false;
+        return true;
       case AppInUse.e:
         return true;
       case AppInUse.g:
         return true;
-      case AppInUse.o:
+      case AppInUse.i:
         return false;
       default:
         return false;
+    }
+  }
+
+  /// Whether singles in this app accept PDF files (books/articles)
+  /// vs audio files (songs/meditations).
+  static bool singleAcceptsPdf() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e: // EMXI — books, articles
+      case AppInUse.c: // Cyberneom — research, articles
+        return true;
+      default:
+        return false; // Gigmeout, others — audio singles
+    }
+  }
+
+  /// Icon for the release single type based on app context.
+  static IconData getSingleIcon() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return Icons.self_improvement_outlined;
+      case AppInUse.e:
+        return Icons.menu_book;
+      default:
+        return Icons.album_outlined;
+    }
+  }
+
+  /// Icon for the release album type based on app context.
+  static IconData getAlbumIcon() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return Icons.self_improvement_outlined;
+      case AppInUse.e:
+        return Icons.headphones_outlined;
+      default:
+        return Icons.album_outlined;
+    }
+  }
+
+  /// Whether cover images should use vertical (portrait) aspect ratio.
+  /// Books/articles use vertical covers; music uses square.
+  static bool useVerticalCover() {
+    return singleAcceptsPdf();
+  }
+
+  /// Available album subtypes per app.
+  /// Returns the ItemlistType options shown when user selects "Album".
+  static List<({ItemlistType type, IconData icon, String nameKey, String descKey})> getAlbumSubtypes() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e:
+        return [
+          (type: ItemlistType.audiobook, icon: Icons.headphones, nameKey: 'audiobook', descKey: 'audiobookDesc'),
+          (type: ItemlistType.podcast, icon: Icons.podcasts, nameKey: 'podcast', descKey: 'podcastDesc'),
+        ];
+      case AppInUse.g:
+        return [
+          (type: ItemlistType.ep, icon: Icons.album, nameKey: 'ep', descKey: 'epDesc'),
+          (type: ItemlistType.album, icon: Icons.library_music, nameKey: 'album', descKey: 'albumDesc'),
+          (type: ItemlistType.demo, icon: Icons.mic_external_on, nameKey: 'demo', descKey: 'demoDesc'),
+          (type: ItemlistType.podcast, icon: Icons.podcasts, nameKey: 'podcast', descKey: 'podcastDesc'),
+        ];
+      case AppInUse.c:
+        return [
+          (type: ItemlistType.meditation, icon: Icons.self_improvement, nameKey: 'meditation', descKey: 'meditationDesc'),
+          (type: ItemlistType.podcast, icon: Icons.podcasts, nameKey: 'podcast', descKey: 'podcastDesc'),
+        ];
+      default:
+        return [
+          (type: ItemlistType.album, icon: Icons.album, nameKey: 'album', descKey: 'albumDesc'),
+        ];
     }
   }
 
@@ -855,37 +926,40 @@ class AppFlavour {
 
   }
 
-  static Future<void> navigateToShelfItem(AppReleaseItem releaseItem) async {
+  static Future<void> navigateToShelfItem(PlayableItem item) async {
     if(Sint.isRegistered(tag: AppPageIdConstants.mediaPlayer)) {
       Sint.delete(tag: AppPageIdConstants.mediaPlayer);
     }
 
-    // If previewUrl is empty, try fetching complete data from Firestore
-    if (releaseItem.previewUrl.isEmpty && releaseItem.id.isNotEmpty) {
+    // If streamUrl is empty and it's an AppReleaseItem, try fetching complete data
+    AppReleaseItem? releaseItem = item is AppReleaseItem ? item : null;
+    if (item.streamUrl.isEmpty && item.id.isNotEmpty && releaseItem != null) {
       try {
-        final fullItem = await AppReleaseItemFirestore().retrieve(releaseItem.id);
+        final fullItem = await AppReleaseItemFirestore().retrieve(item.id);
         if (fullItem.id.isNotEmpty) {
           releaseItem = fullItem;
         }
       } catch (_) {}
     }
 
+    final PlayableItem navItem = releaseItem ?? item;
+
     switch(AppConfig.instance.appInUse) {
       case AppInUse.e:
-        if(releaseItem.previewUrl.isNotEmpty && releaseItem.isBookContent) {
-          Sint.toNamed(AppRouteConstants.readingPath(releaseItem.id, slug: releaseItem.slug), arguments: [releaseItem, true], preventDuplicates: false);
-        } else if(releaseItem.previewUrl.isNotEmpty) {
-          AppUtilities.gotoItemDetails(releaseItem);
-        } else if (releaseItem.webPreviewUrl?.isNotEmpty ?? false) {
-          ExternalUtilities.launchURL(releaseItem.webPreviewUrl!);
+        if(navItem.streamUrl.isNotEmpty && navItem.isBookContent) {
+          Sint.toNamed(AppRouteConstants.readingPath(navItem.id, slug: navItem.slug), arguments: [navItem, true], preventDuplicates: false);
+        } else if(navItem.streamUrl.isNotEmpty) {
+          AppUtilities.gotoItemDetails(navItem);
+        } else if (releaseItem?.webPreviewUrl?.isNotEmpty ?? false) {
+          ExternalUtilities.launchURL(releaseItem!.webPreviewUrl!);
         } else {
-          Sint.toNamed(AppFlavour.getMainItemDetailsRoute(releaseItem.id, slug: releaseItem.slug), arguments: [releaseItem], preventDuplicates: false);
+          Sint.toNamed(AppFlavour.getMainItemDetailsRoute(navItem.id, slug: navItem.slug), arguments: [navItem], preventDuplicates: false);
         }
       case AppInUse.c:
       case AppInUse.g:
       case AppInUse.o:
       default:
-        AppUtilities.gotoItemDetails(releaseItem);
+        AppUtilities.gotoItemDetails(navItem);
     }
   }
 
@@ -895,7 +969,7 @@ class AppFlavour {
     }
     try {
       final releaseItem = await AppReleaseItemFirestore().retrieve(referenceId);
-      if (releaseItem != null && releaseItem.id.isNotEmpty) {
+      if (releaseItem.id.isNotEmpty) {
         navigateToShelfItem(releaseItem);
       } else {
         Sint.toNamed(AppFlavour.getMainItemDetailsRoute(referenceId), arguments: [referenceId], preventDuplicates: false);

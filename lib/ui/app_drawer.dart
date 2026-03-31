@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:neom_commons/ui/widgets/custom_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:neom_commons/ui/widgets/custom_image.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/use_cases/login_service.dart';
+import 'package:neom_core/domain/use_cases/release_upload_service.dart';
 import 'package:neom_core/domain/use_cases/settings_service.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
@@ -67,7 +69,8 @@ class AppDrawer extends StatelessWidget {
                         drawerRowOption(AppDrawerMenu.learning, const Icon(Icons.school), context),
                       if(AppFlavour.showServices())
                         drawerRowOption(AppDrawerMenu.appItemQuotation, const Icon(Icons.calculate_outlined), context),
-                      if(AppFlavour.isNeomApp())
+                      if(AppFlavour.isNeomApp()
+                          && (controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.admin.value)
                         Column(
                           children: [
                             drawerRowOption(AppDrawerMenu.frequencies, Icon(AppFlavour.getInstrumentIcon()), context),
@@ -329,7 +332,12 @@ class AppDrawer extends StatelessWidget {
               );
               break;
             case AppDrawerMenu.releaseUpload:
-              Sint.toNamed(AppRouteConstants.releaseUpload);
+              if (kIsWeb && Sint.isRegistered<ReleaseUploadService>()) {
+                Navigator.pop(context);
+                Sint.find<ReleaseUploadService>().showUploadModal(context);
+              } else {
+                Sint.toNamed(AppRouteConstants.releaseUpload);
+              }
               break;
             case AppDrawerMenu.digitalLibrary:
               // TODO: Handle this case.

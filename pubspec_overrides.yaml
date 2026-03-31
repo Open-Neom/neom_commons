@@ -3,3 +3,6 @@ dependency_overrides:
     path: ../neom_core
   sint:
     path: ../sint
+  sint_sentinel:
+    path: ../sint_sentinel
+

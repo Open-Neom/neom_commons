@@ -376,6 +376,7 @@ class CoreEnTranslations {
     AppTranslationConstants.share: 'Share',
     AppTranslationConstants.shop: 'Shop',
     AppTranslationConstants.showMore: 'Show more',
+    AppTranslationConstants.skip: 'Skip',
     AppTranslationConstants.single: 'single',
     AppTranslationConstants.size: 'Size',
     AppTranslationConstants.slogan: 'Technology, wellness, and faith',

@@ -4,6 +4,7 @@ import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/base_item.dart';
 import 'package:neom_core/domain/model/external_item.dart';
 import 'package:neom_core/domain/model/neom/neom_chamber_preset.dart';
+import 'package:neom_core/domain/model/playable_item.dart';
 
 class BaseItemMapper {
 
@@ -105,21 +106,46 @@ class BaseItemMapper {
     }
   }
 
+  /// Converts any PlayableItem to BaseItem using the interface fields.
+  static BaseItem fromPlayableItem(PlayableItem item) {
+    try {
+      if (item is AppReleaseItem) return fromAppReleaseItem(item);
+      if (item is AppMediaItem) return fromAppMediaItem(item);
+      return BaseItem(
+        id: item.id,
+        name: item.name,
+        description: item.description ?? '',
+        imgUrl: item.imgUrl,
+        galleryUrls: item.galleryUrls,
+        url: item.streamUrl,
+        duration: item.duration,
+        state: item.state,
+        permaUrl: '',
+        ownerId: item.ownerId ?? '',
+        ownerName: item.ownerName,
+        categories: item.categories ?? [],
+        metaOwner: null,
+        publishedYear: item.publishedYear ?? 0,
+      );
+    } catch (e, st) {
+      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'fromPlayableItem');
+      throw Exception('Error mapping PlayableItem to BaseItem: $e');
+    }
+  }
+
   static BaseItem fromDynamicItem(dynamic item) {
 
     BaseItem? baseItem = BaseItem();
 
     try {
-      if(item is AppReleaseItem) {
-        baseItem = fromAppReleaseItem(item);
-      } else if(item is AppMediaItem) {
-        baseItem = fromAppMediaItem(item);
+      if (item is PlayableItem) {
+        baseItem = fromPlayableItem(item);
       } else if(item is ExternalItem) {
         baseItem = fromExternalItem(item);
       }
     } catch (e, st) {
       NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'fromDynamicItem');
-      throw Exception('Error mapping chamber preset to BaseItem: $e');
+      throw Exception('Error mapping item to BaseItem: $e');
     }
 
     return baseItem;

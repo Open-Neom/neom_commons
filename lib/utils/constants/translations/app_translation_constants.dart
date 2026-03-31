@@ -259,6 +259,7 @@ class AppTranslationConstants {
   static const String setLocale = "setLocale";
   static const String shop = 'shop';
   static const String showMore = 'showMore';
+  static const String skip = 'skip';
   static const String slogan = 'slogan';
   static const String sorry = 'sorry';
   static const String spanish = "spanish";

@@ -12,7 +12,7 @@ class AppColor {
     Color mainColor = Colors.white;
     switch(appInUse) {
       case AppInUse.c:
-        mainColor = const Color.fromRGBO(79, 25, 100, 1);
+        mainColor = const Color.fromRGBO(110, 40, 140, 1);
         break;
       case AppInUse.d:
         mainColor = const Color(0xFF071e33);
@@ -26,13 +26,13 @@ class AppColor {
         mainColor = const Color.fromRGBO(35, 68, 165, 1);
         break;
       case AppInUse.o:
-        mainColor = const Color.fromRGBO(79, 25, 100, 1);
+        mainColor = const Color.fromRGBO(110, 40, 140, 1);
         break;
       case AppInUse.i:
         mainColor = const Color.fromRGBO(28, 50, 55, 1);
         break;
       default:
-        mainColor = const Color.fromRGBO(79, 25, 100, 1);
+        mainColor = const Color.fromRGBO(110, 40, 140, 1);
     }
 
     return mainColor;
@@ -44,7 +44,7 @@ class AppColor {
   static Color getColorForApp(AppInUse appInUse) {
     switch (appInUse) {
       case AppInUse.c:
-        return const Color.fromRGBO(79, 25, 100, 1);
+        return const Color.fromRGBO(110, 40, 140, 1);
       case AppInUse.d:
         return const Color(0xFF071e33);
       case AppInUse.e:
@@ -52,11 +52,11 @@ class AppColor {
       case AppInUse.g:
         return const Color.fromRGBO(35, 68, 165, 1);
       case AppInUse.o:
-        return const Color.fromRGBO(79, 25, 100, 1);
+        return const Color.fromRGBO(110, 40, 140, 1);
       case AppInUse.i:
         return const Color.fromRGBO(28, 50, 55, 1);
       default:
-        return const Color.fromRGBO(79, 25, 100, 1);
+        return const Color.fromRGBO(110, 40, 140, 1);
     }
   }
 
