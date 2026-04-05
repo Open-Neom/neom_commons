@@ -1,9 +1,10 @@
 
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
+import 'package:neom_core/domain/use_cases/audio_player_invoker_service.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
@@ -125,6 +126,9 @@ class AppFlavour {
         // Por defecto para libros o PDF
         return AppRouteConstants.bookPath(id, slug: slug);
       case AppInUse.c:
+        if (type == MediaItemType.pdf || type == MediaItemType.book) {
+          return AppRouteConstants.bookPath(id, slug: slug);
+        }
         return AppRouteConstants.audioPlayerMedia;
       default:
         return '';
@@ -927,6 +931,14 @@ class AppFlavour {
   }
 
   static Future<void> navigateToShelfItem(PlayableItem item) async {
+    // On web, play audio content directly in the mini player without opening the full page
+    if (kIsWeb && item.isAudioContent) {
+      if (Sint.isRegistered<AudioPlayerInvokerService>()) {
+        Sint.find<AudioPlayerInvokerService>().init(items: [item], index: 0);
+        return;
+      }
+    }
+
     if(Sint.isRegistered(tag: AppPageIdConstants.mediaPlayer)) {
       Sint.delete(tag: AppPageIdConstants.mediaPlayer);
     }
@@ -944,6 +956,11 @@ class AppFlavour {
 
     final PlayableItem navItem = releaseItem ?? item;
 
+    AppConfig.logger.d('navigateToShelfItem: app=${AppConfig.instance.appInUse.name}, '
+        'streamUrl=${navItem.streamUrl.isNotEmpty ? "SET" : "EMPTY"}, '
+        'isAudio=${navItem.isAudioContent}, isBook=${navItem.isBookContent}, '
+        'mediaType=${(releaseItem?.mediaType ?? navItem.mediaType)?.name ?? "null"}');
+
     switch(AppConfig.instance.appInUse) {
       case AppInUse.e:
         if(navItem.streamUrl.isNotEmpty && navItem.isBookContent) {
@@ -953,7 +970,12 @@ class AppFlavour {
         } else if (releaseItem?.webPreviewUrl?.isNotEmpty ?? false) {
           ExternalUtilities.launchURL(releaseItem!.webPreviewUrl!);
         } else {
-          Sint.toNamed(AppFlavour.getMainItemDetailsRoute(navItem.id, slug: navItem.slug), arguments: [navItem], preventDuplicates: false);
+          // Use content-aware route even when streamUrl is empty
+          final route = AppFlavour.getMainItemDetailsRoute(
+            navItem.id, type: releaseItem?.mediaType ?? navItem.mediaType, slug: navItem.slug,
+          );
+          AppConfig.logger.d('navigateToShelfItem: EMXI fallback → route=$route');
+          Sint.toNamed(route, arguments: [navItem], preventDuplicates: false);
         }
       case AppInUse.c:
       case AppInUse.g:
@@ -964,15 +986,21 @@ class AppFlavour {
   }
 
   static Future<void> navigateToReleaseItem(String referenceId) async {
+    AppConfig.logger.d('navigateToReleaseItem: referenceId="$referenceId"');
     if(Sint.isRegistered(tag: AppPageIdConstants.mediaPlayer)) {
       Sint.delete(tag: AppPageIdConstants.mediaPlayer);
     }
     try {
       final releaseItem = await AppReleaseItemFirestore().retrieve(referenceId);
+      AppConfig.logger.d('navigateToReleaseItem: retrieved id="${releaseItem.id}", '
+          'name="${releaseItem.name}", streamUrl=${releaseItem.streamUrl.isNotEmpty ? "SET" : "EMPTY"}, '
+          'mediaType=${releaseItem.mediaType?.name ?? "null"}');
       if (releaseItem.id.isNotEmpty) {
         navigateToShelfItem(releaseItem);
       } else {
-        Sint.toNamed(AppFlavour.getMainItemDetailsRoute(referenceId), arguments: [referenceId], preventDuplicates: false);
+        final route = AppFlavour.getMainItemDetailsRoute(referenceId);
+        AppConfig.logger.w('navigateToReleaseItem: item not found, fallback → $route');
+        Sint.toNamed(route, arguments: [referenceId], preventDuplicates: false);
       }
     } catch (e) {
       Sint.toNamed(AppFlavour.getMainItemDetailsRoute(referenceId), arguments: [referenceId], preventDuplicates: false);

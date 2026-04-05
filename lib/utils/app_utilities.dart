@@ -292,19 +292,24 @@ class AppUtilities {
 
         final bool isMain = mainTypes.contains(itemType);
 
-        if (itemType == MediaItemType.pdf) {
-          Sint.toNamed(AppRouteConstants.bookPath(item.id, slug: slug), arguments: [item]);
-        } else {
-          final String route = isMain
-              ? AppFlavour.getMainItemDetailsRoute(item.id, type: itemType, slug: slug)
-              : AppFlavour.getSecondaryItemDetailsRoute(item.id, slug: slug);
-          Sint.toNamed(route, arguments: [item]);
-        }
+        AppConfig.logger.d('gotoItemDetails: id=${item.id}, name=${item.name}, '
+            'streamUrl=${itemUrl.isNotEmpty ? "SET" : "EMPTY"}, '
+            'mediaType=${itemType?.name ?? "null"}, isMain=$isMain, slug="$slug"');
+
+        // Always delegate to AppFlavour for app-aware routing
+        // (e.g. Cyberneom doesn't have BooksRoutes, so bookPath would 404)
+        final String route = isMain
+            ? AppFlavour.getMainItemDetailsRoute(item.id, type: itemType, slug: slug)
+            : AppFlavour.getSecondaryItemDetailsRoute(item.id, slug: slug);
+        AppConfig.logger.d('gotoItemDetails: → route=$route');
+        Sint.toNamed(route, arguments: [item]);
         return;
       }
 
       // Fallback for non-PlayableItem types (ExternalItem, etc.)
-      Sint.toNamed(AppFlavour.getMainItemDetailsRoute(item.id), arguments: [item]);
+      final route = AppFlavour.getMainItemDetailsRoute(item.id);
+      AppConfig.logger.d('gotoItemDetails: fallback → route=$route');
+      Sint.toNamed(route, arguments: [item]);
     } catch (e, st) {
       NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'gotoItemDetails');
     }
