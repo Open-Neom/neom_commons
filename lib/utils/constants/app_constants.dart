@@ -10,8 +10,8 @@ class AppConstants {
   static const int maxArtistNameLength = 15;
   static const int maxDrawerNameLength = 20;
   static const int maxAuthorNameLength = 30;
-  static const int maxBandNameLength = 15;
-  static const int maxBandDescLength = 30;
+  static const int maxCollectiveNameLength = 15;
+  static const int maxCollectiveDescLength = 30;
   static const int maxItemlistNameLength = 22;
   static const int maxInstrumentsNameLength = 22;
   static const int maxProfileNameSideBarLength = 15;

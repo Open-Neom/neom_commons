@@ -3,8 +3,11 @@ import 'package:neom_core/app_config.dart';
 import 'package:neom_core/data/firestore/app_media_item_firestore.dart';
 import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
 import 'package:neom_core/data/firestore/constants/app_firestore_constants.dart';
+import 'package:neom_core/data/firestore/itemlist_firestore.dart';
+import 'package:neom_core/data/firestore/user_firestore.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
+import 'package:neom_core/utils/enums/owner_type.dart';
 import 'package:neom_core/utils/enums/user_role.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sint/sint.dart';
@@ -157,6 +160,64 @@ class ContentModerationHelper {
   static Future<bool> deleteReleaseItem(AppReleaseItem item) async {
     AppConfig.logger.d("Deleting AppReleaseItem ${item.id} (${item.name})");
     return await AppReleaseItemFirestore().remove(item);
+  }
+
+  /// Permanently deletes an AppReleaseItem and cleans up every embedded
+  /// reference held by the owner (resolved via [AppReleaseItem.ownerEmail]).
+  ///
+  /// Steps:
+  ///   1. Removes the doc from `appReleaseItems`.
+  ///   2. Resolves the owning [AppUser] via email and walks each profile.
+  ///   3. For every Itemlist owned by those profiles, drops the embedded
+  ///      copy of the release item so the author's library stays consistent.
+  ///
+  /// Returns `true` if step 1 succeeded; embedded cleanup is best-effort
+  /// and logs errors but does not fail the deletion.
+  static Future<bool> deleteReleaseItemWithOwnerCleanup(AppReleaseItem item) async {
+    AppConfig.logger.d("Deleting AppReleaseItem ${item.id} (${item.name}) with owner cleanup");
+
+    final removed = await AppReleaseItemFirestore().remove(item);
+    if (!removed) {
+      AppConfig.logger.w("Top-level removal failed for ${item.id}; skipping owner cleanup");
+      return false;
+    }
+
+    final ownerEmail = item.ownerEmail;
+    if (ownerEmail.isEmpty) {
+      AppConfig.logger.d("No ownerEmail on release ${item.id}; nothing else to clean");
+      return true;
+    }
+
+    try {
+      final owner = await UserFirestore().getByEmail(ownerEmail, getProfile: true);
+      if (owner == null || owner.profiles.isEmpty) {
+        AppConfig.logger.d("No owner profiles found for $ownerEmail");
+        return true;
+      }
+
+      final itemlistFirestore = ItemlistFirestore();
+      for (final profile in owner.profiles) {
+        if (profile.id.isEmpty) continue;
+        final itemlists = await itemlistFirestore.getByOwnerId(
+          profile.id,
+          ownerType: OwnerType.profile,
+          excludeMyFavorites: false,
+        );
+        for (final itemlistId in itemlists.keys) {
+          await itemlistFirestore.deleteReleaseItem(
+            itemlistId: itemlistId,
+            itemId: item.id,
+          );
+        }
+        AppConfig.logger.d("Cleaned ${itemlists.length} itemlists for owner profile ${profile.id}");
+      }
+    } catch (e, st) {
+      // Best-effort cleanup; the canonical doc is already gone.
+      AppConfig.logger.w("Owner cleanup partial failure for ${item.id}: $e");
+      AppConfig.logger.t(st);
+    }
+
+    return true;
   }
 
   // ── AppMediaItem operations ────────────────────────────────────

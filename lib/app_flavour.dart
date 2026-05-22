@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
-import 'package:neom_core/domain/use_cases/audio_player_invoker_service.dart';
-import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
+import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/playable_item.dart';
+import 'package:neom_core/domain/use_cases/audio_player_invoker_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
 import 'package:neom_core/utils/enums/app_locale.dart';
@@ -179,7 +179,7 @@ class AppFlavour {
   static String getEventVector() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
-        return AppAssets.bandVector01;
+        return AppAssets.collectiveVector01;
       case AppInUse.e:
         return AppAssets.eventVector01;
       case AppInUse.c:
@@ -417,13 +417,13 @@ class AppFlavour {
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.g:
-        profileTypes.removeWhere((type) => type == ProfileType.band);
+        profileTypes.removeWhere((type) => type == ProfileType.collective);
         profileTypes.removeWhere((type) => type == ProfileType.researcher);
       case AppInUse.e:
-        profileTypes.removeWhere((type) => type == ProfileType.band);
+        profileTypes.removeWhere((type) => type == ProfileType.collective);
         profileTypes.removeWhere((type) => type == ProfileType.researcher);
       case AppInUse.c:
-        profileTypes.removeWhere((type) => type == ProfileType.band);
+        profileTypes.removeWhere((type) => type == ProfileType.collective);
       default:
         break;
     }
@@ -437,9 +437,9 @@ class AppFlavour {
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.g:
-        profileTypes = [ProfileType.facilitator, ProfileType.host, ProfileType.band, ProfileType.appArtist];
+        profileTypes = [ProfileType.facilitator, ProfileType.host, ProfileType.collective, ProfileType.appArtist];
       case AppInUse.e:
-        profileTypes = [ProfileType.appArtist, ProfileType.facilitator, ProfileType.host, ProfileType.band, ProfileType.broadcaster];
+        profileTypes = [ProfileType.appArtist, ProfileType.facilitator, ProfileType.host, ProfileType.collective, ProfileType.broadcaster];
         break;
       case AppInUse.c:
       default:
@@ -498,6 +498,21 @@ class AppFlavour {
         return true;
       case AppInUse.o:
         return false;
+      default:
+        break;
+    }
+
+    return false;
+  }
+
+  static bool showAdd() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return true;
+      case AppInUse.e:
+        return true;
+      case AppInUse.g:
+        return true;
       default:
         break;
     }
@@ -673,6 +688,19 @@ class AppFlavour {
         return true;
       case AppInUse.g:
         return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool showGames() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return false;
+      case AppInUse.e:
+        return true;
+      case AppInUse.g:
+        return false;
       case AppInUse.o:
         return false;
       default:
@@ -733,7 +761,7 @@ class AppFlavour {
   static bool showNupale() {
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
-        return true;
+        return false;
       case AppInUse.e:
         return true;
       case AppInUse.g:
@@ -783,8 +811,6 @@ class AppFlavour {
         return true;
       case AppInUse.g:
         return true;
-      case AppInUse.o:
-        return false;
       default:
         return false;
     }
@@ -875,6 +901,17 @@ class AppFlavour {
     }
   }
 
+  static bool showBooksLibrary() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.e:
+        return true;
+      case AppInUse.c:
+        return true;
+      default:
+        return false;
+    }
+  }
+
   /// Directory is available in all main apps (e, c, g).
   static bool showDirectory() {
     switch(AppConfig.instance.appInUse) {
@@ -893,6 +930,15 @@ class AppFlavour {
   static bool showBooking() {
     switch(AppConfig.instance.appInUse) {
       case AppInUse.g:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool showGalley() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.e:
         return true;
       default:
         return false;
@@ -1078,6 +1124,33 @@ class AppFlavour {
       case AppInUse.e: return 'albumTypeDescE';
       case AppInUse.c: return 'albumTypeDescC';
       default: return 'albumTypeDescG';
+    }
+  }
+
+  static bool showGenerator() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool showInterComm() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool showLevitation() {
+    switch(AppConfig.instance.appInUse) {
+      case AppInUse.c:
+        return true;
+      default:
+        return false;
     }
   }
 

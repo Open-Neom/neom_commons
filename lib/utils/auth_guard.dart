@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
-import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:sint/sint.dart';
 
 import '../ui/theme/app_color.dart';
@@ -62,7 +62,7 @@ class AuthGuard {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: AppColor.bondiBlue,
+                backgroundColor: AppColor.getReleaseShelfColor(),
                 foregroundColor: Colors.white,
                 shape: const StadiumBorder()
             ),

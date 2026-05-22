@@ -154,8 +154,8 @@ class DeeplinkUtilities {
         return slug.isNotEmpty ? '$siteUrl/blog/$slug' : '$siteUrl/blog/$id';
       case 'event':
         return slug.isNotEmpty ? '$siteUrl/$slug' : '$siteUrl/e/$id';
-      case 'band':
-        return slug.isNotEmpty ? '$siteUrl/$slug' : '$siteUrl/band/$id';
+      case 'collective':
+        return slug.isNotEmpty ? '$siteUrl/$slug' : '$siteUrl/collective/$id';
       case 'playlist':
         return '$siteUrl/playlist/$id';
       case 'product':

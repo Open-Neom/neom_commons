@@ -1,12 +1,13 @@
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
-import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/external_item.dart';
 import 'package:neom_core/domain/model/item_list.dart';
 import 'package:neom_core/utils/enums/app_media_source.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/enums/release_type.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
+
 import '../text_utilities.dart';
 
 class AppMediaItemMapper {

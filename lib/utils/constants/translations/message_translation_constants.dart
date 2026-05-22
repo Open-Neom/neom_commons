@@ -1,11 +1,11 @@
 class MessageTranslationConstants {
   static const String accountSignUp = 'accountSignUp';
-  static const String addBand = 'addBand';
+  static const String addCollective = 'addCollective';
   static const String addEventImg = 'addEventImg';
   static const String addProfileImg = 'addProfileImg';
   static const String allEvents = 'allEvents';
   static const String atLeastOneInstrument = 'atLeastOneInstrument';
-  static const String bandNameUsed = 'bandNameUsed';
+  static const String collectiveNameUsed = 'collectiveNameUsed';
   static const String changePaymentCurrency = 'changePaymentCurrency';
   static const String contributionAmount = 'contributionAmount';
   static const String createEventHeader = 'createEventHeader';
@@ -149,7 +149,7 @@ class MessageTranslationConstants {
   static const String letsGigMsg = 'letsGigMsg';
   static const String locationRequiredMsg1 = 'locationRequiredMsg1';
   static const String locationRequiredMsg2 = 'locationRequiredMsg2';
-  static const String organizeBandEventMsg = 'organizeBandEventMsg';
+  static const String organizeCollectiveEventMsg = 'organizeCollectiveEventMsg';
   static const String paymentProcessedMsg = 'paymentProcessedMsg';
   static const String removePostMsg = 'removePostMsg';
   static const String reportPostMsg = 'reportPostMsg';

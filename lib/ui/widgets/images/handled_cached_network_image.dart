@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neom_core/app_properties.dart';
+import '../../../app_flavour.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:sint/sint.dart';
 
@@ -349,15 +350,18 @@ class CachedCircleAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrl.isEmpty) {
+    // Use app logo as fallback when no profile image exists
+    final effectiveUrl = imageUrl.isNotEmpty
+        ? imageUrl
+        : AppProperties.getAppLogoUrl();
+
+    if (effectiveUrl.isEmpty) {
+      // Use the local app logo asset as last resort
+      final logoPath = AppFlavour.getAppLogoPath();
       return CircleAvatar(
         radius: radius,
         backgroundColor: backgroundColor ?? Colors.grey[800],
-        child: Icon(
-          Icons.person,
-          size: radius,
-          color: Colors.grey[600],
-        ),
+        backgroundImage: AssetImage(logoPath),
       );
     }
 
@@ -371,7 +375,7 @@ class CachedCircleAvatar extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: buildWebNativeImage(
-          imageUrl: imageUrl,
+          imageUrl: effectiveUrl,
           width: diameter,
           height: diameter,
           fit: BoxFit.cover,
@@ -381,7 +385,7 @@ class CachedCircleAvatar extends StatelessWidget {
     }
 
     return CachedNetworkImage(
-      imageUrl: imageUrl,
+      imageUrl: effectiveUrl,
       imageBuilder: (context, imageProvider) => CircleAvatar(
         radius: radius,
         backgroundImage: imageProvider,

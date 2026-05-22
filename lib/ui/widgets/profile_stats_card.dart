@@ -14,7 +14,7 @@ import 'profile_stat_item.dart';
 /// A reusable card widget that displays profile statistics with animations.
 ///
 /// Shows an avatar, name, verification badge, and a configurable
-/// grid of stats (followers, following, posts, bands, events, etc.)
+/// grid of stats (followers, following, posts, collectives, events, etc.)
 /// derived from [AppProfile] fields.
 ///
 /// Features:
@@ -44,7 +44,7 @@ class ProfileStatsCard extends StatefulWidget {
   final VoidCallback? onFollowersTap;
   final VoidCallback? onFollowingTap;
   final VoidCallback? onPostsTap;
-  final VoidCallback? onBandsTap;
+  final VoidCallback? onCollectivesTap;
   final VoidCallback? onEventsTap;
   final VoidCallback? onItemsTap;
 
@@ -59,7 +59,7 @@ class ProfileStatsCard extends StatefulWidget {
     this.onFollowersTap,
     this.onFollowingTap,
     this.onPostsTap,
-    this.onBandsTap,
+    this.onCollectivesTap,
     this.onEventsTap,
     this.onItemsTap,
   });
@@ -237,14 +237,14 @@ class _ProfileStatsCardState extends State<ProfileStatsCard>
       onTap: widget.onPostsTap,
     ));
 
-    // Show bands if available
-    if (widget.profile.bands?.isNotEmpty ?? false) {
+    // Show collectives if available
+    if (widget.profile.collectives?.isNotEmpty ?? false) {
       stats.add(ProfileStatConfig(
-        label: AppTranslationConstants.bands.tr,
-        value: _formatCount(widget.profile.bands?.length ?? 0),
-        numericValue: widget.profile.bands?.length ?? 0,
+        label: AppTranslationConstants.collectives.tr,
+        value: _formatCount(widget.profile.collectives?.length ?? 0),
+        numericValue: widget.profile.collectives?.length ?? 0,
         icon: Icons.groups_outlined,
-        onTap: widget.onBandsTap,
+        onTap: widget.onCollectivesTap,
       ));
     }
 

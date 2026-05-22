@@ -307,10 +307,10 @@ class _WebCommandPaletteState extends State<WebCommandPalette> {
         keywords: ['perfil', 'cuenta', 'account'],
       ),
       CommandPaletteItem(
-        id: 'nav_bands', label: 'Bands', section: 'Navigate',
+        id: 'nav_collectives', label: 'Collectives', section: 'Navigate',
         icon: Icons.groups_outlined,
-        onSelect: () => Sint.toNamed(AppRouteConstants.bands),
-        keywords: ['bandas', 'groups'],
+        onSelect: () => Sint.toNamed(AppRouteConstants.collectives),
+        keywords: ['colectivos', 'groups'],
       ),
       CommandPaletteItem(
         id: 'nav_blog', label: 'Blog', section: 'Navigate',

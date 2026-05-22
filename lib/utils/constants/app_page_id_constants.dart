@@ -22,7 +22,7 @@ class AppPageIdConstants {
 
   static const String upload = "upload";
   static const String itemlist = "itemlist";
-  static const String bandItemlist = "bandItemlist";
+  static const String collectiveItemlist = "collectiveItemlist";
   static const String spotifySync = "spotifySync";
 
   static const String mediaItemSearch = "mediaItemSearch";
@@ -63,10 +63,15 @@ class AppPageIdConstants {
   static const String likes = "likes";
   static const String genres = "genres";
 
-  static const String bands = "bands";
-  static const String bandRoom = "bandRoom";
-  static const String bandDetails = "bandDetails";
-  static const String createBand = "createBand";
+  static const String collectives = "collectives";
+  static const String collectiveRoom = "collectiveRoom";
+  static const String collectiveDetails = "collectiveDetails";
+  static const String createCollective = "createCollective";
+  static const String collectiveCalendar = "collectiveCalendar";
+  static const String collectiveFeed = "collectiveFeed";
+  static const String collectiveFiles = "collectiveFiles";
+  static const String collectiveNotes = "collectiveNotes";
+  static const String collectiveNoteEditor = "collectiveNoteEditor";
 
   static const String report = "report";
 

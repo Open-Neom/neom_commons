@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:neom_commons/ui/widgets/custom_image.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/use_cases/login_service.dart';
@@ -28,6 +27,7 @@ import '../utils/text_utilities.dart';
 import 'app_drawer_controller.dart';
 import 'theme/app_color.dart';
 import 'theme/app_theme.dart';
+import 'widgets/custom_image.dart';
 import 'widgets/custom_widgets.dart';
 
 
@@ -60,7 +60,7 @@ class AppDrawer extends StatelessWidget {
                       if(AppFlavour.showBlog())
                         drawerRowOption(AppDrawerMenu.inspiration, const Icon(FontAwesomeIcons.filePen), context),
                       if(AppFlavour.showBands() && controller.appProfile.value?.type == ProfileType.appArtist && controller.user?.userRole != UserRole.subscriber)
-                        drawerRowOption(AppDrawerMenu.bands, const Icon(Icons.people), context),
+                        drawerRowOption(AppDrawerMenu.collectives, const Icon(Icons.people), context),
                       if(AppFlavour.showVst())
                         drawerRowOption(AppDrawerMenu.vst, const Icon(FontAwesomeIcons.guitar), context),
                       if(AppFlavour.showDaw())
@@ -79,27 +79,23 @@ class AppDrawer extends StatelessWidget {
                         ),
                       if(!AppFlavour.isNeomApp()) //TODO Not implemented on "C" app yet
                         drawerRowOption(AppDrawerMenu.requests, const Icon(Icons.email), context),
-                      if(
-                      ///DEPRECATED - AS VERIFICATIONLEVEL IS BEING USED NOW AND ITS MORE RELEVANT
-                      // (controller.userServiceImpl?.subscriptionLevel.value
-                      //     ?? SubscriptionLevel.freemium.value) >= SubscriptionLevel.creator.value
-                      (controller.userServiceImpl?.profile.verificationLevel.value
-                              ?? VerificationLevel.none.value) >= VerificationLevel.creator.value
-                          || (controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.support.value)
-                        Column(
-                          children: [
-                            if(AppFlavour.showNupale())
-                            drawerRowOption(AppDrawerMenu.nupale, const Icon(FontAwesomeIcons.bookOpenReader), context),
-                            if(AppFlavour.showCasete())
-                            drawerRowOption(AppDrawerMenu.casete, const Icon(FontAwesomeIcons.solidFileAudio), context),
-                          ],
-                        ),
+                      ///DEPRECATED - Moved to shopHub in neom_shop
+                      // if(
+                      // ///DEPRECATED - AS VERIFICATIONLEVEL IS BEING USED NOW AND ITS MORE RELEVANT
+                      // (controller.userServiceImpl?.profile.verificationLevel.value
+                      //         ?? VerificationLevel.none.value) >= VerificationLevel.creator.value
+                      //     || (controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.support.value)
+                      //   Column(
+                      //     children: [
+                      //       if(AppFlavour.showNupale())
+                      //       drawerRowOption(AppDrawerMenu.nupale, const Icon(FontAwesomeIcons.bookOpenReader), context),
+                      //       if(AppFlavour.showCasete())
+                      //       drawerRowOption(AppDrawerMenu.casete, const Icon(FontAwesomeIcons.solidFileAudio), context),
+                      //     ],
+                      //   ),
                       Column(
                         children: [
                           const Divider(),
-                          if(AppFlavour.showReleaseUpload()
-                              && (controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.support.value)
-                            drawerRowOption(AppDrawerMenu.releaseUpload, Icon(AppFlavour.getAppItemIcon()), context),
                           if(AppFlavour.showServices())
                             Column(
                               children: [
@@ -107,25 +103,36 @@ class AppDrawer extends StatelessWidget {
                                 const Divider(),
                               ],
                             ),
+                          if(((controller.userServiceImpl?.profile.verificationLevel.value
+                              ?? VerificationLevel.none.value) >= VerificationLevel.creator.value
+                              || (controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.support.value)
+                          ) Column(
+                            children: [
+                              if(AppFlavour.showReleaseUpload())
+                                drawerRowOption(AppDrawerMenu.releaseUpload, Icon(AppFlavour.getAppItemIcon()), context),
+                              drawerRowOption(AppDrawerMenu.dashboard, const Icon(Icons.analytics), context),
+                              const Divider(),
+                            ],
+                          ),
                           ///NOT READY FOR THIS FUNCITONALITY OF CROWDFUNDING - AppInUse.e Usage
                           // _menuListRowButton(AppConstants.crowdfunding, const Icon(FontAwesomeIcons.gifts), true, context),
                         ],
                       ),
-                      if(AppFlavour.showWallet() && ((controller.userServiceImpl?.profile.verificationLevel.value
-                          ?? VerificationLevel.none.value) >= VerificationLevel.creator.value
-                          || (controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.support.value)
-                      ) Column(
-                        children: [
-                          drawerRowOption(AppDrawerMenu.wallet, const Icon(FontAwesomeIcons.coins), context),
-                          const Divider(),
-                        ],
-                      ),
+                      ///DEPRECATED - Moved to shopHub in neom_shop
+                      // if(AppFlavour.showWallet() && ((controller.userServiceImpl?.profile.verificationLevel.value
+                      //     ?? VerificationLevel.none.value) >= VerificationLevel.creator.value
+                      //     || (controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.support.value)
+                      // ) Column(
+                      //   children: [
+                      //     drawerRowOption(AppDrawerMenu.wallet, const Icon(FontAwesomeIcons.coins), context),
+                      //     const Divider(),
+                      //   ],
+                      // ),
                       if((controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.erp.value)
                         Column(
                           children: [
                             const Divider(),
-                            drawerRowOption(AppDrawerMenu.erpDashboard, const Icon(Icons.analytics), context),
-                            drawerRowOption(AppDrawerMenu.hubDashboard, const Icon(Icons.hub), context),
+                            drawerRowOption(AppDrawerMenu.erp, const Icon(Icons.analytics), context),
                           ],
                         ),
                       if(Sint.isRegistered<SettingsService>()) drawerRowOption(AppDrawerMenu.settings, const Icon(Icons.settings), context),
@@ -290,8 +297,8 @@ class AppDrawer extends StatelessWidget {
             case AppDrawerMenu.genres:
               if (isEnabled) Sint.toNamed(AppRouteConstants.genresFav);
               break;
-            case AppDrawerMenu.bands:
-              Sint.toNamed(AppRouteConstants.bands);
+            case AppDrawerMenu.collectives:
+              Sint.toNamed(AppRouteConstants.collectives);
               break;
             case AppDrawerMenu.events:
               Sint.toNamed(AppRouteConstants.events);
@@ -314,9 +321,10 @@ class AppDrawer extends StatelessWidget {
             case AppDrawerMenu.directory:
               Sint.toNamed(AppRouteConstants.directory);
               break;
-            case AppDrawerMenu.wallet:
-              Sint.toNamed(AppRouteConstants.wallet);
-              break;
+          ///DEPRECATED
+          // case AppDrawerMenu.wallet:
+            //   Sint.toNamed(AppRouteConstants.wallet);
+            //   break;
             case AppDrawerMenu.settings:
               Sint.toNamed(AppRouteConstants.settingsPrivacy);
               break;
@@ -350,10 +358,11 @@ class AppDrawer extends StatelessWidget {
               break;
             case AppDrawerMenu.inspiration:
               Sint.toNamed(AppRouteConstants.blog);
-            case AppDrawerMenu.nupale:
-              Sint.toNamed(AppRouteConstants.nupaleHome);
-            case AppDrawerMenu.casete:
-              Sint.toNamed(AppRouteConstants.caseteHome);
+            ///DEPRECATED
+            /// case AppDrawerMenu.nupale:
+            ///   Sint.toNamed(AppRouteConstants.nupaleHome);
+            /// case AppDrawerMenu.casete:
+            ///  Sint.toNamed(AppRouteConstants.caseteHome);
             case AppDrawerMenu.games:
               Sint.toNamed(AppRouteConstants.games);
               break;
@@ -366,11 +375,11 @@ class AppDrawer extends StatelessWidget {
             case AppDrawerMenu.daw:
               Sint.toNamed(AppRouteConstants.dawProjects);
               break;
-            case AppDrawerMenu.erpDashboard:
-              Sint.toNamed(AppRouteConstants.erpDashboard);
+            case AppDrawerMenu.erp:
+              Sint.toNamed(AppRouteConstants.erp);
               break;
-            case AppDrawerMenu.hubDashboard:
-              Sint.toNamed(AppRouteConstants.erpDashboard);
+            case AppDrawerMenu.dashboard:
+              Sint.toNamed(AppRouteConstants.shopHub);
               break;
           }
         }

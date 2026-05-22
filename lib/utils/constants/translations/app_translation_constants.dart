@@ -24,8 +24,8 @@ class AppTranslationConstants {
   static const String author = 'author';
   static const String audioLibrary = 'audioLibrary';
   static const String back = "back";
-  static const String band = "band";
-  static const String bands = "bands";
+  static const String collective = "collective";
+  static const String collectives = "collectives";
   static const String barter = 'barter';
   static const String barters = 'barters';
   static const String bartersNetwork = 'bartersNetwork';

@@ -181,7 +181,7 @@ class AppTheme {
   static TextStyle defaultTitleStyle = const TextStyle(fontSize: 25, fontWeight: FontWeight.bold,);
   static TextStyle defaultSubtitle = const TextStyle(fontSize: 18, fontWeight: FontWeight.bold,);
 
-  static TextStyle bandTitleStyle = const TextStyle(fontSize: 25, fontWeight: FontWeight.bold,);
+  static TextStyle collectiveTitleStyle = const TextStyle(fontSize: 25, fontWeight: FontWeight.bold,);
   static TextStyle eventTitleStyle = const TextStyle(fontSize: 25, fontWeight: FontWeight.bold,);
   static TextStyle requestClipTitleStyle = const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white);
   static TextStyle requestsTextStyle = const TextStyle(fontSize: 15);

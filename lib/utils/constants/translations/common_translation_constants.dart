@@ -66,7 +66,7 @@ class CommonTranslationConstants {
   static const String likedYourPost = 'likedYourPost';
   static const String listeningSessions = 'listeningSessions';
   static const String listenOnSpotify = 'listenOnSpotify';
-  static const String loadingPossibleBandmates = 'loadingPossibleBandmates';
+  static const String loadingPossibleCollectiveMembers = 'loadingPossibleCollectiveMembers';
   static const String locationRequiredTitle = 'locationRequiredTitle';
   static const String loginToContinue = 'loginToContinue';
   static const String lookupForMusicians = 'lookupForMusicians';
@@ -77,7 +77,7 @@ class CommonTranslationConstants {
   static const String myFavItemlistName = 'myFavItemlistName';
   static const String notAvailable = 'notAvailable';
   static const String noAvailablePreviewUrl = 'noAvailablePreviewUrl';
-  static const String noBandmatesWereFound = 'noBandmatesWereFound';
+  static const String noCollectiveMembersWereFound = 'noCollectiveMembersWereFound';
   static const String noDraftsWereFound = 'noDraftsWereFound';
   static const String noEntriesWereFound = 'noEntriesWereFound';
   static const String noInvitationsWereFound = 'noInvitationsWereFound';
@@ -216,7 +216,7 @@ class CommonTranslationConstants {
   static const String errorCreatingAccount = 'errorCreatingAccount';
   static const String errorRetrievingProfiles = 'errorRetrievingProfiles';
   static const String organizeEventMsg = 'organizeEventMsg';
-  static const String organizeBandEventMsg = 'organizeBandEventMsg';
+  static const String organizeCollectiveEventMsg = 'organizeCollectiveEventMsg';
   static const String askQuestion = 'askQuestion';
   static const String askQuestionMsg = 'askQuestionMsg';
   static const String startPoll = 'startPoll';
@@ -336,7 +336,7 @@ class CommonTranslationConstants {
   static const String topMediaItems = 'topMediaItems';
   static const String appArtist = 'appArtist';
   static const String searchProfiles = 'searchProfiles';
-  static const String searchBands = 'searchBands';
+  static const String searchCollectives = 'searchCollectives';
   static const String searchEvents = 'searchEvents';
   static const String searchItems = 'searchItems';
   static const String searchAny = 'searchAny';
@@ -364,17 +364,29 @@ class CommonTranslationConstants {
   static const String violence = 'violence';
 
   // Subscription plans
+  static const String freemiumPlan = 'freemiumPlan';
   static const String basicPlan = 'basicPlan';
+  static const String plusPlan = 'plusPlan';
+  static const String familyPlan = 'familyPlan';
   static const String creatorPlan = 'creatorPlan';
+  static const String ambassadorPlan = 'ambassadorPlan';
   static const String artistPlan = 'artistPlan';
   static const String professionalPlan = 'professionalPlan';
+  static const String corporatePlan = 'corporatePlan';
   static const String premiumPlan = 'premiumPlan';
+  static const String platinumPlan = 'platinumPlan';
   static const String publishPlan = 'publishPlan';
+  static const String freemiumPlanMsg = 'freemiumPlanMsg';
   static const String basicPlanMsg = 'basicPlanMsg';
+  static const String plusPlanMsg = 'plusPlanMsg';
+  static const String familyPlanMsg = 'familyPlanMsg';
   static const String creatorPlanMsg = 'creatorPlanMsg';
+  static const String ambassadorPlanMsg = 'ambassadorPlanMsg';
   static const String artistPlanMsg = 'artistPlanMsg';
   static const String professionalPlanMsg = 'professionalPlanMsg';
+  static const String corporatePlanMsg = 'corporatePlanMsg';
   static const String premiumPlanMsg = 'premiumPlanMsg';
+  static const String platinumPlanMsg = 'platinumPlanMsg';
   static const String publishPlanMsg = 'publishPlanMsg';
 
   // Subscription cancellation
@@ -459,5 +471,7 @@ class CommonTranslationConstants {
   static const String attending = 'attending';
   static const String andMore = 'andMore';
   static const String loading = 'loading';
+  static const String noCollectivematesWereFound = 'noCollectivematesWereFound';
+  static const String loadingPossibleCollectivemates = 'loadingPossibleCollectivemates';
 
 }

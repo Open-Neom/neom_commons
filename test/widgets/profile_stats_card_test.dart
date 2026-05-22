@@ -1,7 +1,7 @@
 /// Tests for ProfileStatsCard widget
 ///
 /// Covers:
-/// - Stats display (posts, followers, following, events, bands)
+/// - Stats display (posts, followers, following, events, collectives)
 /// - Count-up animations
 /// - Tap interactions on stat items
 /// - Conditional visibility (followers for mates only)
@@ -27,14 +27,14 @@ class MockProfileStats {
   final int followers;
   final int following;
   final int events;
-  final int bands;
+  final int collectives;
 
   const MockProfileStats({
     this.posts = 0,
     this.followers = 0,
     this.following = 0,
     this.events = 0,
-    this.bands = 0,
+    this.collectives = 0,
   });
 }
 
@@ -48,7 +48,7 @@ class MockProfileStatsCard extends StatefulWidget {
   final VoidCallback? onFollowersTap;
   final VoidCallback? onFollowingTap;
   final VoidCallback? onEventsTap;
-  final VoidCallback? onBandsTap;
+  final VoidCallback? onCollectivesTap;
 
   const MockProfileStatsCard({
     required this.stats,
@@ -59,7 +59,7 @@ class MockProfileStatsCard extends StatefulWidget {
     this.onFollowersTap,
     this.onFollowingTap,
     this.onEventsTap,
-    this.onBandsTap,
+    this.onCollectivesTap,
     super.key,
   });
 
@@ -170,10 +170,10 @@ class _MockProfileStatsCardState extends State<MockProfileStatsCard>
                 onTap: widget.onEventsTap,
               ),
               _buildStatItem(
-                key: 'bands_stat',
-                label: 'Bands',
-                value: widget.stats.bands,
-                onTap: widget.onBandsTap,
+                key: 'collectives_stat',
+                label: 'Collectives',
+                value: widget.stats.collectives,
+                onTap: widget.onCollectivesTap,
               ),
             ],
           );
@@ -243,7 +243,7 @@ void main() {
                 followers: 1234,
                 following: 567,
                 events: 15,
-                bands: 3,
+                collectives: 3,
               ),
               animateOnLoad: false,
             ),
@@ -257,7 +257,7 @@ void main() {
         expect(find.byKey(const Key('followers_stat')), findsOneWidget);
         expect(find.byKey(const Key('following_stat')), findsOneWidget);
         expect(find.byKey(const Key('events_stat')), findsOneWidget);
-        expect(find.byKey(const Key('bands_stat')), findsOneWidget);
+        expect(find.byKey(const Key('collectives_stat')), findsOneWidget);
       });
 
       testWidgets('renders without followers when showFollowers is false',
@@ -265,7 +265,7 @@ void main() {
         await tester.pumpWidget(
           wrapWithMaterialApp(
             const MockProfileStatsCard(
-              stats: MockProfileStats(posts: 10, events: 5, bands: 2),
+              stats: MockProfileStats(posts: 10, events: 5, collectives: 2),
               showFollowers: false,
               animateOnLoad: false,
             ),
@@ -278,7 +278,7 @@ void main() {
         expect(find.byKey(const Key('followers_stat')), findsNothing);
         expect(find.byKey(const Key('following_stat')), findsNothing);
         expect(find.byKey(const Key('events_stat')), findsOneWidget);
-        expect(find.byKey(const Key('bands_stat')), findsOneWidget);
+        expect(find.byKey(const Key('collectives_stat')), findsOneWidget);
       });
 
       testWidgets('shows loading state', (tester) async {
@@ -311,7 +311,7 @@ void main() {
         expect(find.text('Followers'), findsOneWidget);
         expect(find.text('Following'), findsOneWidget);
         expect(find.text('Events'), findsOneWidget);
-        expect(find.text('Bands'), findsOneWidget);
+        expect(find.text('Collectives'), findsOneWidget);
       });
     });
 
@@ -368,7 +368,7 @@ void main() {
         await tester.pumpWidget(
           wrapWithMaterialApp(
             const MockProfileStatsCard(
-              stats: MockProfileStats(posts: 0, events: 0, bands: 0),
+              stats: MockProfileStats(posts: 0, events: 0, collectives: 0),
               showFollowers: false,
               animateOnLoad: false,
             ),
@@ -462,21 +462,21 @@ void main() {
         expect(tapped, isTrue);
       });
 
-      testWidgets('calls onBandsTap when bands tapped', (tester) async {
+      testWidgets('calls onCollectivesTap when collectives tapped', (tester) async {
         bool tapped = false;
 
         await tester.pumpWidget(
           wrapWithMaterialApp(
             MockProfileStatsCard(
-              stats: const MockProfileStats(bands: 2),
-              onBandsTap: () => tapped = true,
+              stats: const MockProfileStats(collectives: 2),
+              onCollectivesTap: () => tapped = true,
               animateOnLoad: false,
             ),
           ),
         );
 
         await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const Key('bands_stat')));
+        await tester.tap(find.byKey(const Key('collectives_stat')));
         await tester.pump();
 
         expect(tapped, isTrue);
@@ -759,7 +759,7 @@ void main() {
                 followers: i * 100,
                 following: i * 50,
                 events: i * 5,
-                bands: i,
+                collectives: i,
               ),
               animateOnLoad: false,
             ),
@@ -789,7 +789,7 @@ void main() {
               followers: 10000,
               following: 5000,
               events: 50,
-              bands: 10,
+              collectives: 10,
             ),
             animateOnLoad: true,
           ),

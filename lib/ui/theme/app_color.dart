@@ -102,6 +102,13 @@ class AppColor {
   static const Color bondiBlue75 = Color.fromRGBO(50, 100, 215, 0.75);
   static const Color dodgetBlue = Color.fromRGBO(29, 162, 240, 1.0);
 
+  /// Azul Rey EMXI — deep navy royal blue brand color. Much darker and
+  /// more saturated than bondiBlue. RGB(15, 27, 105) ≈ #0F1B69
+  static const Color kingBlue = Color.fromRGBO(15, 27, 105, 1.0);
+  static const Color kingBlue25 = Color.fromRGBO(15, 27, 105, 0.25);
+  static const Color kingBlue50 = Color.fromRGBO(15, 27, 105, 0.50);
+  static const Color kingBlue75 = Color.fromRGBO(15, 27, 105, 0.75);
+
   static const Color textColor = Color.fromRGBO(250, 250, 250, 0.95);
   static const Color textButton = Colors.black;
   static const Color cutColoredImage = Color(0xBB8338f4);

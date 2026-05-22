@@ -4,11 +4,11 @@ class MessagesEnTranslations {
 
   static const Map<String, String> values = {
     MessageTranslationConstants.accountSignUp: 'Account Sign Up',
-    MessageTranslationConstants.addBand: 'Add a band',
+    MessageTranslationConstants.addCollective: 'Add a collective',
     MessageTranslationConstants.addEventImg: 'Add event image',
     MessageTranslationConstants.addProfileImg: 'Add profile image',
     MessageTranslationConstants.allEvents: 'All events',
-    MessageTranslationConstants.bandNameUsed: 'The provided band name is already in use',
+    MessageTranslationConstants.collectiveNameUsed: 'The provided collective name is already in use',
     MessageTranslationConstants.buySubscriptionMsg: 'Buy subscription',
     MessageTranslationConstants.contributionAmount: 'Contribution amount',
     MessageTranslationConstants.createEventHeader: 'Ready to play? Great!',

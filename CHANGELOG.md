@@ -1,3 +1,6 @@
+## 1.4.2-dev — 2026-04-16
+- Add `noCollectivematesWereFound`, `loadingPossibleCollectivemates` translation constants to CommonTranslationConstants
+
 ## 1.4.1-dev - Publishing to pub.dev
 
 ## 1.4.0-dev - Architectural Changes and Refactoring:
