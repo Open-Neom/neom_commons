@@ -33,6 +33,9 @@ class ArtworkColorAwareImage extends StatefulWidget {
     this.onColorExtracted,
   });
 
+  /// Clears the static color cache. Intended for tests or memory pressure.
+  static void clearCache() => _ArtworkColorAwareImageState._cache.clear();
+
   @override
   State<ArtworkColorAwareImage> createState() => _ArtworkColorAwareImageState();
 
@@ -114,9 +117,5 @@ class _ArtworkColorAwareImageState extends State<ArtworkColorAwareImage> {
     }
     return child;
   }
-
-  /// Clears the static color cache. Intended for tests or memory pressure.
-  static void clearCache() => _cache.clear();
-
 
 }

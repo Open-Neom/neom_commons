@@ -58,7 +58,6 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
   late Animation<double> _shimmerAnimation;
   int _retryCount = 0;
   static const int _maxRetries = 3;
-  String? _errorMessage;
 
   @override
   void initState() {
@@ -92,7 +91,6 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
       HapticFeedback.lightImpact();
       setState(() {
         _retryCount++;
-        _errorMessage = null;
       });
     }
   }
@@ -136,10 +134,7 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
         progressIndicatorBuilder: widget.showProgress
             ? (context, url, progress) => _buildProgressIndicator(progress)
             : null,
-        errorWidget: (context, url, error) {
-          _errorMessage = error.toString();
-          return _buildErrorWidget();
-        },
+        errorWidget: (context, url, error) => _buildErrorWidget(),
       );
     }
 

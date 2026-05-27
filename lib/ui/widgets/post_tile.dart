@@ -38,7 +38,6 @@ class PostTile extends StatefulWidget {
 }
 
 class _PostTileState extends State<PostTile> with SingleTickerProviderStateMixin {
-  bool _isPressed = false;
   late AnimationController _scaleController;
   late Animation<double> _scaleAnimation;
 
@@ -61,17 +60,14 @@ class _PostTileState extends State<PostTile> with SingleTickerProviderStateMixin
   }
 
   void _onTapDown(TapDownDetails details) {
-    setState(() => _isPressed = true);
     _scaleController.forward();
   }
 
   void _onTapUp(TapUpDetails details) {
-    setState(() => _isPressed = false);
     _scaleController.reverse();
   }
 
   void _onTapCancel() {
-    setState(() => _isPressed = false);
     _scaleController.reverse();
   }
 
