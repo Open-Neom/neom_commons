@@ -48,14 +48,14 @@ decoupling, and customization capabilities across the Open Neom ecosystem:
     This ensures a consistent yet customizable experience across different versions or brands of the Neom application.
 
 📦 Installation
-Add neom_commons as a Git dependency in your pubspec.yaml file:
+Add neom_commons to your `pubspec.yaml` dependencies:
 
+```yaml
 dependencies:
-    neom_commons:
-        git:
-            url: https://github.com/Open-Neom/neom_commons.git
+  neom_commons: ^2.0.0
+```
 
-Then, run flutter pub get in your project's root directory.
+Then, run `flutter pub get` in your project's root directory.
 
 🚀 Usage
 neom_commons is primarily consumed by other domain-specific Neom modules (e.g., neom_auth, neom_home, neom_posts)

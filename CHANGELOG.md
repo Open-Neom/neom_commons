@@ -1,7 +1,6 @@
-## 1.4.2-dev — 2026-04-16
-- Add `noCollectivematesWereFound`, `loadingPossibleCollectivemates` translation constants to CommonTranslationConstants
-
-## 1.4.1-dev - Publishing to pub.dev
+## [2.0.0] - 2026-04-16
+- Stable 2.0.0 release of neom_commons.
+- Add `noCollectivematesWereFound`, `loadingPossibleCollectivemates` translation constants to CommonTranslationConstants.
 
 ## 1.4.0-dev - Architectural Changes and Refactoring:
 

@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  neom_core: ^3.0.0
+  neom_core: ^2.0.0
   sint_sentinel: ^1.0.0
 
   # TRANSITIVE DEPENDENCIES FOR PUB.DEV PUBLISHING
