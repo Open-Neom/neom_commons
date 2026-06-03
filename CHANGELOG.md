@@ -1,3 +1,8 @@
+## [Unreleased] - Content moderation: update & change-approval
+- `ContentModerationHelper.updateReleaseItemMetadata(...)` to edit an `AppReleaseItem` (title, description, cover, author, categories, language, pages).
+- `ContentModerationHelper.submitReleaseEditApproval(...)` / `applyChangeApproval(...)` plus role helpers `canApplyDirectly()` / `canRequestChange()` for the generic change-approval layer (neom_requests).
+- New `CommonTranslationConstants` keys: `editContent`, `contentUpdated`, `changeCover`, `changesRequireApproval`, `changeRequestSubmitted`, `changeApprovals`, `approveChange`, `rejectChange` (ES/EN/FR/DE).
+
 ## [2.0.0] - 2026-04-16
 - Stable 2.0.0 release of neom_commons.
 - Add `noCollectivematesWereFound`, `loadingPossibleCollectivemates` translation constants to CommonTranslationConstants.

@@ -10,6 +10,9 @@ import 'constants/translations/app_translation_constants.dart';
 
 class AuthGuard {
 
+  static String? pendingRedirectRoute;
+  static dynamic pendingRedirectArgs;
+
   /// ÚNICO punto de acceso.
   ///
   /// [action]: La función que se ejecuta SI el usuario está autenticado.
@@ -21,6 +24,10 @@ class AuthGuard {
       // 1. Usuario Real: Pasa directo a la acción.
       action();
     } else {
+      // Guard redirect route for global session persistence (across onboarding steps)
+      pendingRedirectRoute = redirectRoute;
+      pendingRedirectArgs = arguments;
+
       // 2. Usuario Guest: Se interrumpe la acción y se muestra el modal.
       showGuestModal(context, redirectRoute: redirectRoute, arguments: arguments);
     }

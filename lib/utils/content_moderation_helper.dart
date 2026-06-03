@@ -4,9 +4,12 @@ import 'package:neom_core/data/firestore/app_media_item_firestore.dart';
 import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
 import 'package:neom_core/data/firestore/constants/app_firestore_constants.dart';
 import 'package:neom_core/data/firestore/itemlist_firestore.dart';
+import 'package:neom_core/data/firestore/request_firestore.dart';
 import 'package:neom_core/data/firestore/user_firestore.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
+import 'package:neom_core/domain/model/app_request.dart';
+import 'package:neom_core/utils/constants/core_constants.dart';
 import 'package:neom_core/utils/enums/owner_type.dart';
 import 'package:neom_core/utils/enums/user_role.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -218,6 +221,86 @@ class ContentModerationHelper {
     }
 
     return true;
+  }
+
+  /// Updates editable metadata of an AppReleaseItem (title, description,
+  /// cover, author display name, categories, language, pages). Only the
+  /// non-null arguments are written. Used by admin/editor edit flows so a
+  /// published work can be corrected without re-running the upload wizard.
+  static Future<bool> updateReleaseItemMetadata(
+    String releaseItemId, {
+    String? name,
+    String? description,
+    String? imgUrl,
+    String? ownerName,
+    List<String>? categories,
+    String? language,
+    int? duration,
+  }) async {
+    AppConfig.logger.d("Updating AppReleaseItem $releaseItemId metadata");
+    final fields = <String, dynamic>{
+      AppFirestoreConstants.modifiedTime: DateTime.now().millisecondsSinceEpoch,
+    };
+    if (name != null) fields[AppFirestoreConstants.name] = name;
+    if (description != null) fields[AppFirestoreConstants.description] = description;
+    if (imgUrl != null) fields[AppFirestoreConstants.imgUrl] = imgUrl;
+    if (ownerName != null) fields['ownerName'] = ownerName;
+    if (categories != null) fields['categories'] = categories;
+    if (language != null) fields['language'] = language;
+    if (duration != null) fields['duration'] = duration;
+    return await AppReleaseItemFirestore().updateFields(releaseItemId, fields);
+  }
+
+  // ── Change-approval flow (approval layer for non-admin edits) ──────
+
+  /// Whether [role] can apply sensitive changes directly (admin+).
+  static bool canApplyDirectly(UserRole role) => role.value >= UserRole.admin.value;
+
+  /// Whether [role] may propose changes that require approval (above
+  /// subscriber, i.e. editor and up, but below admin who applies directly).
+  static bool canRequestChange(UserRole role) =>
+      role.value > UserRole.subscriber.value;
+
+  /// Submits a change-approval request for an AppReleaseItem edit that the
+  /// requester is allowed to propose but not apply directly. Returns the new
+  /// request id (empty on failure).
+  static Future<String> submitReleaseEditApproval({
+    required String requesterProfileId,
+    required String releaseItemId,
+    required String releaseName,
+    required Map<String, dynamic> changes,
+  }) async {
+    AppConfig.logger.d("Submitting edit approval for release $releaseItemId");
+    if (changes.isEmpty) return '';
+    final request = AppRequest.changeApproval(
+      from: requesterProfileId,
+      to: CoreConstants.appBot,
+      targetType: 'releaseItem',
+      targetId: releaseItemId,
+      targetName: releaseName,
+      module: 'neom_books',
+      changes: changes,
+    );
+    return await RequestFirestore().insert(request);
+  }
+
+  /// Applies an approved change request to its target entity. Returns true on
+  /// success. Currently handles 'releaseItem'; other target types (e.g. ERP)
+  /// are handled by their own modules.
+  static Future<bool> applyChangeApproval(AppRequest request) async {
+    AppConfig.logger.d("Applying change approval ${request.id} (${request.changeTargetType})");
+    final changes = request.changes;
+    if (changes.isEmpty) return false;
+
+    switch (request.changeTargetType) {
+      case 'releaseItem':
+        final fields = Map<String, dynamic>.from(changes);
+        fields[AppFirestoreConstants.modifiedTime] = DateTime.now().millisecondsSinceEpoch;
+        return await AppReleaseItemFirestore().updateFields(request.changeTargetId, fields);
+      default:
+        AppConfig.logger.w("Unhandled change target type: ${request.changeTargetType}");
+        return false;
+    }
   }
 
   // ── AppMediaItem operations ────────────────────────────────────

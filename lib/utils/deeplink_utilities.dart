@@ -5,6 +5,7 @@ import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/slug_router.dart';
 import 'package:sint/sint.dart';
+import 'package:neom_commons/app_flavour.dart';
 
 
 class DeeplinkUtilities {
@@ -22,35 +23,52 @@ class DeeplinkUtilities {
     });
   }
 
-  void handleDeepLink(Uri uri) {
-    List<String> segments = uri.pathSegments;
+  Future<void> handleDeepLink(Uri uri) async {
+    List<String> segments = uri.pathSegments.where((s) => s.isNotEmpty).toList();
     String? type = uri.queryParameters['type'];
     String? id = uri.queryParameters['id'];
 
     // Handle vanity URL patterns from web URLs
     if (segments.isNotEmpty) {
-      final first = segments.first.toLowerCase();
+      final first = segments.first.trim();
+
+      // ─── @username shorthand → direct profile resolution ───
+      if (first.startsWith('@') && first.length > 1) {
+        final username = first.substring(1);
+        AppConfig.logger.i("DeepLink: @mention '$username' → profile lookup");
+        try {
+          final match = await SlugRouter.resolveProfile(username);
+          if (match != null) {
+            navigateWithHomeBehind(AppRouteConstants.matePath(match.id, slug: match.slug));
+            return;
+          }
+        } catch (e, st) {
+          NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'resolveProfileDeepLink');
+        }
+        Sint.offAllNamed(AppRouteConstants.home);
+        return;
+      }
 
       // /p/{postId} → Post
-      if (first == 'p' && segments.length > 1) {
+      if (first.toLowerCase() == 'p' && segments.length > 1) {
         navigateWithHomeBehind(AppRouteConstants.postPath(segments[1]), arguments: segments[1]);
         return;
       }
 
       // /blog/{slugOrId} → BlogEntry
-      if (first == 'blog' && segments.length > 1) {
+      if (first.toLowerCase() == 'blog' && segments.length > 1) {
         _resolveBlogLink(segments[1]);
         return;
       }
 
       // /e/{eventId} → Event
-      if (first == 'e' && segments.length > 1) {
+      if (first.toLowerCase() == 'e' && segments.length > 1) {
         navigateWithHomeBehind(AppRouteConstants.eventPath(segments[1]), arguments: segments[1]);
         return;
       }
 
       // /shop/{productId} → Product
-      if (first == 'shop' && segments.length > 1) {
+      if (first.toLowerCase() == 'shop' && segments.length > 1) {
         navigateWithHomeBehind(
           AppRouteConstants.shopProductPath(segments[1]),
           arguments: {'productId': segments[1], 'type': 'release'},
@@ -59,15 +77,59 @@ class DeeplinkUtilities {
       }
 
       // /item/{itemId} → MediaItem (fallback for items without slug)
-      if (first == 'item' && segments.length > 1) {
+      if (first.toLowerCase() == 'item' && segments.length > 1) {
         navigateWithHomeBehind(AppRouteConstants.itemPath(segments[1]), arguments: segments[1]);
         return;
       }
 
       // /playlist/{itemlistId} → Playlist/Itemlist
-      if (first == 'playlist' && segments.length > 1) {
-        navigateWithHomeBehind(AppRouteConstants.listItems, arguments: segments[1]);
+      if (first.toLowerCase() == 'playlist' && segments.length > 1) {
+        navigateWithHomeBehind(
+          AppRouteConstants.listItems,
+          arguments: [segments[1], false, true],
+        );
         return;
+      }
+
+      // /collective/{collectiveId} → Collective
+      if (first.toLowerCase() == 'collective' && segments.length > 1) {
+        navigateWithHomeBehind(
+          AppRouteConstants.collectivePath(segments[1]),
+          arguments: [segments[1]],
+        );
+        return;
+      }
+
+      // ─── Single segment vanity slug (no prefix) ───
+      if (segments.length == 1) {
+        AppConfig.logger.i("DeepLink: resolving vanity slug '$first'");
+        try {
+          final match = await SlugRouter.resolve(first);
+          if (match != null) {
+            switch (match.type) {
+              case 'profile':
+                navigateWithHomeBehind(AppRouteConstants.matePath(match.id, slug: match.slug));
+                return;
+              case 'item':
+                navigateWithHomeBehind(
+                  AppFlavour.getMainItemDetailsRoute(match.id, slug: match.slug),
+                  arguments: match.id,
+                );
+                return;
+              case 'event':
+                navigateWithHomeBehind(AppRouteConstants.eventPath(match.id, slug: match.slug), arguments: match.id);
+                return;
+              case 'collective':
+                navigateWithHomeBehind(AppRouteConstants.collectivePath(match.id, slug: match.slug), arguments: [match.entity]);
+                return;
+              case 'post':
+                navigateWithHomeBehind(AppRouteConstants.postPath(match.id, slug: match.slug), arguments: match.id);
+                return;
+            }
+          }
+        } catch (e, st) {
+          NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'resolveVanityDeepLink');
+        }
       }
     }
 
@@ -144,7 +206,9 @@ class DeeplinkUtilities {
     final siteUrl = AppProperties.getSiteUrl();
     switch (type) {
       case 'profile':
-        return '$siteUrl/${slug.isNotEmpty ? slug : id}';
+        final profileSlug = slug.isNotEmpty ? slug : id;
+        final formattedSlug = profileSlug.startsWith('@') ? profileSlug : '@$profileSlug';
+        return '$siteUrl/$formattedSlug';
       case 'book':
       case 'media':
         return slug.isNotEmpty ? '$siteUrl/$slug' : '$siteUrl/item/$id';
