@@ -10,6 +10,11 @@ import 'package:neom_commons/app_flavour.dart';
 
 class DeeplinkUtilities {
 
+  /// Invite coupon code captured from an `emxi.org/invite/{code}` link before
+  /// the user has an account. Onboarding reads + clears it to auto-apply the
+  /// coupon (free month / plan trial) during registration.
+  static String pendingInviteCoupon = '';
+
   // Ejemplo conceptual en tu controlador principal o main
   Future<void> initDeepLinks() async {
     // Escuchar links entrantes
@@ -46,6 +51,14 @@ class DeeplinkUtilities {
           NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'resolveProfileDeepLink');
         }
         Sint.offAllNamed(AppRouteConstants.home);
+        return;
+      }
+
+      // /invite/{code} → store coupon, go to registration (auto-applied later)
+      if (first.toLowerCase() == 'invite' && segments.length > 1) {
+        pendingInviteCoupon = segments[1].trim();
+        AppConfig.logger.i("DeepLink: invite coupon '$pendingInviteCoupon' → register");
+        Sint.offAllNamed(AppRouteConstants.login);
         return;
       }
 
@@ -225,6 +238,8 @@ class DeeplinkUtilities {
       case 'product':
       case 'merch':
         return '$siteUrl/shop/$id';
+      case 'invite':
+        return '$siteUrl/invite/$id';
       default:
         return siteUrl;
     }

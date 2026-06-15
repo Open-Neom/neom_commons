@@ -408,6 +408,12 @@ class AppTranslationConstants {
   static const String both = "both";
   static const String job = "job";
   static const String admin = "admin";
+  // ── Staff role labels (shown instead of "free account" for staff) ──
+  static const String roleEditor = "roleEditor";
+  static const String roleSupport = "roleSupport";
+  static const String roleErp = "roleErp";
+  static const String roleDeveloper = "roleDeveloper";
+  static const String rolePos = "rolePos";
   static const String analytics = "analytics";
   static const String calendar = "calendar";
   static const String meditation = "meditation";

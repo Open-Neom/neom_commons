@@ -18,7 +18,6 @@ import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:sint/sint.dart';
 
-import '../app_flavour.dart';
 import '../ui/theme/app_color.dart';
 import '../ui/widgets/custom_image.dart';
 import 'constants/app_constants.dart';
@@ -26,6 +25,8 @@ import 'text_utilities.dart';
 
 
 class AppUtilities {
+  static String Function(String id, {MediaItemType? type, String? slug})? getMainItemDetailsRouteFn;
+  static String Function(String id, {String? slug})? getSecondaryItemDetailsRouteFn;
 
   static void showSnackBar({String title = '', String message = '', Duration duration = const Duration(seconds: 3)}) {
     AppConfig.logger.d("Showing snackbar: $title - $message");
@@ -297,16 +298,22 @@ class AppUtilities {
 
         // Always delegate to AppFlavour for app-aware routing
         // (e.g. Cyberneom doesn't have BooksRoutes, so bookPath would 404)
+        if (getMainItemDetailsRouteFn == null || getSecondaryItemDetailsRouteFn == null) {
+          throw StateError('AppUtilities routes are not initialized. Call initNeomCommons() first.');
+        }
         final String route = isMain
-            ? AppFlavour.getMainItemDetailsRoute(item.id, type: itemType, slug: slug)
-            : AppFlavour.getSecondaryItemDetailsRoute(item.id, slug: slug);
+            ? getMainItemDetailsRouteFn!(item.id, type: itemType, slug: slug)
+            : getSecondaryItemDetailsRouteFn!(item.id, slug: slug);
         AppConfig.logger.d('gotoItemDetails: → route=$route');
         Sint.toNamed(route, arguments: [item]);
         return;
       }
 
       // Fallback for non-PlayableItem types (ExternalItem, etc.)
-      final route = AppFlavour.getMainItemDetailsRoute(item.id);
+      if (getMainItemDetailsRouteFn == null) {
+        throw StateError('AppUtilities routes are not initialized. Call initNeomCommons() first.');
+      }
+      final route = getMainItemDetailsRouteFn!(item.id);
       AppConfig.logger.d('gotoItemDetails: fallback → route=$route');
       Sint.toNamed(route, arguments: [item]);
     } catch (e, st) {

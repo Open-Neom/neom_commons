@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/data/firestore/app_media_item_firestore.dart';
+import 'package:neom_core/data/firestore/activity_feed_firestore.dart';
 import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
 import 'package:neom_core/data/firestore/constants/app_firestore_constants.dart';
 import 'package:neom_core/data/firestore/itemlist_firestore.dart';
 import 'package:neom_core/data/firestore/request_firestore.dart';
 import 'package:neom_core/data/firestore/user_firestore.dart';
+import 'package:neom_core/domain/model/activity_feed.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/app_request.dart';
 import 'package:neom_core/utils/constants/core_constants.dart';
+import 'package:neom_core/utils/enums/activity_feed_type.dart';
 import 'package:neom_core/utils/enums/owner_type.dart';
 import 'package:neom_core/utils/enums/user_role.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -281,7 +284,22 @@ class ContentModerationHelper {
       module: 'neom_books',
       changes: changes,
     );
-    return await RequestFirestore().insert(request);
+    final id = await RequestFirestore().insert(request);
+    // Mirror every generated request as a notification for the requester.
+    if (id.isNotEmpty) {
+      try {
+        await ActivityFeedFirestore().insert(ActivityFeed.fromAppBot(
+          toProfileId: requesterProfileId,
+          referenceId: id,
+          type: ActivityFeedType.sentRequest,
+          message: 'Tu cambio en "$releaseName" fue enviado a aprobación.',
+        ));
+      } catch (e, st) {
+        AppConfig.logger.w('submitReleaseEditApproval notification failed: $e');
+        AppConfig.logger.t(st);
+      }
+    }
+    return id;
   }
 
   /// Applies an approved change request to its target entity. Returns true on

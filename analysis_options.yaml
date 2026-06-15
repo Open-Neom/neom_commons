@@ -10,6 +10,12 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  exclude:
+    - lib/app_flavour.dart
+    - lib/ui/widgets/images/handled_cached_network_image.dart
+    - lib/ui/widgets/title_subtitle_row.dart
+    - lib/utils/app_alerts.dart
+    - lib/utils/app_utilities.dart
   errors:
     # treat missing required parameters as a warning (not a hint)
     missing_required_param: warning

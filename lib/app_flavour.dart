@@ -111,7 +111,7 @@ class AppFlavour {
     }
   }
 
-  static String getMainItemDetailsRoute(String id, {MediaItemType? type, String slug = ''}) {
+  static String getMainItemDetailsRoute(String id, {MediaItemType? type, String? slug = ''}) {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
         return AppRouteConstants.audioPlayerMedia;
@@ -124,10 +124,10 @@ class AppFlavour {
           return AppRouteConstants.audioPlayerMedia;
         }
         // Por defecto para libros o PDF
-        return AppRouteConstants.bookPath(id, slug: slug);
+        return AppRouteConstants.bookPath(id, slug: slug ?? '');
       case AppInUse.c:
         if (type == MediaItemType.pdf || type == MediaItemType.book) {
-          return AppRouteConstants.bookPath(id, slug: slug);
+          return AppRouteConstants.bookPath(id, slug: slug ?? '');
         }
         return AppRouteConstants.audioPlayerMedia;
       default:
@@ -135,12 +135,12 @@ class AppFlavour {
     }
   }
 
-  static String getSecondaryItemDetailsRoute(String id, {MediaItemType? type, String slug = ''}) {
+  static String getSecondaryItemDetailsRoute(String id, {MediaItemType? type, String? slug = ''}) {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.e:
       // Si el item secundario es un PDF, vamos a detalles, si no, al player.
         if (type == MediaItemType.book || type == MediaItemType.pdf) {
-          return AppRouteConstants.bookPath(id, slug: slug);
+          return AppRouteConstants.bookPath(id, slug: slug ?? '');
         }
         return AppRouteConstants.audioPlayerMedia;
       case AppInUse.g:
@@ -289,6 +289,7 @@ class AppFlavour {
         return false;
       case AppInUse.c:
       case AppInUse.o:
+      case AppInUse.b:
         return true;
       default:
         return false;
@@ -304,6 +305,8 @@ class AppFlavour {
       case AppInUse.c:
       case AppInUse.o:
         return FontAwesomeIcons.om;
+      case AppInUse.b:
+        return FontAwesomeIcons.circleDot;
       default:
         return Icons.add;
     }
@@ -318,6 +321,8 @@ class AppFlavour {
       case AppInUse.c:
       case AppInUse.o:
         return AppTranslationConstants.session.tr;
+      case AppInUse.b:
+        return 'Blup';
       default:
         return CommonTranslationConstants.createPost.tr;
     }
@@ -524,6 +529,7 @@ class AppFlavour {
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
+      case AppInUse.b:
         return true;
       case AppInUse.e:
         return true;
@@ -1154,4 +1160,9 @@ class AppFlavour {
     }
   }
 
+}
+
+void initNeomCommons() {
+  AppUtilities.getMainItemDetailsRouteFn = AppFlavour.getMainItemDetailsRoute;
+  AppUtilities.getSecondaryItemDetailsRouteFn = AppFlavour.getSecondaryItemDetailsRoute;
 }

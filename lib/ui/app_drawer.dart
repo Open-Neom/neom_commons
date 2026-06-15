@@ -133,6 +133,7 @@ class AppDrawer extends StatelessWidget {
                           children: [
                             const Divider(),
                             drawerRowOption(AppDrawerMenu.erp, const Icon(Icons.analytics), context),
+                            drawerRowOption(AppDrawerMenu.kanban, const Icon(Icons.view_kanban), context),
                           ],
                         ),
                       if(Sint.isRegistered<SettingsService>()) drawerRowOption(AppDrawerMenu.settings, const Icon(Icons.settings), context),
@@ -376,7 +377,10 @@ class AppDrawer extends StatelessWidget {
               Sint.toNamed(AppRouteConstants.dawProjects);
               break;
             case AppDrawerMenu.erp:
-              Sint.toNamed(AppRouteConstants.erp);
+              Sint.toNamed(AppRouteConstants.erpHub);
+              break;
+            case AppDrawerMenu.kanban:
+              Sint.toNamed(AppRouteConstants.kanbanDashboard);
               break;
             case AppDrawerMenu.dashboard:
               Sint.toNamed(AppRouteConstants.shopHub);

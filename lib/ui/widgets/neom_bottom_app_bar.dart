@@ -41,18 +41,8 @@ class NeomBottomAppBar extends StatefulWidget {
 
 class NeomBottomAppBarState extends State<NeomBottomAppBar> {
 
-  int currentIndex = 0;
-
-  void onInitState() {
-    super.initState();
-    currentIndex = widget.currentIndex;
-  }
-
   void updateIndex(int index) {
     widget.onTabSelected(index);
-    setState(() {
-      if(index < 3) currentIndex = index;
-    });
   }
 
   @override
@@ -69,7 +59,7 @@ class NeomBottomAppBarState extends State<NeomBottomAppBar> {
             item: widget.items[index],
             index: index,
             onPressed: updateIndex,
-            currentIndex: currentIndex,
+            currentIndex: widget.currentIndex,
           );
         }),
       ),

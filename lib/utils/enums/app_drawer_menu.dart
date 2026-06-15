@@ -27,6 +27,7 @@ enum AppDrawerMenu {
   vst("vst"),
   daw("daw"),
   erp("erp"),
+  kanban("kanban"),
   dashboard("dashboard");
 
 

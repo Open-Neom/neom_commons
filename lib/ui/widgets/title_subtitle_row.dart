@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:sint/sint.dart';
 
-import '../../utils/app_alerts.dart';
 import '../../utils/constants/translations/common_translation_constants.dart';
 import '../../utils/external_utilities.dart';
 import 'custom_url_text.dart';
 
 class TitleSubtitleRow extends StatelessWidget {
-
   final bool showDivider;
   final String navigateTo;
   final String url;
@@ -18,6 +16,7 @@ class TitleSubtitleRow extends StatelessWidget {
   final double titleFontSize, subTitleFontSize;
   final double vPadding, hPadding;
   final dynamic navigateArguments;
+
   const TitleSubtitleRow(
     this.title, {
     super.key,
@@ -34,6 +33,24 @@ class TitleSubtitleRow extends StatelessWidget {
     this.navigateArguments,
   });
 
+  void _showUnderConstructionAlert(BuildContext context, String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1E1E1E),
+          title: Text(title),
+          content: Text(CommonTranslationConstants.underConstruction.tr),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +64,11 @@ class TitleSubtitleRow extends StatelessWidget {
               onPressed!();
             }
 
-            if(navigateTo.isNotEmpty) {
-              navigateTo != AppRouteConstants.underConstruction ?
-              Sint.toNamed(navigateTo, arguments: navigateArguments)
-                  : AppAlerts.showAlert(context, title: title, message: CommonTranslationConstants.underConstruction.tr);
-            } else if(url.isNotEmpty) {
+            if (navigateTo.isNotEmpty) {
+              navigateTo != AppRouteConstants.underConstruction
+                  ? Sint.toNamed(navigateTo, arguments: navigateArguments)
+                  : _showUnderConstructionAlert(context, title);
+            } else if (url.isNotEmpty) {
               ExternalUtilities.launchURL(url);
             }
           },
