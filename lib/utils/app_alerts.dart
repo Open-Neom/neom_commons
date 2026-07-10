@@ -128,7 +128,7 @@ class AppAlerts {
                                 },
                               ),
                               trailing: Icon(currentProfileId == profile.id
-                                  ? FontAwesomeIcons.circleDot : Icons.circle_outlined,
+                                  ? FontAwesomeIcons.circleDot.data : Icons.circle_outlined,
                                   size: 30
                               ),
                               title: Text(profile.name,

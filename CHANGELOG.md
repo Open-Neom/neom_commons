@@ -1,5 +1,9 @@
 # Changelog - neom_commons
 
+## [1.1.0] - 2026-07-09
+- Update app flavour configuration and alert display utilities.
+
+
 ## Unreleased - System updates
 - Actualizaciones de estabilidad y compatibilidad.
 
