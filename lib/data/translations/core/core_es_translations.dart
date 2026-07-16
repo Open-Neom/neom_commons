@@ -468,6 +468,18 @@ class CoreEsTranslations {
     AppTranslationConstants.virtual: "Virtual",
     AppTranslationConstants.vocal: "Vocal",
     AppTranslationConstants.youAre: "Eres",
+    AppTranslationConstants.email: 'Correo electrónico',
+    AppTranslationConstants.favorite: 'Favorito',
+    AppTranslationConstants.import: 'Importar',
+    AppTranslationConstants.latest: 'Último',
+    AppTranslationConstants.meditator: 'Meditador',
+    AppTranslationConstants.meditators: 'Meditadores',
+    AppTranslationConstants.privacy: 'Privacidad',
+    AppTranslationConstants.safety: 'Seguridad',
+    AppTranslationConstants.shop: 'Tienda',
+    AppTranslationConstants.startItem: 'Comenzar canción',
+    AppTranslationConstants.to: 'a',
+    AppTranslationConstants.wifi: 'Wifi',
   };
 
 

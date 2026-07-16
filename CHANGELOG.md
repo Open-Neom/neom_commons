@@ -1,11 +1,11 @@
 # Changelog - neom_commons
 
+## [2.0.3] - 2026-07-16
+- Update appFlavour.dart with Portals support.
+- Translation constants updates for administrative routing.
+
 ## [1.1.0] - 2026-07-09
 - Update app flavour configuration and alert display utilities.
-
-
-## Unreleased - System updates
-- Actualizaciones de estabilidad y compatibilidad.
 
 ## [Unreleased] - Content moderation: update & change-approval
 - `ContentModerationHelper.updateReleaseItemMetadata(...)` to edit an `AppReleaseItem` (title, description, cover, author, categories, language, pages).

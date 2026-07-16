@@ -1160,6 +1160,37 @@ class AppFlavour {
     }
   }
 
+  static Size getReleaseShelfItemSize(BuildContext context) {
+    final app = AppConfig.instance.appInUse;
+    if (app == AppInUse.e || app == AppInUse.b) {
+      final screenWidth = MediaQuery.of(context).size.width;
+      final isCompact = screenWidth < 900;
+      if (isCompact) {
+        return Size(screenWidth * 0.85, 560.0);
+      } else {
+        return const Size(480.0, 660.0);
+      }
+    }
+    final baseHeight = AppTheme.fullHeight(context) * 0.23;
+    // Others: square (1:1 ratio)
+    return Size(baseHeight, baseHeight);
+  }
+
+  static double getReleaseShelfHeight(BuildContext context) {
+    final app = AppConfig.instance.appInUse;
+    if (app == AppInUse.e || app == AppInUse.b) {
+      final screenWidth = MediaQuery.of(context).size.width;
+      final isCompact = screenWidth < 900;
+      if (isCompact) {
+        return 640.0;
+      } else {
+        final itemHeight = getReleaseShelfItemSize(context).height;
+        return itemHeight + 80.0;
+      }
+    }
+    return AppTheme.fullHeight(context) * 0.28;
+  }
+
 }
 
 void initNeomCommons() {
