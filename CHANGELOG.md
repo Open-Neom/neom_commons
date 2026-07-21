@@ -1,3 +1,6 @@
+
+## [2.0.0-unreleased] - 2026-07-21
+- Refactor and compatibility updates for app_flavour.dart, app_alerts.dart, deeplink_utilities.dart.
 # Changelog - neom_commons
 
 ## [2.0.3] - 2026-07-16

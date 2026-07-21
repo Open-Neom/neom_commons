@@ -4,6 +4,11 @@ import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/slug_router.dart';
+import 'package:neom_core/domain/model/app_release_item.dart';
+import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
+import 'package:neom_core/data/firestore/itemlist_firestore.dart';
+import 'package:neom_core/domain/use_cases/audio_player_invoker_service.dart';
+import 'package:neom_core/utils/enums/app_in_use.dart';
 import 'package:sint/sint.dart';
 import 'package:neom_commons/app_flavour.dart';
 
@@ -36,6 +41,90 @@ class DeeplinkUtilities {
     // Handle vanity URL patterns from web URLs
     if (segments.isNotEmpty) {
       final first = segments.first.trim();
+
+      // ─── Album deep link (artistSlug/a/albumSlug) ───
+      if (segments.length == 3 && segments[1].toLowerCase() == 'a') {
+        final fullSlug = '${segments[0]}/a/${segments[2]}';
+        AppConfig.logger.i("DeepLink: Album slug '$fullSlug' → Home Autoplay");
+        if (AppConfig.instance.appInUse == AppInUse.g) {
+          Sint.offAllNamed(AppRouteConstants.root);
+          Future.delayed(const Duration(milliseconds: 300), () async {
+            try {
+              final itemlist = await ItemlistFirestore().getBySlug(fullSlug);
+              final List<AppReleaseItem> releaseItems = itemlist?.appReleaseItems ?? [];
+              if (releaseItems.isNotEmpty) {
+                Sint.find<AudioPlayerInvokerService>().init(
+                  releaseItems: releaseItems,
+                  index: 0,
+                  playItem: true,
+                );
+              }
+            } catch (e) {
+              AppConfig.logger.e("Error playing album from deep link: $e");
+            }
+          });
+          return;
+        }
+      }
+
+      // ─── Song deep link (artistSlug/songSlug) ───
+      if (segments.length == 2) {
+        final prefixes = {'invite', 'p', 'collective', 'playlist', 'post', 'blog', 'e', 'shop', 'item'};
+        if (!prefixes.contains(first.toLowerCase())) {
+          final fullSlug = '${segments[0]}/${segments[1]}';
+          AppConfig.logger.i("DeepLink: Song slug '$fullSlug' → Home Autoplay");
+          if (AppConfig.instance.appInUse == AppInUse.g) {
+            Sint.offAllNamed(AppRouteConstants.root);
+            Future.delayed(const Duration(milliseconds: 300), () async {
+              try {
+                final item = await AppReleaseItemFirestore().getBySlug(fullSlug);
+                if (item != null && item.id.isNotEmpty) {
+                  Sint.find<AudioPlayerInvokerService>().init(
+                    releaseItems: [item],
+                    index: 0,
+                    playItem: true,
+                  );
+                }
+              } catch (e) {
+                AppConfig.logger.e("Error playing song from deep link: $e");
+              }
+            });
+            return;
+          }
+        }
+      }
+
+      // ─── /inicio?item={slug/id} → play song in background on Home Page ───
+      if (first.toLowerCase() == 'inicio') {
+        final itemIdOrSlug = uri.queryParameters['item'] ?? uri.queryParameters['play'] ?? '';
+        if (itemIdOrSlug.isNotEmpty) {
+          if (AppConfig.instance.appInUse == AppInUse.g) {
+            Sint.offAllNamed(AppRouteConstants.root);
+            Future.delayed(const Duration(milliseconds: 300), () async {
+              try {
+                AppReleaseItem? item;
+                final match = await SlugRouter.resolve(itemIdOrSlug);
+                if (match != null && match.type == 'item' && match.entity is AppReleaseItem) {
+                  item = match.entity as AppReleaseItem;
+                }
+                if (item == null) {
+                  item = await AppReleaseItemFirestore().retrieve(itemIdOrSlug);
+                }
+                if (item.id.isNotEmpty) {
+                  Sint.find<AudioPlayerInvokerService>().init(
+                    releaseItems: [item],
+                    index: 0,
+                    playItem: true,
+                  );
+                }
+              } catch (e) {
+                AppConfig.logger.e("Error playing item from inicio query param: $e");
+              }
+            });
+          }
+          return;
+        }
+      }
 
       // ─── @username shorthand → direct profile resolution ───
       if (first.startsWith('@') && first.length > 1) {
@@ -91,7 +180,25 @@ class DeeplinkUtilities {
 
       // /item/{itemId} → MediaItem (fallback for items without slug)
       if (first.toLowerCase() == 'item' && segments.length > 1) {
-        navigateWithHomeBehind(AppRouteConstants.itemPath(segments[1]), arguments: segments[1]);
+        if (AppConfig.instance.appInUse == AppInUse.g) {
+          Sint.offAllNamed(AppRouteConstants.root);
+          Future.delayed(const Duration(milliseconds: 300), () async {
+            try {
+              final item = await AppReleaseItemFirestore().retrieve(segments[1]);
+              if (item.id.isNotEmpty) {
+                Sint.find<AudioPlayerInvokerService>().init(
+                  releaseItems: [item],
+                  index: 0,
+                  playItem: true,
+                );
+              }
+            } catch (e) {
+              AppConfig.logger.e("Error playing item from deep link: $e");
+            }
+          });
+        } else {
+          navigateWithHomeBehind(AppRouteConstants.itemPath(segments[1]), arguments: segments[1]);
+        }
         return;
       }
 
@@ -124,10 +231,30 @@ class DeeplinkUtilities {
                 navigateWithHomeBehind(AppRouteConstants.matePath(match.id, slug: match.slug));
                 return;
               case 'item':
-                navigateWithHomeBehind(
-                  AppFlavour.getMainItemDetailsRoute(match.id, slug: match.slug),
-                  arguments: match.id,
-                );
+                if (AppConfig.instance.appInUse == AppInUse.g) {
+                  Sint.offAllNamed(AppRouteConstants.root);
+                  Future.delayed(const Duration(milliseconds: 300), () async {
+                    try {
+                      final item = match.entity is AppReleaseItem
+                          ? match.entity as AppReleaseItem
+                          : await AppReleaseItemFirestore().retrieve(match.id);
+                      if (item.id.isNotEmpty) {
+                        Sint.find<AudioPlayerInvokerService>().init(
+                          releaseItems: [item],
+                          index: 0,
+                          playItem: true,
+                        );
+                      }
+                    } catch (e) {
+                      AppConfig.logger.e("Error playing item from deep link: $e");
+                    }
+                  });
+                } else {
+                  navigateWithHomeBehind(
+                    AppFlavour.getMainItemDetailsRoute(match.id, slug: match.slug),
+                    arguments: match.id,
+                  );
+                }
                 return;
               case 'event':
                 navigateWithHomeBehind(AppRouteConstants.eventPath(match.id, slug: match.slug), arguments: match.id);
@@ -224,6 +351,10 @@ class DeeplinkUtilities {
         return '$siteUrl/$formattedSlug';
       case 'book':
       case 'media':
+        if (AppConfig.instance.appInUse == AppInUse.g) {
+          final param = slug.isNotEmpty ? slug : 'item/$id';
+          return '$siteUrl/$param';
+        }
         return slug.isNotEmpty ? '$siteUrl/$slug' : '$siteUrl/item/$id';
       case 'post':
         return '$siteUrl/p/$id';
@@ -234,6 +365,10 @@ class DeeplinkUtilities {
       case 'collective':
         return slug.isNotEmpty ? '$siteUrl/$slug' : '$siteUrl/collective/$id';
       case 'playlist':
+        if (AppConfig.instance.appInUse == AppInUse.g) {
+          final param = slug.isNotEmpty ? slug : 'playlist/$id';
+          return '$siteUrl/$param';
+        }
         return '$siteUrl/playlist/$id';
       case 'product':
       case 'merch':
