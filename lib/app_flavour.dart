@@ -78,7 +78,7 @@ class AppFlavour {
       case AppInUse.e:
         return Icons.book;
       case AppInUse.c:
-        return FontAwesomeIcons.waveSquare;
+        return FontAwesomeIcons.waveSquare as IconData;
       default:
         return Icons.code;
     }
@@ -87,11 +87,11 @@ class AppFlavour {
   static IconData getInstrumentIcon() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
-        return FontAwesomeIcons.guitar;
+        return FontAwesomeIcons.guitar as IconData;
       case AppInUse.e:
-        return FontAwesomeIcons.pencil;
+        return FontAwesomeIcons.pencil as IconData;
       case AppInUse.c:
-        return FontAwesomeIcons.waveSquare;
+        return FontAwesomeIcons.waveSquare as IconData;
       default:
         return Icons.device_unknown;
     }
@@ -100,9 +100,9 @@ class AppFlavour {
   static IconData getSyncIcon() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.g:
-        return FontAwesomeIcons.spotify;
+        return FontAwesomeIcons.spotify as IconData;
       case AppInUse.e:
-        return FontAwesomeIcons.bookOpenReader;
+        return FontAwesomeIcons.bookOpenReader as IconData;
       case AppInUse.c:
       case AppInUse.o:
         return Icons.sync;
@@ -192,16 +192,16 @@ class AppFlavour {
   static IconData getThirdTabIcon() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.c:
-        return FontAwesomeIcons.building;
+        return FontAwesomeIcons.building as IconData;
       case AppInUse.d:
-        return FontAwesomeIcons.shop;
+        return FontAwesomeIcons.shop as IconData;
         //TODO return Icons.radio;
       case AppInUse.e:
-        return FontAwesomeIcons.shop;
+        return FontAwesomeIcons.shop as IconData;
       // case AppInUse.g:
       //   return FontAwesomeIcons.building;
       default:
-        return FontAwesomeIcons.shop;
+        return FontAwesomeIcons.shop as IconData;
     }
   }
 
@@ -229,7 +229,7 @@ class AppFlavour {
         return Icons.chat_bubble;
         //TODO return Icons.tv;
       case AppInUse.e:
-        return FontAwesomeIcons.headphones;
+        return FontAwesomeIcons.headphones as IconData;
       // case AppInUse.g:
       //   return Icons.play_circle_fill;
       default:
@@ -304,9 +304,9 @@ class AppFlavour {
         return Icons.add;
       case AppInUse.c:
       case AppInUse.o:
-        return FontAwesomeIcons.om;
+        return FontAwesomeIcons.om as IconData;
       case AppInUse.b:
-        return FontAwesomeIcons.circleDot;
+        return FontAwesomeIcons.circleDot as IconData;
       default:
         return Icons.add;
     }
