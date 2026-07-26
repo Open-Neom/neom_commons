@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class WebTooltipButton extends StatefulWidget {
 
-  final IconData icon;
+  final dynamic icon;
   final String tooltip;
   final VoidCallback? onTap;
   final double size;
@@ -54,13 +55,17 @@ class _WebTooltipButtonState extends State<WebTooltipButton> {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                Icon(
-                  widget.icon,
-                  size: widget.size,
-                  color: _isHovered
-                      ? Colors.white
-                      : Colors.white.withAlpha(180),
-                ),
+                widget.icon is FaIconData
+                    ? FaIcon(
+                        widget.icon,
+                        size: widget.size,
+                        color: _isHovered ? Colors.white : Colors.white70,
+                      )
+                    : Icon(
+                        widget.icon as IconData,
+                        size: widget.size,
+                        color: _isHovered ? Colors.white : Colors.white70,
+                      ),
                 if (widget.badge != null && widget.badge! > 0)
                   Positioned(
                     right: -6,

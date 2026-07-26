@@ -56,15 +56,15 @@ class AppDrawer extends StatelessWidget {
                       const Divider(),
                       // if(Sint.isRegistered<ProfileService>()) drawerRowOption(AppDrawerMenu.profile,  const Icon(Icons.person), context),
                       if(AppFlavour.showBlog())
-                        drawerRowOption(AppDrawerMenu.games, const Icon(FontAwesomeIcons.gamepad), context),
+                        drawerRowOption(AppDrawerMenu.games, const FaIcon(FontAwesomeIcons.gamepad), context),
                       if(AppFlavour.showBlog())
-                        drawerRowOption(AppDrawerMenu.inspiration, const Icon(FontAwesomeIcons.filePen), context),
+                        drawerRowOption(AppDrawerMenu.inspiration, const FaIcon(FontAwesomeIcons.filePen), context),
                       if(AppFlavour.showBands() && controller.appProfile.value?.type == ProfileType.appArtist && controller.user?.userRole != UserRole.subscriber)
                         drawerRowOption(AppDrawerMenu.collectives, const Icon(Icons.people), context),
                       if(AppFlavour.showVst())
-                        drawerRowOption(AppDrawerMenu.vst, const Icon(FontAwesomeIcons.guitar), context),
+                        drawerRowOption(AppDrawerMenu.vst, const FaIcon(FontAwesomeIcons.guitar), context),
                       if(AppFlavour.showDaw())
-                        drawerRowOption(AppDrawerMenu.daw, const Icon(FontAwesomeIcons.sliders), context),
+                        drawerRowOption(AppDrawerMenu.daw, const FaIcon(FontAwesomeIcons.sliders), context),
                       if(AppFlavour.showLearning())
                         drawerRowOption(AppDrawerMenu.learning, const Icon(Icons.school), context),
                       if(AppFlavour.showServices())
@@ -88,9 +88,9 @@ class AppDrawer extends StatelessWidget {
                       //   Column(
                       //     children: [
                       //       if(AppFlavour.showNupale())
-                      //       drawerRowOption(AppDrawerMenu.nupale, const Icon(FontAwesomeIcons.bookOpenReader), context),
+                      //       drawerRowOption(AppDrawerMenu.nupale, const FaIcon(FontAwesomeIcons.bookOpenReader), context),
                       //       if(AppFlavour.showCasete())
-                      //       drawerRowOption(AppDrawerMenu.casete, const Icon(FontAwesomeIcons.solidFileAudio), context),
+                      //       drawerRowOption(AppDrawerMenu.casete, const FaIcon(FontAwesomeIcons.solidFileAudio), context),
                       //     ],
                       //   ),
                       Column(
@@ -115,7 +115,7 @@ class AppDrawer extends StatelessWidget {
                             ],
                           ),
                           ///NOT READY FOR THIS FUNCITONALITY OF CROWDFUNDING - AppInUse.e Usage
-                          // _menuListRowButton(AppConstants.crowdfunding, const Icon(FontAwesomeIcons.gifts), true, context),
+                          // _menuListRowButton(AppConstants.crowdfunding, const FaIcon(FontAwesomeIcons.gifts), true, context),
                         ],
                       ),
                       ///DEPRECATED - Moved to shopHub in neom_shop
@@ -124,7 +124,7 @@ class AppDrawer extends StatelessWidget {
                       //     || (controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.support.value)
                       // ) Column(
                       //   children: [
-                      //     drawerRowOption(AppDrawerMenu.wallet, const Icon(FontAwesomeIcons.coins), context),
+                      //     drawerRowOption(AppDrawerMenu.wallet, const FaIcon(FontAwesomeIcons.coins), context),
                       //     const Divider(),
                       //   ],
                       // ),

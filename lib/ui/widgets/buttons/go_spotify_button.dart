@@ -31,7 +31,7 @@ class GoSpotifyButton extends StatelessWidget {
     return IconButton(
         padding: padding,
         icon: const Row(
-          children: [Icon(FontAwesomeIcons.spotify, color: Colors.green),],
+          children: [FaIcon(FontAwesomeIcons.spotify, color: Colors.green),],
         ),
         iconSize: size ?? 24.0,
         tooltip: CommonTranslationConstants.listenOnSpotify.tr,
