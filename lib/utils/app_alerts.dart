@@ -127,10 +127,9 @@ class AppAlerts {
                                   }
                                 },
                               ),
-                              trailing: Icon(currentProfileId == profile.id
-                                  ? FontAwesomeIcons.circleDot as IconData : Icons.circle_outlined,
-                                  size: 30
-                              ),
+                              trailing: currentProfileId == profile.id
+                                  ? const FaIcon(FontAwesomeIcons.circleDot, size: 30)
+                                  : const Icon(Icons.circle_outlined, size: 30),
                               title: Text(profile.name,
                                 style: const TextStyle(fontSize: 18),
                               ),
