@@ -201,6 +201,9 @@ class AppTranslationConstants {
   static const String platinum = 'platinum';
   static const String player = 'player';
   static const String playing = 'playing';
+  static const String playbackErrorRetrying = 'playbackErrorRetrying';
+  static const String playbackErrorSkipped = 'playbackErrorSkipped';
+  static const String playbackErrorStopped = 'playbackErrorStopped';
   static const String playlist = 'playlist';
   static const String playlists = 'playlists';
   static const String popular = 'popular';
