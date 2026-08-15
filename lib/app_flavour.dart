@@ -1166,9 +1166,9 @@ class AppFlavour {
       final screenWidth = MediaQuery.of(context).size.width;
       final isCompact = screenWidth < 900;
       if (isCompact) {
-        return Size(screenWidth * 0.85, 560.0);
+        return Size(screenWidth * 0.72, 480.0);
       } else {
-        return const Size(480.0, 660.0);
+        return const Size(340.0, 510.0);
       }
     }
     final baseHeight = AppTheme.fullHeight(context) * 0.23;
@@ -1182,10 +1182,10 @@ class AppFlavour {
       final screenWidth = MediaQuery.of(context).size.width;
       final isCompact = screenWidth < 900;
       if (isCompact) {
-        return 640.0;
+        return 540.0;
       } else {
         final itemHeight = getReleaseShelfItemSize(context).height;
-        return itemHeight + 80.0;
+        return itemHeight + 60.0;
       }
     }
     return AppTheme.fullHeight(context) * 0.28;
