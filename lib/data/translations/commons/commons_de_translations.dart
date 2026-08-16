@@ -466,6 +466,24 @@ class CommonsDeTranslations {
     CommonTranslationConstants.wantToGoHome: 'Möchten Sie zur Startseite zurückkehren?',
     CommonTranslationConstants.whereToGig: 'Wo möchten Sie auftreten?',
     CommonTranslationConstants.writeYourFeelingOrThinking: 'Schreiben Sie Ihre Gefühle oder Gedanken auf',
+    // Timeline themed shelf titles
+    CommonTranslationConstants.shelfBooks: 'Bücher',
+    CommonTranslationConstants.shelfReleases: 'Veröffentlichungen',
+    CommonTranslationConstants.shelfAppStudios: 'Studios',
+    CommonTranslationConstants.shelfLiteraryStudios: 'Literaturstudios',
+    CommonTranslationConstants.shelfFrequencyGallery: 'Frequenzgalerie',
+    CommonTranslationConstants.shelfCommunityMoments: 'Community-Momente',
+    CommonTranslationConstants.shelfVisualProjections: 'Visuelle Projektionen',
+    CommonTranslationConstants.shelfVideoLibrary: 'Videothek & Kurzfilme',
+    CommonTranslationConstants.shelfCommunityVideos: 'Community-Videos',
+    CommonTranslationConstants.shelfTalentRadar: 'Talent-Radar',
+    CommonTranslationConstants.shelfMusicRadar: 'Radar für neue Musik',
+    CommonTranslationConstants.shelfMusicRecommendations: 'Empfehlungen & Inspirationen',
+    CommonTranslationConstants.shelfExternalFrequencies: 'Externe Frequenzen',
+    CommonTranslationConstants.shelfCommunityQuestions: 'Fragen an die Community',
+    CommonTranslationConstants.shelfReadersCircle: 'Leserkreis & Debatten',
+    CommonTranslationConstants.shelfCollectiveQueries: 'Kanal für kollektive Anfragen',
+    CommonTranslationConstants.shelfCollectiveEcho: 'Kollektives Echo',
   };
 
 }

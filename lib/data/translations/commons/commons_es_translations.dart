@@ -470,6 +470,24 @@ class CommonsEsTranslations {
     CommonTranslationConstants.attending: "asistiran",
     CommonTranslationConstants.andMore: "y mas",
     CommonTranslationConstants.loading: "Cargando...",
+    // Timeline themed shelf titles
+    CommonTranslationConstants.shelfBooks: 'Libros',
+    CommonTranslationConstants.shelfReleases: 'Lanzamientos',
+    CommonTranslationConstants.shelfAppStudios: 'Estudios',
+    CommonTranslationConstants.shelfLiteraryStudios: 'Estudios Literarios',
+    CommonTranslationConstants.shelfFrequencyGallery: 'Galería de Frecuencias',
+    CommonTranslationConstants.shelfCommunityMoments: 'Momentos de la Comunidad',
+    CommonTranslationConstants.shelfVisualProjections: 'Proyecciones Visuales',
+    CommonTranslationConstants.shelfVideoLibrary: 'Videoteca & Cortos',
+    CommonTranslationConstants.shelfCommunityVideos: 'Videos de la Comunidad',
+    CommonTranslationConstants.shelfTalentRadar: 'Radar de Talentos',
+    CommonTranslationConstants.shelfMusicRadar: 'Radar de Novedades Musicales',
+    CommonTranslationConstants.shelfMusicRecommendations: 'Recomendaciones & Inspiraciones',
+    CommonTranslationConstants.shelfExternalFrequencies: 'Frecuencias Externas',
+    CommonTranslationConstants.shelfCommunityQuestions: 'Preguntas a la Comunidad',
+    CommonTranslationConstants.shelfReadersCircle: 'Círculo de Lectores & Debates',
+    CommonTranslationConstants.shelfCollectiveQueries: 'Canal de Consultas Colectivas',
+    CommonTranslationConstants.shelfCollectiveEcho: 'Eco Colectivo',
   };
 
 }

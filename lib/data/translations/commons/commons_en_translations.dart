@@ -466,6 +466,24 @@ class CommonsEnTranslations {
     CommonTranslationConstants.wantToGoHome: 'Do you want to go back home?',
     CommonTranslationConstants.whereToGig: 'Where would you like to perform?',
     CommonTranslationConstants.writeYourFeelingOrThinking: 'Write your feelings or thoughts',
+    // Timeline themed shelf titles
+    CommonTranslationConstants.shelfBooks: 'Books',
+    CommonTranslationConstants.shelfReleases: 'Releases',
+    CommonTranslationConstants.shelfAppStudios: 'Studios',
+    CommonTranslationConstants.shelfLiteraryStudios: 'Literary Studios',
+    CommonTranslationConstants.shelfFrequencyGallery: 'Frequency Gallery',
+    CommonTranslationConstants.shelfCommunityMoments: 'Community Moments',
+    CommonTranslationConstants.shelfVisualProjections: 'Visual Projections',
+    CommonTranslationConstants.shelfVideoLibrary: 'Video Library & Shorts',
+    CommonTranslationConstants.shelfCommunityVideos: 'Community Videos',
+    CommonTranslationConstants.shelfTalentRadar: 'Talent Radar',
+    CommonTranslationConstants.shelfMusicRadar: 'New Music Radar',
+    CommonTranslationConstants.shelfMusicRecommendations: 'Recommendations & Inspirations',
+    CommonTranslationConstants.shelfExternalFrequencies: 'External Frequencies',
+    CommonTranslationConstants.shelfCommunityQuestions: 'Ask the Community',
+    CommonTranslationConstants.shelfReadersCircle: "Readers' Circle & Debates",
+    CommonTranslationConstants.shelfCollectiveQueries: 'Collective Queries Channel',
+    CommonTranslationConstants.shelfCollectiveEcho: 'Collective Echo',
   };
 
 }

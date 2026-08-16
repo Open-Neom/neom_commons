@@ -482,4 +482,23 @@ class CommonTranslationConstants {
   static const String noCollectivematesWereFound = 'noCollectivematesWereFound';
   static const String loadingPossibleCollectivemates = 'loadingPossibleCollectivemates';
 
+  // Timeline themed shelf titles
+  static const String shelfBooks = 'shelfBooks';
+  static const String shelfReleases = 'shelfReleases';
+  static const String shelfAppStudios = 'shelfAppStudios';
+  static const String shelfLiteraryStudios = 'shelfLiteraryStudios';
+  static const String shelfFrequencyGallery = 'shelfFrequencyGallery';
+  static const String shelfCommunityMoments = 'shelfCommunityMoments';
+  static const String shelfVisualProjections = 'shelfVisualProjections';
+  static const String shelfVideoLibrary = 'shelfVideoLibrary';
+  static const String shelfCommunityVideos = 'shelfCommunityVideos';
+  static const String shelfTalentRadar = 'shelfTalentRadar';
+  static const String shelfMusicRadar = 'shelfMusicRadar';
+  static const String shelfMusicRecommendations = 'shelfMusicRecommendations';
+  static const String shelfExternalFrequencies = 'shelfExternalFrequencies';
+  static const String shelfCommunityQuestions = 'shelfCommunityQuestions';
+  static const String shelfReadersCircle = 'shelfReadersCircle';
+  static const String shelfCollectiveQueries = 'shelfCollectiveQueries';
+  static const String shelfCollectiveEcho = 'shelfCollectiveEcho';
+
 }
