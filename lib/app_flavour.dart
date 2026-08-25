@@ -873,6 +873,21 @@ class AppFlavour {
     }
   }
 
+  /// Whether artwork / visual arts upload is supported in this app flavour.
+  static bool showArtworkUpload() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e: // EMXI — Museum & Virtual Galleries
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  /// Icon for visual artwork release type.
+  static IconData getArtworkIcon() {
+    return LucideIcons.palette;
+  }
+
   /// Whether cover images should use vertical (portrait) aspect ratio.
   /// Books/articles use vertical covers; music uses square.
   static bool useVerticalCover() {
@@ -1132,6 +1147,24 @@ class AppFlavour {
       default: return 'albumTypeDescG';
     }
   }
+
+  /// Returns the translation key for artwork release type name.
+  static String getArtworkTypeName() => 'artworkTypeName';
+
+  /// Returns the translation key for artwork release type description.
+  static String getArtworkTypeDesc() => 'artworkTypeDesc';
+
+  /// Returns the translation key for physical sale / dropshipping section title.
+  static String getPhysicalSaleTitleKey() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e: return 'physicalSaleTitleE';
+      case AppInUse.g: return 'physicalSaleTitleG';
+      default: return 'physicalSaleTitleGeneric';
+    }
+  }
+
+  /// Returns the translation key for physical sale / dropshipping explanation.
+  static String getPhysicalSaleDescKey() => 'physicalSaleDescMsg';
 
   static bool showGenerator() {
     switch(AppConfig.instance.appInUse) {
