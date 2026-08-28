@@ -483,6 +483,8 @@ class CoreEsTranslations {
     AppTranslationConstants.startItem: 'Comenzar canción',
     AppTranslationConstants.to: 'a',
     AppTranslationConstants.wifi: 'Wifi',
+    AppTranslationConstants.upgrade: 'Mejorar',
+    AppTranslationConstants.upgradeToSupport: 'Mejora tu plan para apoyar a tus artistas favoritos',
   };
 
 

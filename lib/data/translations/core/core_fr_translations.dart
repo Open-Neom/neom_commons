@@ -482,6 +482,8 @@ class CoreFrTranslations {
     AppTranslationConstants.yes: 'Oui',
     AppTranslationConstants.yesterday: 'Hier',
     AppTranslationConstants.youAre: 'Vous êtes',
+    AppTranslationConstants.upgrade: 'Améliorer',
+    AppTranslationConstants.upgradeToSupport: 'Améliorez votre forfait pour soutenir vos artistes préférés',
   };
 
 }

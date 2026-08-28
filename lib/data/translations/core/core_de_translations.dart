@@ -482,6 +482,8 @@ class CoreDeTranslations {
     AppTranslationConstants.yes: 'Ja',
     AppTranslationConstants.yesterday: 'Gestern',
     AppTranslationConstants.youAre: 'Sie sind',
+    AppTranslationConstants.upgrade: 'Upgraden',
+    AppTranslationConstants.upgradeToSupport: 'Verbessere deinen Plan, um deine Lieblingskünstler zu unterstützen',
   };
 
 }

@@ -493,6 +493,8 @@ class AppTranslationConstants {
   static const String digitalSalesModelMsg = 'digitalSalesModelMsg';
   static const String physicalSalesModel = 'physicalSalesModel';
   static const String physicalSalesModelMsg = 'physicalSalesModelMsg';
+  static const String upgrade = 'upgrade';
+  static const String upgradeToSupport = 'upgradeToSupport';
 
 }
 
