@@ -18,14 +18,14 @@ void main() {
       expect(AppDrawerMenu.profile.value, 'profile');
       expect(AppDrawerMenu.events.value, 'events');
       expect(AppDrawerMenu.logout.value, 'logout');
-      expect(AppDrawerMenu.erp.value, 'erpDashboard');
+      expect(AppDrawerMenu.erp.value, 'erp');
     });
 
     test('contiene los items principales del menú', () {
       final names = AppDrawerMenu.values.map((m) => m.name).toSet();
       expect(names, containsAll([
         'profile', 'events', 'inbox', 'calendar',
-        'wallet', 'settings', 'logout',
+        'settings', 'logout',
       ]));
     });
 
