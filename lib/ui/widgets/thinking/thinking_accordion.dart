@@ -83,11 +83,11 @@ class _ThinkingAccordionState extends State<ThinkingAccordion>
     // Curated high-fidelity color tokens (independent of custom themes for safety)
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBgColor = isDark
-        ? Colors.indigo.withOpacity(0.08)
-        : Colors.indigo.withOpacity(0.04);
+        ? Colors.indigo.withValues(alpha: 0.08)
+        : Colors.indigo.withValues(alpha: 0.04);
     final borderColor = isDark
-        ? Colors.indigo.withOpacity(0.2)
-        : Colors.indigo.withOpacity(0.1);
+        ? Colors.indigo.withValues(alpha: 0.2)
+        : Colors.indigo.withValues(alpha: 0.1);
     final textColor = isDark ? Colors.white70 : Colors.black87;
 
     return Padding(
@@ -104,7 +104,7 @@ class _ThinkingAccordionState extends State<ThinkingAccordion>
               border: Border.all(color: borderColor, width: 1.2),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.02),
+                  color: Colors.black.withValues(alpha: 0.02),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 )
@@ -200,7 +200,7 @@ class _ThinkingAccordionState extends State<ThinkingAccordion>
                           decoration: BoxDecoration(
                             border: Border(
                               top: BorderSide(
-                                color: borderColor.withOpacity(0.5),
+                                color: borderColor.withValues(alpha: 0.5),
                                 width: 1.0,
                               ),
                             ),

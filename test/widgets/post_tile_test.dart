@@ -190,7 +190,7 @@ class _MockPostTileState extends State<MockPostTile>
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
                           colors: [
-                            Colors.black.withOpacity(0.6),
+                            Colors.black.withValues(alpha: 0.6),
                             Colors.transparent,
                           ],
                         ),
@@ -234,7 +234,7 @@ class _MockPostTileState extends State<MockPostTile>
                       key: const Key('private_indicator'),
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
+                        color: Colors.black.withValues(alpha: 0.6),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const Icon(Icons.lock, size: 12, color: Colors.white70),
@@ -258,7 +258,7 @@ class _VideoIndicator extends StatelessWidget {
       key: const Key('video_indicator'),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(4),
       ),
       child: const Icon(Icons.play_arrow_rounded, size: 16, color: Colors.white),
@@ -275,7 +275,7 @@ class _EventIndicator extends StatelessWidget {
       key: const Key('event_indicator'),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(4),
       ),
       child: const Icon(Icons.event, size: 16, color: Colors.white),
