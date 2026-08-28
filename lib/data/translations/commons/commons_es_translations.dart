@@ -478,7 +478,7 @@ class CommonsEsTranslations {
     CommonTranslationConstants.shelfFrequencyGallery: 'Galería de Frecuencias',
     CommonTranslationConstants.shelfCommunityMoments: 'Momentos de la Comunidad',
     CommonTranslationConstants.shelfVisualProjections: 'Proyecciones Visuales',
-    CommonTranslationConstants.shelfVideoLibrary: 'Videoteca & Cortos',
+    CommonTranslationConstants.shelfVideoLibrary: 'Videos',
     CommonTranslationConstants.shelfCommunityVideos: 'Videos de la Comunidad',
     CommonTranslationConstants.shelfTalentRadar: 'Radar de Talentos',
     CommonTranslationConstants.shelfMusicRadar: 'Radar de Novedades Musicales',
