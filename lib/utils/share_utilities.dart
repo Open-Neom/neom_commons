@@ -12,6 +12,7 @@ import 'package:neom_core/utils/constants/core_constants.dart';
 import 'package:neom_core/utils/enums/app_locale.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/enums/post_type.dart';
+import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sint/sint.dart';
@@ -103,9 +104,14 @@ class ShareUtilities {
       caption = "$caption\n\n${mediaItem.ownerName}\n$dotsLine";
     }
 
-    // Vanity URL: emxi.org/{slug} or emxi.org/item/{id}
+    // Vanity URL: {site}/a/{ownerSlug}/{slug}, or {site}/item/{id} while the
+    // release has no slug. The owner slug is derived from the artist name with
+    // the same generator the release itself uses, so both sides always agree.
     String vanityUrl = DeeplinkUtilities.generateVanityUrl(
-      type: 'media', slug: mediaItem.slug, id: mediaItem.id,
+      type: 'media',
+      slug: mediaItem.slug,
+      id: mediaItem.id,
+      ownerSlug: AppReleaseItem.generateOwnerSlug(mediaItem.ownerName),
     );
 
     String messageTr = MessageTranslationConstants.shareMediaItemMsg.tr;

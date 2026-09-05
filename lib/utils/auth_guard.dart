@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neom_core/app_config.dart';
-import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
-import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:sint/sint.dart';
 
 import '../ui/theme/app_color.dart';
@@ -37,18 +35,10 @@ class AuthGuard {
   /// Public para que controllers puedan hacer guards silenciosos (sin UI).
   static bool get isAuthenticated => _userIsLoggedIn();
 
-  static bool _userIsLoggedIn() {
-    try {
-      // 1. Si el servicio no está inyectado, no hay usuario.
-      if (!Sint.isRegistered<UserService>()) return false;
-      final userService = Sint.find<UserService>();
-      // 2. Debe tener un ID y NO estar en modo invitado explícito.
-      return userService.user.id.isNotEmpty && !AppConfig.instance.isGuestMode;
-    } catch (e, st) {
-      NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'userIsLoggedIn');
-      return false;
-    }
-  }
+  /// Uses the same strict gate as persistence controllers: leaving guest mode
+  /// is not authentication, and a stale local user after Firebase logout must
+  /// not unlock protected routes or actions.
+  static bool _userIsLoggedIn() => AppConfig.instance.canPersistUserActivity;
 
   /// Muestra el diálogo y configura la redirección (Privado)
   static void showGuestModal(BuildContext context, {String? redirectRoute, dynamic arguments}) {

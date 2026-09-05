@@ -492,6 +492,12 @@ class CommonTranslationConstants {
   static const String shelfVisualProjections = 'shelfVisualProjections';
   static const String shelfVideoLibrary = 'shelfVideoLibrary';
   static const String shelfCommunityVideos = 'shelfCommunityVideos';
+  /// Suffixes appended to the home shelf titles ("<Shelf> Populares").
+  /// Were hardcoded Spanish literals, so every non-Spanish locale rendered a
+  /// half-translated heading on the main screen.
+  static const String shelfSuffixPopular = 'shelfSuffixPopular';
+  static const String shelfSuffixRecent = 'shelfSuffixRecent';
+  static const String shelfSuffixFeatured = 'shelfSuffixFeatured';
   static const String shelfTalentRadar = 'shelfTalentRadar';
   static const String shelfMusicRadar = 'shelfMusicRadar';
   static const String shelfMusicRecommendations = 'shelfMusicRecommendations';

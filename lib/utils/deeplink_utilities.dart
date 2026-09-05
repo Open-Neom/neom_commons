@@ -33,8 +33,24 @@ class DeeplinkUtilities {
     });
   }
 
+  /// Path segments of a link, however it reached the app.
+  ///
+  /// A custom-scheme link puts its first segment in the AUTHORITY, not the
+  /// path: `gigmeout://album/novus-irae/letimum` parses as host `album` with
+  /// path `/novus-irae/letimum`. Reading only `pathSegments` dropped that
+  /// first segment, so prefixed addresses silently resolved as something else.
+  /// Web links carry the domain as the authority, so it is not prepended.
+  static List<String> _addressSegments(Uri uri) {
+    final segments = uri.pathSegments.where((s) => s.isNotEmpty).toList();
+    final isWebLink = uri.scheme == 'http' || uri.scheme == 'https';
+    if (!isWebLink && uri.host.isNotEmpty) {
+      segments.insert(0, uri.host);
+    }
+    return segments;
+  }
+
   Future<void> handleDeepLink(Uri uri) async {
-    List<String> segments = uri.pathSegments.where((s) => s.isNotEmpty).toList();
+    List<String> segments = _addressSegments(uri);
     String? type = uri.queryParameters['type'];
     String? id = uri.queryParameters['id'];
 
@@ -175,6 +191,30 @@ class DeeplinkUtilities {
           AppRouteConstants.shopProductPath(segments[1]),
           arguments: {'productId': segments[1], 'type': 'release'},
         );
+        return;
+      }
+
+      // /{kind}/{ownerSlug}/{slug} → Itemlist (album, ep, podcast…).
+      // Prefixes come from ItemlistType, so the address names its own kind.
+      final listType = AppRouteConstants.itemlistTypeFromPrefix(first);
+      if (listType != null && segments.length >= 3) {
+        navigateWithHomeBehind(
+          AppRouteConstants.itemlistPath(listType, '',
+              ownerSlug: segments[1], slug: segments[2]),
+        );
+        return;
+      }
+
+      // /a/{ownerSlug}/{slug} → Release, /a/{ownerSlug} → Artist.
+      // Delegated to SlugResolverPage, which owns the resolution and the
+      // per-app open behaviour.
+      if (first.toLowerCase() == AppRouteConstants.releasePrefix
+          && segments.length >= 2) {
+        final path = segments.length >= 3
+            ? AppRouteConstants.releasePath('',
+                ownerSlug: segments[1], slug: segments[2])
+            : AppRouteConstants.artistPath(segments[1]);
+        navigateWithHomeBehind(path);
         return;
       }
 
@@ -342,7 +382,8 @@ class DeeplinkUtilities {
   ///   - emxi.org/blog/mi-primer-articulo (blog)
   ///   - emxi.org/e/xyz789 (event)
   ///   - emxi.org/shop/def456 (product)
-  static String generateVanityUrl({required String type, String id = '', String slug = ''}) {
+  static String generateVanityUrl({required String type, String id = '',
+      String slug = '', String ownerSlug = ''}) {
     final siteUrl = AppProperties.getSiteUrl();
     switch (type) {
       case 'profile':
@@ -351,11 +392,11 @@ class DeeplinkUtilities {
         return '$siteUrl/$formattedSlug';
       case 'book':
       case 'media':
-        if (AppConfig.instance.appInUse == AppInUse.g) {
-          final param = slug.isNotEmpty ? slug : 'item/$id';
-          return '$siteUrl/$param';
-        }
-        return slug.isNotEmpty ? '$siteUrl/$slug' : '$siteUrl/item/$id';
+        // `/a/{ownerSlug}/{slug}` — the artist has to be in the address because
+        // a release slug is only unique per artist: two bands may each have a
+        // "Piedad", and a bare `/piedad` could not tell them apart.
+        // releasePath() falls back to `/item/{id}` when the slugs are missing.
+        return '$siteUrl${AppRouteConstants.releasePath(id, ownerSlug: ownerSlug, slug: slug)}';
       case 'post':
         return '$siteUrl/p/$id';
       case 'blog':
