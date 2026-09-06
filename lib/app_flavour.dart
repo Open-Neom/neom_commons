@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
+import 'package:neom_core/data/firestore/public_catalog_read_policy.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/playable_item.dart';
@@ -999,9 +1000,9 @@ class AppFlavour {
 
   static Future<void> navigateToShelfItem(PlayableItem item) async {
     // On web, play audio content directly in the mini player without opening the full page
-    if (kIsWeb && item.isAudioContent) {
+    if (kIsWeb && item.isAudioContent && !PublicCatalogReadPolicy.enabled) {
       if (Sint.isRegistered<AudioPlayerInvokerService>()) {
-        Sint.find<AudioPlayerInvokerService>().init(items: [item], index: 0);
+        await Sint.find<AudioPlayerInvokerService>().init(items: [item], index: 0);
         return;
       }
     }

@@ -51,14 +51,18 @@ class AppMediaItemMapper {
         categories: releaseItem.tags,
         imgUrl: releaseItem.imgUrl,
         galleryUrls: releaseItem.galleryUrls,
-        url: releaseItem.previewUrl,
+        url: releaseItem.streamUrl.trim().isNotEmpty
+            ? releaseItem.streamUrl.trim()
+            : releaseItem.previewUrl.trim(),
         metaOwner: releaseItem.metaOwner,
         publishedYear: releaseItem.publishedYear,
         releaseDate: releaseItem.createdTime,
         permaUrl: releaseItem.externalUrl ?? '',
         featInternalArtists: releaseItem.featInternalArtists,
         ownerName: TextUtilities.getArtistName(releaseItem.ownerName),
-        ownerId: releaseItem.ownerEmail,
+        ownerId: releaseItem.ownerProfileId?.isNotEmpty == true
+            ? releaseItem.ownerProfileId
+            : releaseItem.ownerEmail,
         likes: releaseItem.likedProfiles?.length ?? 0,
         state: releaseItem.state,
         mediaSource: AppMediaSource.internal,
