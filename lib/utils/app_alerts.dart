@@ -319,7 +319,7 @@ class AppAlerts {
         buttons: [
           DialogButton(
             color: AppColor.bondiBlue75,
-            onPressed: () => Sint.back(),
+            onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
             child: Text(AppTranslationConstants.goBack.tr,
               style: const TextStyle(fontSize: 15),
             ),
@@ -327,10 +327,20 @@ class AppAlerts {
           DialogButton(
             color: AppColor.bondiBlue75,
             onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop();
               await mateServiceImpl.block(postOwnerId);
+              AppUtilities.showSnackBar(message: MessageTranslationConstants.blockedProfileMsg);
+
+              if (context.mounted) {
+                final modalRoute = ModalRoute.of(context);
+                if (modalRoute != null && !modalRoute.isFirst) {
+                  Navigator.of(context).pop();
+                } else if (Sint.currentRoute.startsWith('/post')) {
+                  Sint.back();
+                }
+              } else if (Sint.currentRoute.startsWith('/post')) {
                 Sint.back();
-                Sint.back();
-                AppUtilities.showSnackBar(message: MessageTranslationConstants.blockedProfileMsg);
+              }
             },
             child: Text(AppTranslationConstants.toBlock.tr,
               style: const TextStyle(fontSize: 15),
@@ -393,8 +403,7 @@ class AppAlerts {
             onPressed: () async {
               if(!reportServiceImpl.isButtonDisabled) {
                 reportServiceImpl.sendReport(referenceType, referenceId);
-                Sint.back();
-                Sint.back();
+                Navigator.of(context, rootNavigator: true).pop();
                 AppUtilities.showSnackBar(message: CommonTranslationConstants.hasSentReport);
               }
             },
