@@ -10,6 +10,7 @@ import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/playable_item.dart';
 import 'package:neom_core/domain/use_cases/audio_player_invoker_service.dart';
+import 'package:neom_core/domain/use_cases/media_player_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
 import 'package:neom_core/utils/enums/app_locale.dart';
@@ -128,7 +129,7 @@ class AppFlavour {
         return AppRouteConstants.bookPath(id, slug: slug ?? '');
       case AppInUse.c:
         if (type == MediaItemType.pdf || type == MediaItemType.book) {
-          return AppRouteConstants.bookPath(id, slug: slug ?? '');
+          return AppRouteConstants.readingPath(id, slug: slug ?? '');
         }
         return AppRouteConstants.audioPlayerMedia;
       default:
@@ -924,14 +925,7 @@ class AppFlavour {
   }
 
   static bool showBooksLibrary() {
-    switch(AppConfig.instance.appInUse) {
-      case AppInUse.e:
-        return true;
-      case AppInUse.c:
-        return true;
-      default:
-        return false;
-    }
+    return AppConfig.instance.appInUse == AppInUse.e;
   }
 
   /// Directory is available in all main apps (e, c, g).
@@ -1002,6 +996,9 @@ class AppFlavour {
     // On web, play audio content directly in the mini player without opening the full page
     if (kIsWeb && item.isAudioContent && !PublicCatalogReadPolicy.enabled) {
       if (Sint.isRegistered<AudioPlayerInvokerService>()) {
+        if (Sint.isRegistered<MediaPlayerService>()) {
+          Sint.find<MediaPlayerService>().pauseAllVideos();
+        }
         await Sint.find<AudioPlayerInvokerService>().init(items: [item], index: 0);
         return;
       }
@@ -1032,8 +1029,14 @@ class AppFlavour {
     switch(AppConfig.instance.appInUse) {
       case AppInUse.e:
         if(navItem.streamUrl.isNotEmpty && navItem.isBookContent) {
+          if (Sint.isRegistered<MediaPlayerService>()) {
+            Sint.find<MediaPlayerService>().pauseAllVideos();
+          }
           Sint.toNamed(AppRouteConstants.readingPath(navItem.id, slug: navItem.slug), arguments: [navItem, true], preventDuplicates: false);
         } else if(navItem.streamUrl.isNotEmpty) {
+          if (Sint.isRegistered<MediaPlayerService>()) {
+            Sint.find<MediaPlayerService>().pauseAllVideos();
+          }
           AppUtilities.gotoItemDetails(navItem);
         } else if (releaseItem?.webPreviewUrl?.isNotEmpty ?? false) {
           ExternalUtilities.launchURL(releaseItem!.webPreviewUrl!);
@@ -1049,6 +1052,9 @@ class AppFlavour {
       case AppInUse.g:
       case AppInUse.o:
       default:
+        if (Sint.isRegistered<MediaPlayerService>()) {
+          Sint.find<MediaPlayerService>().pauseAllVideos();
+        }
         AppUtilities.gotoItemDetails(navItem);
     }
   }
@@ -1186,12 +1192,7 @@ class AppFlavour {
   }
 
   static bool showLevitation() {
-    switch(AppConfig.instance.appInUse) {
-      case AppInUse.c:
-        return true;
-      default:
-        return false;
-    }
+    return kDebugMode && AppConfig.instance.appInUse == AppInUse.c;
   }
 
   static Size getReleaseShelfItemSize(BuildContext context) {

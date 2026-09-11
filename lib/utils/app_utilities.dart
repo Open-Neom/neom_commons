@@ -13,6 +13,7 @@ import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/item_found_in_list.dart';
 import 'package:neom_core/domain/model/item_list.dart';
 import 'package:neom_core/domain/model/playable_item.dart';
+import 'package:neom_core/domain/use_cases/media_player_service.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/neom_error_logger.dart';
@@ -295,6 +296,10 @@ class AppUtilities {
         AppConfig.logger.d('gotoItemDetails: id=${item.id}, name=${item.name}, '
             'streamUrl=${itemUrl.isNotEmpty ? "SET" : "EMPTY"}, '
             'mediaType=${itemType?.name ?? "null"}, isMain=$isMain, slug="$slug"');
+
+        if (isMain && Sint.isRegistered<MediaPlayerService>()) {
+          Sint.find<MediaPlayerService>().pauseAllVideos();
+        }
 
         // Always delegate to AppFlavour for app-aware routing
         // (e.g. Cyberneom doesn't have BooksRoutes, so bookPath would 404)
