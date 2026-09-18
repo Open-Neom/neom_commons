@@ -1,3 +1,10 @@
+# Changelog - neom_commons
+
+## [2.0.4] - 2026-09-18
+- Respect `AppFlavour.showBooksLibrary()` conditional visibility in `WebCommandPalette`.
+- Pause all videos on shelf navigation and playable item selection.
+- Refactor alert dismissals and route returns using `Sint.pop` and `Sint.back`.
+
 ## [2026-07-25] - Dependencias Externas
 - Actualizacion de dependencias externas a sus versiones mas recientes y compatibles.
 

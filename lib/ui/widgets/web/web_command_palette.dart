@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:sint/sint.dart';
 
+import '../../../app_flavour.dart';
 import '../../theme/app_color.dart';
 
 /// A single command entry in the palette.
@@ -270,12 +271,13 @@ class _WebCommandPaletteState extends State<WebCommandPalette> {
         onSelect: () => Sint.toNamed(AppRouteConstants.events),
         keywords: ['eventos', 'calendar'],
       ),
-      CommandPaletteItem(
-        id: 'nav_books', label: 'Books', section: 'Navigate',
-        icon: Icons.menu_book_outlined,
-        onSelect: () => Sint.toNamed(AppRouteConstants.libraryHome),
-        keywords: ['libros', 'library', 'biblioteca'],
-      ),
+      if (AppFlavour.showBooksLibrary())
+        CommandPaletteItem(
+          id: 'nav_books', label: 'Books', section: 'Navigate',
+          icon: Icons.menu_book_outlined,
+          onSelect: () => Sint.toNamed(AppRouteConstants.libraryHome),
+          keywords: ['libros', 'library', 'biblioteca'],
+        ),
       CommandPaletteItem(
         id: 'nav_audio', label: 'Audio Player', section: 'Navigate',
         icon: Icons.headphones_outlined,
