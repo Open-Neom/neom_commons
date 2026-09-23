@@ -16,6 +16,7 @@ analyzer:
     - lib/ui/widgets/title_subtitle_row.dart
     - lib/utils/app_alerts.dart
     - lib/utils/app_utilities.dart
+    - build/**
   errors:
     # treat missing required parameters as a warning (not a hint)
     missing_required_param: warning
