@@ -63,6 +63,9 @@ class AppMediaItemMapper {
         ownerId: releaseItem.ownerProfileId?.isNotEmpty == true
             ? releaseItem.ownerProfileId
             : releaseItem.ownerEmail,
+        // What casete sessions attribute listening to; ownerId above may be
+        // a profile id.
+        ownerEmail: releaseItem.ownerEmail,
         likes: releaseItem.likedProfiles?.length ?? 0,
         state: releaseItem.state,
         mediaSource: AppMediaSource.internal,
