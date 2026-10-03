@@ -33,7 +33,7 @@ class AuthGuard {
         ? AppRouteConstants.profile
         : AppRouteConstants.matePath(profileId);
     void open() {
-      if (closeOverlay) Navigator.of(context).pop();
+      if (closeOverlay) Sint.pop();
       Sint.toNamed(route, arguments: profileId);
     }
 
@@ -101,7 +101,7 @@ class AuthGuard {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+            onPressed: () => Sint.closeDialog(),
             child: Text(
               AppTranslationConstants.continueExploring.tr,
               style: TextStyle(color: Colors.grey),
@@ -114,7 +114,7 @@ class AuthGuard {
               shape: const StadiumBorder(),
             ),
             onPressed: () {
-              // Sint.back();
+              Sint.closeDialog();
 
               // 2. Apagar modo invitado (para que RootPage sepa que vamos al Login real)
               AppConfig.instance.isGuestMode = false;

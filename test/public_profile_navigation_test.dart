@@ -90,6 +90,10 @@ void main() {
             name: AppRouteConstants.profile,
             page: () => const Scaffold(body: Text('Personal account page')),
           ),
+          SintPage(
+            name: AppRouteConstants.login,
+            page: () => const Scaffold(body: Text('Login page')),
+          ),
         ],
       ),
     );
@@ -165,6 +169,37 @@ void main() {
     await tester.pumpAndSettle();
     expect(calls, 0);
     expect(find.text(AppTranslationConstants.accountRequired), findsOneWidget);
+  });
+
+  testWidgets('continuing as guest closes only the account dialog', (tester) async {
+    var calls = 0;
+    await mount(tester, mutation: () => calls++);
+    await tester.tap(find.text('Follow author'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(AppTranslationConstants.continueExploring));
+    await tester.pumpAndSettle();
+
+    expect(calls, 0);
+    expect(find.text('Follow author'), findsOneWidget);
+    expect(find.text(AppTranslationConstants.accountRequired), findsNothing);
+    expect(Sint.isOverlaid, isFalse);
+    expect(AppConfig.instance.isGuestMode, isTrue);
+  });
+
+  testWidgets('signing in closes the dialog before replacing the page', (tester) async {
+    var calls = 0;
+    await mount(tester, mutation: () => calls++);
+    await tester.tap(find.text('Follow author'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(AppTranslationConstants.loginSignup));
+    await tester.pumpAndSettle();
+
+    expect(calls, 0);
+    expect(find.text('Login page'), findsOneWidget);
+    expect(find.text(AppTranslationConstants.accountRequired), findsNothing);
+    expect(Sint.isOverlaid, isFalse);
+    expect(AppConfig.instance.isGuestMode, isFalse);
+    expect(AuthGuard.isAuthenticated, isFalse);
   });
 
   testWidgets('empty and route-shaped profile IDs cannot navigate', (
