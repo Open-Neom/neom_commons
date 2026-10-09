@@ -8,12 +8,11 @@ import 'ui/terms_conditions_page.dart' deferred as terms;
 import 'ui/under_construction_page.dart' deferred as underConstruction;
 
 class CommonRoutes {
-
   static final List<SintPage<dynamic>> routes = [
     SintPage(
-        name: AppRouteConstants.splashScreen,
-        page: () => DeferredLoader(splash.loadLibrary, () => splash.SplashPage()),
-        transition: Transition.zoom
+      name: AppRouteConstants.splashScreen,
+      page: () => DeferredLoader(splash.loadLibrary, () => splash.SplashPage()),
+      transition: Transition.zoom,
     ),
     SintPage(
       name: AppRouteConstants.accountRemove,
@@ -21,17 +20,43 @@ class CommonRoutes {
     ),
     SintPage(
       name: AppRouteConstants.previousVersion,
-      page: () => DeferredLoader(prevVersion.loadLibrary, () => prevVersion.PreviousVersionPage()),
+      page: () => DeferredLoader(
+        prevVersion.loadLibrary,
+        () => prevVersion.PreviousVersionPage(),
+      ),
     ),
     SintPage(
       name: AppRouteConstants.underConstruction,
-      page: () => DeferredLoader(underConstruction.loadLibrary, () => underConstruction.UnderConstructionPage()),
+      page: () => DeferredLoader(
+        underConstruction.loadLibrary,
+        () => underConstruction.UnderConstructionPage(),
+      ),
       transition: Transition.zoom,
     ),
     SintPage(
       name: AppRouteConstants.termsConditions,
-      page: () => DeferredLoader(terms.loadLibrary, () => terms.TermsConditionsPage()),
+      page: () =>
+          DeferredLoader(terms.loadLibrary, () => terms.TermsConditionsPage()),
     ),
+    for (final path in [
+      '/terms/',
+      '/terminos-y-condiciones',
+      '/terminos-y-condiciones/',
+    ])
+      SintPage(
+        name: path,
+        page: () => DeferredLoader(
+          terms.loadLibrary,
+          () => terms.TermsConditionsPage(),
+        ),
+      ),
+    for (final path in ['/eliminar-cuenta', '/eliminar-cuenta/'])
+      SintPage(
+        name: path,
+        page: () => DeferredLoader(
+          terms.loadLibrary,
+          () => terms.AccountDeletionPage(),
+        ),
+      ),
   ];
-
 }

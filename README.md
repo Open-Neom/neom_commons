@@ -1,6 +1,134 @@
 # neom_commons
 Commons for Open Neom Modules.
 
+## Public privacy policy pages
+
+For the complete public legal site (privacy, account deletion and terms), use
+[`tool/legal/generate.mjs`](tool/legal/generate.mjs). See the [shared legal-page
+guide](tool/legal/README.md) for sources, host-app setup and validation. The
+privacy-only entrypoint below remains backwards compatible.
+
+The renderer in `tool/privacy/generate.mjs` is shared by all host apps. Each app
+maintains **one** `assets/privacy_policy.md` for its actual data practices and
+`assets/privacy_policy.json` for public identity and publication status, not a separate
+policy for Android, iOS and web. Existing mobile/web privacy links open the same
+public `/politica-de-privacidad/` URL.
+
+The generator reads only the public app name, contact and website/privacy URL
+fields from `assets/properties.json` (the same source as `AppProperties`). It
+never embeds that configuration file wholesale. Legal metadata can override the
+privacy contact. The result is static, responsive HTML: no Flutter bootstrap,
+authentication, scripts, third-party fonts or runtime Markdown fetch is needed.
+
+From an app directory in this workspace:
+
+```sh
+node ../neom_modules/main/neom_commons/tool/privacy/generate.mjs --app-dir . --require-published
+flutter build web --release --no-tree-shake-icons
+node ../neom_modules/main/neom_commons/tool/privacy/generate.mjs --app-dir . --output-dir build/web --check --require-published
+```
+
+The output `web/politica-de-privacidad/index.html` is generated; edit the Markdown,
+metadata or shared template instead. Flutter copies the page to `build/web`.
+`--check` detects stale output without writing. `--require-published` accepts
+`published` or `approved` and rejects drafts. The three apps' deploy scripts use
+this publication check before building and verify the built page afterward.
+`--require-approved` remains a separate, stricter check and rejects `published`.
+A bare Firebase command or
+unrelated CI workflow does not automatically run those scripts: the same check
+must be included if another publication path is used. Generation is local and
+does not deploy anything.
+
+Metadata fields: `status` (`draft`, `published` or `approved`), `updatedAt` (ISO date),
+`controllerName`, `controllerAddress`, `privacyEmail`, `themeColor` (six-digit
+hex color). A `draft` has a visible notice and `noindex`. `published` records the
+owner's publication decision; it requires a responsible name, privacy contact,
+HTTPS canonical URL and public text without pending markers or unresolved
+placeholders. It does not require a physical address or certify legal approval.
+`approved` retains the stricter requirement for a physical address and complete
+legal metadata, no pending markers, and no outstanding legacy review notes.
+Approval requires the corresponding human/legal and operational review; the
+generator does not perform or certify it. Both `published` and `approved` render
+without a draft notice or `noindex`.
+
+`reviewNotes` is optional legacy input and is never serialized into HTML,
+including in a draft. Do not keep internal notes in `assets/privacy_policy.json`:
+Flutter can bundle that JSON independently of the HTML generator. Store them
+locally in `legal/privacy_policy.review.json`, outside Flutter assets and ignored
+by Git. Both Hosting configurations must exclude `**/privacy_policy.review.json`.
+The local review file is optional and is not required in a fresh clone.
+
+Simple Markdown headings, paragraphs, bold, lists and links
+are supported; raw HTML is escaped and unsafe URL schemes are rejected.
+
+For another app, add both assets (explicitly in `pubspec.yaml` if needed), set its
+public properties, generate the page and add the Hosting route before the SPA
+fallback. No application-specific changes to the renderer are required. If a
+build switches flavors, its assets must belong to the selected app; never ship a
+different app's legal identity or practices.
+
+### Source review for the October 2026 migration
+
+The recovered sources were `SRZNVRSE/Gigmeout/Archivo/Secure/IT/Politica de
+Privacidad.doc` (Word-generated HTML saved in 2021) and
+`SRZNVRSE/EMXI/EMXI Cloud/Drive-2026-Soporte/IT/EscritoresMXI - Política de
+privacidad.docx`. The originals were left unchanged. No separate historical
+Cyberneom privacy policy was found in that archive search.
+
+The old documents describe a website/WordPress on SiteGround, not the current
+apps. The migration retains useful concepts (purposes, third-party services,
+control of personal information and no-sale commitments), but replaces obsolete
+domains and WordPress account/export/erasure instructions. Unsupported promises
+of perfect security, automatic permanent deletion, a three-year purge or
+indefinite retention were not carried over. The policy sources cover Firebase,
+files and notifications, permissions, diagnostics, payments and conditional AI;
+Gigmeout covers Giglab, EMXI covers reading activity, and Cyberneom distinguishes
+local EEG/voice results from cloud session history. AdMob is described only for
+apps whose code enables the module, not inferred from a shared dependency.
+
+The former privacy paragraphs inside each app's terms were aligned to avoid
+contradictory statements such as “all biofeedback is local” or “profiles are used
+only for statistics.” On October 4, the owner supplied the responsible names
+Gigmeout, EMXI and Cyberneom and the privacy contacts `contacto@gigmeout.com`,
+`contacto@emxi.org` and `contacto@cyberneom.xyz`. These are shown as electronic
+contacts, not physical addresses. No physical address was supplied:
+`controllerAddress` is omitted from public metadata and the stricter approval
+gate remains in place. The owner authorized `published` policies for the public
+sites without claiming that they were legally approved.
+The public Markdown omits the physical-address line at the owner's request;
+legal review must resolve that requirement and restore `{{CONTROLLER_ADDRESS}}`
+where applicable before approving the notice. This does not imply that an email
+replaces the domicile required by Mexico's LFPDPPP, article 15.
+
+Operational review details belong in the optional local review files, not the
+public metadata or generated pages. The client account-deletion action is not evidence of a
+complete cascade through files, posts, sessions, projects and assistant memory.
+
+Publication also requires matching the store's Data safety declaration and
+updating its privacy URL; those external changes are separate from generating
+the page. See [Google Play user data requirements](https://support.google.com/googleplay/android-developer/answer/10144311?hl=es)
+and [Mexico's LFPDPPP](https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf).
+
+Run shared renderer tests with `node --test tool/privacy/generate.test.mjs`.
+
+Local Hosting verification (no deployment): after building the app, run
+`node tool/privacy/preview.mjs --app-dir /path/to/Gigmeout --port 5400` from this
+module. The helper uses a temporary config, a demo project and loopback only;
+Firebase CLI must be available on `PATH`. Stop it with Ctrl+C. To verify all
+three apps' routes and generated artifacts, run:
+
+```sh
+NEOM_PRIVACY_APPS_ROOT=/path/to/codebase_flutter \
+PRIVACY_GIGMEOUT_URL=http://127.0.0.1:5400 \
+PRIVACY_EMXI_URL=http://127.0.0.1:5410 \
+PRIVACY_CYBERNEOM_URL=http://127.0.0.1:5420 \
+node --test tool/privacy/*.test.mjs
+```
+
+Start one preview per app on those ports; HTTP checks are skipped when the
+corresponding URL is omitted. These checks require local URLs and never create
+accounts or write production data.
+
 neom_commons serves as a vital support package within the Open Neom ecosystem. 
 It is meticulously designed to house all reusable widgets, shared UI components,
 and generic utility functions that are transversal to the application. 
