@@ -31,6 +31,9 @@ class AppColor {
       case AppInUse.i:
         mainColor = const Color.fromRGBO(28, 50, 55, 1);
         break;
+      case AppInUse.b:
+        mainColor = const Color(0xFF28B5C0);
+        break;
       default:
         mainColor = const Color.fromRGBO(110, 40, 140, 1);
     }
@@ -55,6 +58,8 @@ class AppColor {
         return const Color.fromRGBO(110, 40, 140, 1);
       case AppInUse.i:
         return const Color.fromRGBO(28, 50, 55, 1);
+      case AppInUse.b:
+        return const Color(0xFF28B5C0);
       default:
         return const Color.fromRGBO(110, 40, 140, 1);
     }
@@ -135,6 +140,8 @@ class AppColor {
         return const Color.fromRGBO(180, 90, 20, 1);
       case AppInUse.i:
         return const Color.fromRGBO(18, 35, 38, 1);
+      case AppInUse.b:
+        return const Color(0xFF1E7E8B);
       default:
         return bondiBlue75;
     }
@@ -148,6 +155,8 @@ class AppColor {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.i:
         return const Color(0xFF00FFFF); // Itzli cyan
+      case AppInUse.b:
+        return const Color(0xFF4CE5E2); // Blup logo turquoise
       case AppInUse.g:
         return const Color.fromRGBO(65, 120, 255, 1); // Gigmeout blue
       case AppInUse.e:
@@ -173,6 +182,8 @@ class AppColor {
         return 2.0;
       case AppInUse.i:
         return 2.5;
+      case AppInUse.b:
+        return 2.6;
       default:
         return 1.0;
     }

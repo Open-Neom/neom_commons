@@ -531,8 +531,9 @@ class AppFlavour {
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
-      case AppInUse.b:
         return true;
+      case AppInUse.b:
+        return false;
       case AppInUse.e:
         return true;
       case AppInUse.g:
@@ -544,6 +545,114 @@ class AppFlavour {
     }
 
     return false;
+  }
+
+  static bool alwaysShowHomeAppBar() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static bool showBottomBarLabels() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static double getBottomBarHeight() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return 60.0;
+      default:
+        return 55.0;
+    }
+  }
+
+  static Color getHomeAppBarColor() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return AppColor.getMain();
+      default:
+        return AppColor.surfaceElevated;
+    }
+  }
+
+  static bool requireAuthForDrawer() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  static bool requireAuthForInbox() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  static bool requireAuthForNotifications() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  static String getNotificationsRoute() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return '/blupMeshStatus';
+      default:
+        return AppRouteConstants.feedActivity;
+    }
+  }
+
+  static bool showAppBarLocationManagerBtn() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  static String getAppBarLocationManagerRoute() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return '/roleTransit';
+      default:
+        return '';
+    }
+  }
+
+  static bool showAppBarSearchBtn() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  static bool useLocalMeshNeighborBadge() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.b:
+        return true;
+      default:
+        return false;
+    }
   }
   
   static bool showAppBarDirectoryBtn() {
