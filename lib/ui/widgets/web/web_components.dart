@@ -1,4 +1,5 @@
 export 'web_action_bar.dart';
+export 'web_app_downloads_bar.dart';
 export 'web_breadcrumb.dart';
 export 'web_command_palette.dart';
 export 'web_keyboard_manager.dart';
