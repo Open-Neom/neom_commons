@@ -23,7 +23,8 @@ class AppCircularProgressIndicator extends StatelessWidget {
               Image.asset(AppFlavour.getIconPath(),
               height: AppTheme.fullWidth(context)/6,
               width: AppTheme.fullWidth(context)/6,
-              fit: BoxFit.fitWidth,),
+              fit: BoxFit.fitWidth,
+              errorBuilder: (_, _, _) => const SizedBox.shrink(),),
             if(showLogo) AppTheme.heightSpace20,
             const CircularProgressIndicator(),
             if(subtitle.isNotEmpty) Column(

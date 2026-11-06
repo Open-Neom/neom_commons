@@ -359,6 +359,9 @@ class AppFlavour {
   }
 
   static String getIconPath() {
+    if (AppConfig.instance.appInUse == AppInUse.b) {
+      return 'assets/images/logo.png';
+    }
     return AppAssets.iconWhite;
   }
 
@@ -905,16 +908,16 @@ class AppFlavour {
     }
   }
 
-  /// Whether this app shows ads. EMXI is exempt (brand sovereignty).
-  /// Cyberneom and Gigmeout show ads to non-subscribers.
+  /// Whether this app shows contextual ads & internal house ads to non-subscribers.
   static bool showAds() {
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c: // Cyberneom
-        return true;
       case AppInUse.g: // Gigmeout
+      case AppInUse.e: // EMXI
+      case AppInUse.i: // Itzli
+      case AppInUse.b: // Blup
+      case AppInUse.o: // Open Neom
         return true;
-      case AppInUse.e: // EMXI — ad-free sovereignty
-        return false;
       default:
         return false;
     }
@@ -1302,6 +1305,16 @@ class AppFlavour {
 
   static bool showLevitation() {
     return kDebugMode && AppConfig.instance.appInUse == AppInUse.c;
+  }
+
+  static bool showFounding() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e:
+      case AppInUse.b:
+        return true;
+      default:
+        return false;
+    }
   }
 
   static Size getReleaseShelfItemSize(BuildContext context) {

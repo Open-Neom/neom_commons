@@ -22,7 +22,6 @@ import '../utils/constants/app_constants.dart';
 import '../utils/constants/app_page_id_constants.dart';
 import '../utils/constants/translations/common_translation_constants.dart';
 import '../utils/enums/app_drawer_menu.dart';
-import '../utils/external_utilities.dart';
 import '../utils/text_utilities.dart';
 import 'app_drawer_controller.dart';
 import 'theme/app_color.dart';
@@ -55,6 +54,10 @@ class AppDrawer extends StatelessWidget {
                       _menuHeader(context, controller),
                       const Divider(),
                       // if(Sint.isRegistered<ProfileService>()) drawerRowOption(AppDrawerMenu.profile,  const Icon(Icons.person), context),
+                      if(AppFlavour.showBooksLibrary())
+                        drawerRowOption(AppDrawerMenu.digitalLibrary, const Icon(Icons.menu_book_outlined), context),
+                      if(AppFlavour.showFounding())
+                        drawerRowOption(AppDrawerMenu.crowdfunding, const Icon(Icons.rocket_launch_outlined), context),
                       if(AppFlavour.showBlog())
                         drawerRowOption(AppDrawerMenu.games, const FaIcon(FontAwesomeIcons.gamepad), context),
                       if(AppFlavour.showBlog())
@@ -330,7 +333,7 @@ class AppDrawer extends StatelessWidget {
               Sint.toNamed(AppRouteConstants.settingsPrivacy);
               break;
             case AppDrawerMenu.crowdfunding:
-              ExternalUtilities.launchURL(AppProperties.getCrowdfundingUrl());
+              Sint.toNamed(AppRouteConstants.foundingHome);
               break;
             case AppDrawerMenu.appItemQuotation:
               Sint.toNamed(AppRouteConstants.quotation);
@@ -349,7 +352,7 @@ class AppDrawer extends StatelessWidget {
               }
               break;
             case AppDrawerMenu.digitalLibrary:
-              // TODO: Handle this case.
+              Sint.toNamed(AppRouteConstants.libraryHome);
               break;
             case AppDrawerMenu.frequencies:
               Sint.toNamed(AppRouteConstants.frequencyFav);
