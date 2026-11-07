@@ -2,6 +2,10 @@ name: neom_commons
 description: Commons for Open Neom.
 version: 2.0.4
 homepage: https://github.com/Open-Neom/neom_commons
+repository: https://github.com/Open-Neom/neom_commons
+issue_tracker: https://github.com/Open-Neom/neom_commons/issues
+funding:
+  - https://github.com/sponsors/Open-Neom
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
