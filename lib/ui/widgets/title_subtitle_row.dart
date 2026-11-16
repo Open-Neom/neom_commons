@@ -34,21 +34,18 @@ class TitleSubtitleRow extends StatelessWidget {
   });
 
   void _showUnderConstructionAlert(BuildContext context, String title) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
-          title: Text(title),
-          content: Text(CommonTranslationConstants.underConstruction.tr),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        );
-      },
+    Sint.dialog(
+      AlertDialog(
+        backgroundColor: const Color(0xFF1E1E1E),
+        title: Text(title),
+        content: Text(CommonTranslationConstants.underConstruction.tr),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () => Sint.pop(),
+          ),
+        ],
+      ),
     );
   }
 

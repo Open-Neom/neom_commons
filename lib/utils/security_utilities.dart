@@ -12,10 +12,15 @@ class SecurityUtilities {
   }
 
   static String generateNonce([int length = 32]) {
-    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._';
+    final safeLength =
+        (!length.isFinite || length <= 0) ? 32 : length.clamp(1, 4096);
     final random = Random.secure();
-    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
-        .join();
+    return List.generate(
+      safeLength,
+      (_) => charset[random.nextInt(charset.length)],
+    ).join();
   }
 
 }

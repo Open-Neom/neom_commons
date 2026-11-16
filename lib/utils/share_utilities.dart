@@ -153,16 +153,30 @@ class ShareUtilities {
     }
   }
 
-  /// Share a BlogEntry with optional thumbnail.
+  /// Share a BlogEntry with clean excerpt and optional thumbnail.
   static Future<void> shareBlogEntry(BlogEntry blogEntry) async {
-
-    // Format the blog content
-    String content = blogEntry.content;
-    String dotsLine = "";
-    for (int i = 0; i < blogEntry.profileName.length; i++) {
-      dotsLine = "$dotsLine.";
+    String cleanExcerpt = blogEntry.content
+        .replaceAllMapped(RegExp(r'!\[([^\]]*)\]\([^)]+\)'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'\*\*([^*]+)\*\*'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'\*([^*]+)\*'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'_([^_]+)_'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'~~([^~]+)~~'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'~([^~]+)~'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'`([^`]+)`'), (m) => m.group(1) ?? '')
+        .replaceAll(RegExp(r'^(?:#+\s*|>\s*|-\s*|---\s*$)', multiLine: true), '')
+        .replaceAll(RegExp(r'\n+'), ' ')
+        .trim();
+    if (cleanExcerpt.length > 240) {
+      cleanExcerpt = '${cleanExcerpt.substring(0, 237)}...';
     }
-    String formattedContent = "${blogEntry.title}\n\n$content\n\n${blogEntry.profileName}\n$dotsLine";
+
+    String dotsLine = '.' * blogEntry.profileName.length;
+    final header = blogEntry.title.trim().isNotEmpty
+        ? '${blogEntry.title.trim()}\n\n$cleanExcerpt'
+        : cleanExcerpt;
+    String formattedContent = blogEntry.profileName.isNotEmpty
+        ? '$header\n\n${blogEntry.profileName}\n$dotsLine'
+        : header;
 
     // Vanity URL: emxi.org/blog/{slug} or emxi.org/blog/{id}
     String vanityUrl = DeeplinkUtilities.generateVanityUrl(

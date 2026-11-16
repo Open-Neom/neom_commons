@@ -65,7 +65,7 @@ void main() {
     });
 
     test('solo contiene caracteres del charset', () {
-      const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZ'
+      const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
           'abcdefghijklmnopqrstuvwxyz-._';
       final nonce = SecurityUtilities.generateNonce(100);
       for (final c in nonce.split('')) {

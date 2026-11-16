@@ -8,7 +8,7 @@ import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:sint/sint.dart';
 
 import 'web_network_image_stub.dart'
-    if (dart.library.html) 'web_network_image_impl.dart';
+    if (dart.library.js_interop) 'web_network_image_impl.dart';
 
 /// Enhanced cached network image with skeleton loading, retry mechanism,
 /// and better error handling.
@@ -52,30 +52,9 @@ class HandledCachedNetworkImage extends StatefulWidget {
       _HandledCachedNetworkImageState();
 }
 
-class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _shimmerController;
-  late Animation<double> _shimmerAnimation;
+class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage> {
   int _retryCount = 0;
   static const int _maxRetries = 3;
-
-  @override
-  void initState() {
-    super.initState();
-    _shimmerController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    )..repeat();
-    _shimmerAnimation = Tween<double>(begin: -2, end: 2).animate(
-      CurvedAnimation(parent: _shimmerController, curve: Curves.easeInOutSine),
-    );
-  }
-
-  @override
-  void dispose() {
-    _shimmerController.dispose();
-    super.dispose();
-  }
 
   void _handleTap() {
     if (widget.function != null) {
@@ -187,27 +166,11 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
   Widget _buildPlaceholder() {
     if (widget.placeholder != null) return widget.placeholder!;
 
-    return AnimatedBuilder(
-      animation: _shimmerAnimation,
-      builder: (context, child) {
-        return Container(
-          height: widget.height,
-          width: widget.width,
-          decoration: BoxDecoration(
-            borderRadius: widget.borderRadius,
-            gradient: LinearGradient(
-              begin: Alignment(_shimmerAnimation.value - 1, 0),
-              end: Alignment(_shimmerAnimation.value + 1, 0),
-              colors: [
-                widget.backgroundColor ?? Colors.grey[850]!,
-                Colors.grey[700]!,
-                widget.backgroundColor ?? Colors.grey[850]!,
-              ],
-              stops: const [0.0, 0.5, 1.0],
-            ),
-          ),
-        );
-      },
+    return _ShimmerPlaceholder(
+      height: widget.height,
+      width: widget.width,
+      borderRadius: widget.borderRadius,
+      backgroundColor: widget.backgroundColor,
     );
   }
 
@@ -321,6 +284,75 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
                 ),
               ],
             ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ShimmerPlaceholder extends StatefulWidget {
+  final double? height;
+  final double? width;
+  final BorderRadius? borderRadius;
+  final Color? backgroundColor;
+
+  const _ShimmerPlaceholder({
+    this.height,
+    this.width,
+    this.borderRadius,
+    this.backgroundColor,
+  });
+
+  @override
+  State<_ShimmerPlaceholder> createState() => _ShimmerPlaceholderState();
+}
+
+class _ShimmerPlaceholderState extends State<_ShimmerPlaceholder>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _shimmerController;
+  late final Animation<double> _shimmerAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _shimmerController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat();
+    _shimmerAnimation = Tween<double>(begin: -2, end: 2).animate(
+      CurvedAnimation(parent: _shimmerController, curve: Curves.easeInOutSine),
+    );
+  }
+
+  @override
+  void dispose() {
+    _shimmerController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _shimmerAnimation,
+        builder: (context, child) {
+          return Container(
+            height: widget.height,
+            width: widget.width,
+            decoration: BoxDecoration(
+              borderRadius: widget.borderRadius,
+              gradient: LinearGradient(
+                begin: Alignment(_shimmerAnimation.value - 1, 0),
+                end: Alignment(_shimmerAnimation.value + 1, 0),
+                colors: [
+                  widget.backgroundColor ?? Colors.grey[850]!,
+                  Colors.grey[700]!,
+                  widget.backgroundColor ?? Colors.grey[850]!,
+                ],
+                stops: const [0.0, 0.5, 1.0],
+              ),
+            ),
           );
         },
       ),

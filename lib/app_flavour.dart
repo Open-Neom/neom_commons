@@ -730,15 +730,24 @@ class AppFlavour {
 
 
   static void gotoSuggestedItem() {
+    final rawUrl = AppConfig.instance.appInfo.suggestedUrl.trim();
+    final bookId = rawUrl.isNotEmpty ? rawUrl : 'suggested';
     AppReleaseItem suggestedItem = AppReleaseItem(
-      previewUrl: AppConfig.instance.appInfo.suggestedUrl,
+      id: bookId,
+      previewUrl: rawUrl,
     );
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
         //TODO implement for spiritual core
       case AppInUse.e:
-        Sint.toNamed(AppRouteConstants.readingPath(suggestedItem.id, slug: suggestedItem.slug), arguments: [suggestedItem, true, true]);
+        Sint.toNamed(
+          AppRouteConstants.readingPath(
+            suggestedItem.id.isNotEmpty ? suggestedItem.id : 'suggested',
+            slug: suggestedItem.slug,
+          ),
+          arguments: [suggestedItem, true, true],
+        );
       case AppInUse.g:
         //TODO implement for music core
       case AppInUse.o:
@@ -746,7 +755,6 @@ class AppFlavour {
       default:
         break;
     }
-
   }
 
   static String getSuggestedItemText() {

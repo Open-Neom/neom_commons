@@ -15,10 +15,6 @@ class CommonRoutes {
       transition: Transition.zoom,
     ),
     SintPage(
-      name: AppRouteConstants.accountRemove,
-      page: () => DeferredLoader(splash.loadLibrary, () => splash.SplashPage()),
-    ),
-    SintPage(
       name: AppRouteConstants.previousVersion,
       page: () => DeferredLoader(
         prevVersion.loadLibrary,

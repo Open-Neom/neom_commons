@@ -25,10 +25,24 @@ class SplashController extends SintController {
     super.onInit();
 
     try {
-      if (Sint.arguments != null) {
+      if (Sint.arguments != null && Sint.arguments is List && (Sint.arguments as List).isNotEmpty) {
         List<dynamic> arguments = Sint.arguments;
-        fromRoute = arguments.elementAt(0);
-        if(arguments.length > 1) toRoute = arguments.elementAt(1);
+        fromRoute = arguments.elementAt(0)?.toString() ?? '';
+        if (arguments.length > 1) {
+          toRoute = arguments.elementAt(1)?.toString() ?? '';
+        } else {
+          toRoute = AppRouteConstants.home;
+        }
+      } else {
+        final current = Sint.currentRoute;
+        if (current == AppRouteConstants.logout) {
+          fromRoute = AppRouteConstants.logout;
+        } else if (current == AppRouteConstants.forgotPasswordSending) {
+          fromRoute = AppRouteConstants.forgotPassword;
+        } else {
+          fromRoute = AppRouteConstants.home;
+          toRoute = AppRouteConstants.home;
+        }
       }
 
       switch(fromRoute){
@@ -81,7 +95,7 @@ class SplashController extends SintController {
 
     switch(fromRoute){
       case AppRouteConstants.home:
-        Sint.offAndToNamed(toRoute);
+        Sint.offAndToNamed(toRoute.isNotEmpty ? toRoute : AppRouteConstants.home);
         break;
       case AppRouteConstants.logout:
         loginServiceImpl.signOut();
@@ -114,7 +128,8 @@ class SplashController extends SintController {
         Sint.offAllNamed(AppRouteConstants.home);
         break;
       case "":
-        AppConfig.logger.t("There is no fromRoute");
+        AppConfig.logger.t("There is no fromRoute, navigating to home");
+        Sint.offAllNamed(AppRouteConstants.home);
         break;
     }
 

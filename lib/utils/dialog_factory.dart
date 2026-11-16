@@ -32,29 +32,29 @@ import '../ui/theme/app_color.dart';
 class DialogFactory {
   DialogFactory._();
 
-  /// Adaptive show: uses showDialog on web, showModalBottomSheet on mobile.
+  /// Adaptive show: uses Sint.dialog on web, Sint.bottomSheet on mobile.
   static Future<T?> _showAdaptive<T>({
     required BuildContext context,
     required Widget Function(BuildContext) builder,
     bool isScrollControlled = true,
   }) {
     if (kIsWeb) {
-      return showDialog<T>(
-        context: context,
-        builder: (ctx) => Dialog(
-          backgroundColor: Colors.transparent,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: builder(ctx),
+      return Sint.dialog<T>(
+        Builder(
+          builder: (ctx) => Dialog(
+            backgroundColor: Colors.transparent,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: builder(ctx),
+            ),
           ),
         ),
       );
     }
-    return showModalBottomSheet<T>(
-      context: context,
+    return Sint.bottomSheet<T>(
+      Builder(builder: builder),
       backgroundColor: Colors.transparent,
       isScrollControlled: isScrollControlled,
-      builder: builder,
     );
   }
 
@@ -130,9 +130,9 @@ class DialogFactory {
                   onConfirm: () {
                     HapticFeedback.lightImpact();
                     onConfirm(currentSelection);
-                    if (dismissOnConfirm) Sint.back(result: currentSelection);
+                    if (dismissOnConfirm) Sint.pop(currentSelection);
                   },
-                  onCancel: () => Sint.back(),
+                  onCancel: () => Sint.pop(),
                 ),
               ],
             ),
@@ -222,9 +222,9 @@ class DialogFactory {
               isDestructive: isDestructive,
               onConfirm: () {
                 HapticFeedback.lightImpact();
-                Sint.back(result: true);
+                Sint.pop(true);
               },
-              onCancel: () => Sint.back(result: false),
+              onCancel: () => Sint.pop(false),
             ),
           ],
         ),
@@ -309,9 +309,9 @@ class DialogFactory {
                     }
                   }
                   HapticFeedback.lightImpact();
-                  Sint.back(result: value);
+                  Sint.pop(value);
                 },
-                onCancel: () => Sint.back(),
+                onCancel: () => Sint.pop(),
               ),
             ],
           ),
@@ -325,10 +325,8 @@ class DialogFactory {
     required BuildContext context,
     String? message,
   }) {
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => PopScope(
+    return Sint.dialog(
+      PopScope(
         canPop: false,
         child: Center(
           child: Container(
@@ -355,14 +353,13 @@ class DialogFactory {
           ),
         ),
       ),
+      barrierDismissible: false,
     );
   }
 
   /// Dismisses any open dialog.
   static void dismissDialog(BuildContext context) {
-    if (Navigator.canPop(context)) {
-      Sint.back();
-    }
+    Sint.pop();
   }
 }
 

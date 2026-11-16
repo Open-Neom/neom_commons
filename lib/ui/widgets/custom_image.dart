@@ -7,7 +7,7 @@ import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:sint/sint.dart';
 
 import 'images/web_network_image_stub.dart'
-    if (dart.library.html) 'images/web_network_image_impl.dart';
+    if (dart.library.js_interop) 'images/web_network_image_impl.dart';
 
 /// Platform-aware network image widget.
 /// On web: uses native HTML <img> via HtmlElementView to bypass CanvasKit CORS.
@@ -66,9 +66,12 @@ ImageProvider platformImageProvider(String imageUrl, {int? maxHeight, int? maxWi
 String _optimizeGoogleImageUrl(String url, {int size = 96}) {
   if (url.isEmpty) return url;
   final uri = Uri.tryParse(url);
-  if (uri == null) return url;
-  final host = uri.host;
-  if (!host.contains('googleusercontent.com')) return url;
+  if (uri == null || uri.hasQuery || uri.hasFragment) return url;
+  final host = uri.host.toLowerCase();
+  if (host != 'googleusercontent.com' &&
+      !host.endsWith('.googleusercontent.com')) {
+    return url;
+  }
   // Already has a size parameter (=sN or =s128-c0x...)
   if (url.contains(RegExp(r'=s\d+'))) return url;
   // Append size parameter

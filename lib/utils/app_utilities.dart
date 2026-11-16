@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
@@ -14,6 +13,7 @@ import 'package:neom_core/domain/model/item_found_in_list.dart';
 import 'package:neom_core/domain/model/item_list.dart';
 import 'package:neom_core/domain/model/playable_item.dart';
 import 'package:neom_core/domain/use_cases/media_player_service.dart';
+import 'package:neom_core/utils/core_utilities.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/neom_error_logger.dart';
@@ -118,34 +118,29 @@ class AppUtilities {
   }
 
   static Future<ImageProvider> handleCachedImageProvider(String imageUrl) async {
-
-    if(imageUrl.isEmpty) {
-      imageUrl = AppProperties.getAppLogoUrl();
+    final fallbackUrl = AppProperties.getAppLogoUrl();
+    final candidate = imageUrl.trim().isEmpty ? fallbackUrl : imageUrl.trim();
+    final parsed = Uri.tryParse(candidate);
+    if (!CoreUtilities.isSafePublicMediaUri(parsed)) {
+      return platformImageProvider(fallbackUrl);
     }
 
-    // On web, skip the http.get validation — it doubles fetch requests
+    // On web, skip the HTTP probe — it doubles fetch requests
     // and triggers 429 rate limits from Google CDN. Just return the provider directly.
     if (kIsWeb) {
-      return platformImageProvider(imageUrl);
+      return platformImageProvider(candidate);
     }
 
     try {
-      Uri uri = Uri.parse(imageUrl);
-
-      if(uri.host.isNotEmpty) {
-        http.Response response = await http.get(uri);
-        if (response.statusCode == 200) {
-          return platformImageProvider(imageUrl);
-        } else {
-          return platformImageProvider(AppProperties.getAppLogoUrl());
-        }
+      final ok = await CoreUtilities.probePublicMediaUrlAvailable(candidate);
+      if (ok) {
+        return platformImageProvider(candidate);
       }
-
-    } catch (e, st){
+    } catch (e, st) {
       NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'handleCachedImageProvider');
     }
 
-    return platformImageProvider(AppProperties.getAppLogoUrl());
+    return platformImageProvider(fallbackUrl);
   }
 
   static Map<String, AppProfile> filterByName(Map<String, AppProfile> profiles, String name) {

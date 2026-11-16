@@ -1,24 +1,220 @@
-// ignore_for_file: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 import 'dart:ui_web' as ui_web;
 
 import 'package:flutter/widgets.dart';
+import 'package:neom_core/utils/core_utilities.dart';
 
-final Set<String> _registeredFactories = {};
+const int _maxOutcomeCacheEntries = 500;
+const int _maxViewTypeCacheEntries = 2000;
+final Map<String, String> _viewTypeByKey = <String, String>{};
+int _nextViewTypeId = 0;
+
+final RegExp _rasterDataImagePattern = RegExp(
+  r'^data:image/(?:png|jpe?g|webp|gif|avif|bmp|x-icon|vnd\.microsoft\.icon)(?:;[a-z0-9\-=+.]+)*,',
+  caseSensitive: false,
+);
+
+extension type _JSOrigin._(JSObject _) implements JSObject {
+  external bool get opaque;
+  external bool isSameOrigin(_JSOrigin other);
+}
+
+extension type _JSOriginConstructor._(JSObject _) implements JSObject {
+  external _JSOrigin from(JSAny candidate);
+}
+
+extension type _JSUrl._(JSObject _) implements JSObject {
+  external factory _JSUrl(String url);
+  external String get origin;
+}
+
+bool _hasUnsafeWebUrlChars(String value) {
+  for (int i = 0; i < value.length; i++) {
+    final unit = value.codeUnitAt(i);
+    if (unit <= 0x20 ||
+        (unit >= 0x7F && unit <= 0x9F) ||
+        unit == 0x5C || // backslash
+        unit == 0x0085 ||
+        unit == 0x061C ||
+        (unit >= 0x200B && unit <= 0x200F) ||
+        (unit >= 0x2028 && unit <= 0x202E) ||
+        unit == 0x2060 ||
+        (unit >= 0x2066 && unit <= 0x2069) ||
+        unit == 0x3002 ||
+        unit == 0xFF0E ||
+        unit == 0xFF61 ||
+        unit == 0xFEFF) {
+      return true;
+    }
+  }
+  return false;
+}
+
+String? _currentExecutionHref() {
+  try {
+    final loc = globalContext['location'];
+    if (loc != null && loc.isA<JSObject>()) {
+      final href = (loc as JSObject)['href'];
+      if (href != null && href.isA<JSString>()) {
+        final value = (href as JSString).toDart.trim();
+        if (value.isNotEmpty) return value;
+      }
+    }
+  } catch (_) {}
+  return null;
+}
+
+bool _checkSameOriginCandidate(
+  String candidateUrl, {
+  String? referenceOriginUrl,
+}) {
+  try {
+    if (globalContext.has('Origin')) {
+      final originVal = globalContext['Origin'];
+      if (originVal != null && originVal.isA<JSObject>()) {
+        final ctor = _JSOriginConstructor._(originVal as JSObject);
+        final candidateOrigin = ctor.from(candidateUrl.toJS);
+        // Pass globalContext (`self`) rather than Location/Document (which
+        // throw TypeError in Origin.from()) when validating against our own
+        // execution context.
+        final trustedOrigin = referenceOriginUrl != null
+            ? ctor.from(referenceOriginUrl.trim().toJS)
+            : ctor.from(globalContext);
+        return !candidateOrigin.opaque &&
+            !trustedOrigin.opaque &&
+            candidateOrigin.isSameOrigin(trustedOrigin);
+      }
+    }
+
+    final trustedHref = referenceOriginUrl?.trim() ?? _currentExecutionHref();
+    if (trustedHref == null || trustedHref.isEmpty) return false;
+    final candidateParsed = _JSUrl(candidateUrl);
+    final trustedParsed = _JSUrl(trustedHref);
+    final candOrigin = candidateParsed.origin;
+    return candOrigin != 'null' &&
+        candOrigin.isNotEmpty &&
+        candOrigin == trustedParsed.origin;
+  } catch (_) {
+    return false;
+  }
+}
+
+/// Validates whether a `blob:` image URL belongs to the same non-opaque tuple
+/// origin as [referenceOriginUrl] (or the current browser execution context).
+@visibleForTesting
+bool isSameOriginWebImageBlobUrl(
+  String rawUrl, {
+  String? referenceOriginUrl,
+}) {
+  final trimmed = rawUrl.trim();
+  if (trimmed.length <= 5 ||
+      trimmed.length > 4096 ||
+      _hasUnsafeWebUrlChars(trimmed) ||
+      !trimmed.toLowerCase().startsWith('blob:')) {
+    return false;
+  }
+  final inner = trimmed.substring(5);
+  if (inner.isEmpty ||
+      inner.toLowerCase().startsWith('null') ||
+      !inner.contains('/')) {
+    return false;
+  }
+  return _checkSameOriginCandidate(
+    inner,
+    referenceOriginUrl: referenceOriginUrl,
+  );
+}
+
+/// Validates whether [rawUrl] uses a safe scheme and origin for browser `<img>`
+/// rendering without triggering SVG XSS or unsolicited Local Network Access
+/// (`local-network` / `loopback-network`) prompts.
+@visibleForTesting
+bool isAllowedWebImageUrl(String rawUrl) {
+  final trimmed = rawUrl.trim();
+  if (trimmed.isEmpty ||
+      trimmed == 'null' ||
+      trimmed == 'undefined' ||
+      trimmed.length > 4096 ||
+      _hasUnsafeWebUrlChars(trimmed)) {
+    return false;
+  }
+  final lower = trimmed.toLowerCase();
+  if (lower.startsWith('http://') || lower.startsWith('https://')) {
+    final uri = Uri.tryParse(trimmed);
+    if (uri == null || uri.userInfo.isNotEmpty || uri.host.isEmpty) {
+      return false;
+    }
+    // Same-origin local development (`http://localhost:<port>`) stays within
+    // the loopback address space and does not cross LNA boundaries.
+    if (_checkSameOriginCandidate(trimmed)) {
+      return true;
+    }
+    // Cross-origin <img> loads must target public hosts only so untrusted image
+    // URLs cannot probe RFC1918/loopback/IMDS or trigger LNA prompts.
+    return CoreUtilities.isSafePublicMediaUri(uri);
+  }
+  if (lower.startsWith('blob:')) {
+    if (isSameOriginWebImageBlobUrl(trimmed)) {
+      return true;
+    }
+    final inner = trimmed.substring(5);
+    if (inner.isEmpty || inner.toLowerCase().startsWith('null')) {
+      return false;
+    }
+    final innerUri = Uri.tryParse(inner);
+    return innerUri != null &&
+        innerUri.scheme.toLowerCase() == 'https' &&
+        innerUri.path.length > 1 &&
+        CoreUtilities.isSafePublicMediaUri(innerUri);
+  }
+  if (lower.startsWith('data:image/')) {
+    // Allow raster formats only; block `image/svg+xml` (plain or base64) to
+    // prevent embedded script/event-handler payloads.
+    return _rasterDataImagePattern.hasMatch(trimmed);
+  }
+  return false;
+}
 
 /// Optimizes Google user content image URLs for web by appending size parameter.
 /// Reduces bandwidth and avoids HTTP 429 rate limits from Google's CDN.
-String _optimizeGoogleUrl(String url) {
+@visibleForTesting
+String optimizeGoogleWebImageUrl(String url, {int size = 96}) {
   if (url.isEmpty) return url;
   final uri = Uri.tryParse(url);
-  if (uri == null) return url;
-  if (!uri.host.contains('googleusercontent.com')) return url;
+  if (uri == null || uri.hasQuery || uri.hasFragment) return url;
+  final host = uri.host.toLowerCase();
+  if (host != 'googleusercontent.com' &&
+      !host.endsWith('.googleusercontent.com')) {
+    return url;
+  }
   if (url.contains(RegExp(r'=s\d+'))) return url;
-  return '$url=s96';
+  final safeSize = size.toDouble().isFinite ? size.clamp(16, 2048) : 96;
+  return '$url=s$safeSize';
 }
 
-/// Builds a native HTML <img> element via HtmlElementView.
-/// This bypasses CanvasKit's CORS requirement for cross-origin images.
+double? _finitePositiveDimension(double? value) =>
+    (value != null && value.isFinite && value > 0) ? value : null;
+
+JSObject _createHtmlImageElement({required bool isSameOrigin}) {
+  final doc = globalContext['document'];
+  if (doc == null || !doc.isA<JSObject>()) {
+    throw StateError('DOM document is unavailable');
+  }
+  final img = (doc as JSObject).callMethod<JSObject>(
+    'createElement'.toJS,
+    'img'.toJS,
+  );
+  img['decoding'] = 'async'.toJS;
+  img['referrerPolicy'] = (isSameOrigin
+          ? 'strict-origin-when-cross-origin'
+          : 'no-referrer')
+      .toJS;
+  return img;
+}
+
+/// Builds a native HTML <img> element via HtmlElementView (Dart2Wasm-ready).
+/// This bypasses CanvasKit/Skwasm CORS requirements for cross-origin images.
 ///
 /// The load outcome is probed in Dart so [placeholder] and [errorWidget] are
 /// actually rendered: the platform view alone can only hide a broken <img>,
@@ -32,15 +228,20 @@ Widget buildWebNativeImage({
   Widget? errorWidget,
   bool circular = false,
 }) {
-  if (imageUrl.isEmpty || imageUrl == 'null') {
-    return errorWidget ?? const SizedBox.shrink();
+  final safeHeight = _finitePositiveDimension(height);
+  final safeWidth = _finitePositiveDimension(width);
+  final sanitizedUrl = imageUrl.trim();
+  if (!isAllowedWebImageUrl(sanitizedUrl)) {
+    final fallback = errorWidget ?? const SizedBox.shrink();
+    if (safeHeight == null && safeWidth == null) return fallback;
+    return SizedBox(height: safeHeight, width: safeWidth, child: fallback);
   }
 
   return _WebNativeImage(
-    imageUrl: imageUrl,
+    imageUrl: sanitizedUrl,
     fit: fit,
-    height: height,
-    width: width,
+    height: safeHeight,
+    width: safeWidth,
     placeholder: placeholder,
     errorWidget: errorWidget,
     circular: circular,
@@ -76,8 +277,8 @@ enum _LoadState { loading, loaded, failed }
 
 class _WebNativeImageState extends State<_WebNativeImage> {
 
-  /// Outcome per URL, so a revisit does not flash a placeholder for an image
-  /// the browser already has (or already knows is broken).
+  /// Outcome per URL, bounded to [_maxOutcomeCacheEntries] so long sessions
+  /// do not accumulate unbounded URL strings in memory.
   static final Map<String, _LoadState> _outcomes = {};
 
   late String _optimizedUrl;
@@ -95,8 +296,21 @@ class _WebNativeImageState extends State<_WebNativeImage> {
     if (oldWidget.imageUrl != widget.imageUrl) _resolve();
   }
 
+  static void _recordOutcome(String url, _LoadState outcome) {
+    if (!_outcomes.containsKey(url) &&
+        _outcomes.length >= _maxOutcomeCacheEntries) {
+      _outcomes.remove(_outcomes.keys.first);
+    }
+    _outcomes[url] = outcome;
+  }
+
   void _resolve() {
-    _optimizedUrl = _optimizeGoogleUrl(widget.imageUrl);
+    if (!isAllowedWebImageUrl(widget.imageUrl)) {
+      _state = _LoadState.failed;
+      return;
+    }
+
+    _optimizedUrl = optimizeGoogleWebImageUrl(widget.imageUrl);
 
     final known = _outcomes[_optimizedUrl];
     if (known != null && known != _LoadState.loading) {
@@ -105,16 +319,29 @@ class _WebNativeImageState extends State<_WebNativeImage> {
     }
 
     _state = _LoadState.loading;
-    // The browser serves this from cache for the <img> the platform view
-    // creates, so probing does not cost a second download.
-    final probe = html.ImageElement()..src = _optimizedUrl;
     void settle(_LoadState outcome) {
-      _outcomes[_optimizedUrl] = outcome;
+      _recordOutcome(_optimizedUrl, outcome);
       if (!mounted || _state == outcome) return;
       setState(() => _state = outcome);
     }
-    probe.onLoad.listen((_) => settle(_LoadState.loaded));
-    probe.onError.listen((_) => settle(_LoadState.failed));
+
+    try {
+      // The browser serves this from cache for the <img> the platform view
+      // creates, so probing does not cost a second download.
+      final sameOrigin = _optimizedUrl.startsWith('data:') ||
+          isSameOriginWebImageBlobUrl(_optimizedUrl) ||
+          _checkSameOriginCandidate(_optimizedUrl);
+      final probe = _createHtmlImageElement(isSameOrigin: sameOrigin);
+      probe['onload'] = ((JSAny? _) {
+        settle(_LoadState.loaded);
+      }).toJS;
+      probe['onerror'] = ((JSAny? _) {
+        settle(_LoadState.failed);
+      }).toJS;
+      probe['src'] = _optimizedUrl.toJS;
+    } catch (_) {
+      settle(_LoadState.failed);
+    }
   }
 
   @override
@@ -145,6 +372,54 @@ class _WebNativeImageState extends State<_WebNativeImage> {
   }
 }
 
+String _resolveViewType({
+  required String optimizedUrl,
+  required BoxFit fit,
+  required bool circular,
+}) {
+  final compositeKey = '${circular ? 1 : 0}|${fit.name}|$optimizedUrl';
+  final existing = _viewTypeByKey[compositeKey];
+  if (existing != null) return existing;
+
+  if (_viewTypeByKey.length >= _maxViewTypeCacheEntries) {
+    _viewTypeByKey.remove(_viewTypeByKey.keys.first);
+  }
+  final viewType = 'neom-web-img-${++_nextViewTypeId}';
+  _viewTypeByKey[compositeKey] = viewType;
+  final sameOrigin = optimizedUrl.startsWith('data:') ||
+      isSameOriginWebImageBlobUrl(optimizedUrl) ||
+      _checkSameOriginCandidate(optimizedUrl);
+
+  ui_web.platformViewRegistry.registerViewFactory(
+    viewType,
+    (int viewId) {
+      final img = _createHtmlImageElement(isSameOrigin: sameOrigin);
+      final styleAny = img['style'];
+      if (styleAny != null && styleAny.isA<JSObject>()) {
+        final style = styleAny as JSObject;
+        style['width'] = '100%'.toJS;
+        style['height'] = '100%'.toJS;
+        style['objectFit'] = _boxFitToCss(fit).toJS;
+        style['display'] = 'block'.toJS;
+        style['pointerEvents'] = 'none'.toJS;
+
+        if (circular) {
+          style['borderRadius'] = '50%'.toJS;
+        }
+
+        // On error (429, 404, CORS, etc.), hide the broken image icon
+        // and show a neutral background instead.
+        img['onerror'] = ((JSAny? _) {
+          style['display'] = 'none'.toJS;
+        }).toJS;
+      }
+      img['src'] = optimizedUrl.toJS;
+      return img;
+    },
+  );
+  return viewType;
+}
+
 Widget _buildPlatformView({
   required String imageUrl,
   required BoxFit fit,
@@ -152,37 +427,12 @@ Widget _buildPlatformView({
   double? width,
   bool circular = false,
 }) {
-  final optimizedUrl = _optimizeGoogleUrl(imageUrl);
-  final suffix = circular ? '-circle' : '';
-  final viewType = 'web-img$suffix-${optimizedUrl.hashCode}';
-
-  if (!_registeredFactories.contains(viewType)) {
-    _registeredFactories.add(viewType);
-    ui_web.platformViewRegistry.registerViewFactory(
-      viewType,
-      (int viewId) {
-        final img = html.ImageElement()
-          ..src = optimizedUrl
-          ..style.width = '100%'
-          ..style.height = '100%'
-          ..style.objectFit = _boxFitToCss(fit)
-          ..style.display = 'block'
-          ..style.pointerEvents = 'none';
-
-        if (circular) {
-          img.style.borderRadius = '50%';
-        }
-
-        // On error (429, 404, CORS, etc.), hide the broken image icon
-        // and show a neutral background instead.
-        img.onError.listen((_) {
-          img.style.display = 'none';
-        });
-
-        return img;
-      },
-    );
-  }
+  final optimizedUrl = optimizeGoogleWebImageUrl(imageUrl);
+  final viewType = _resolveViewType(
+    optimizedUrl: optimizedUrl,
+    fit: fit,
+    circular: circular,
+  );
 
   final Widget imageView = HtmlElementView(viewType: viewType);
 

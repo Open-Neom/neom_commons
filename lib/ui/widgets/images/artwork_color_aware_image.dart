@@ -8,7 +8,7 @@ import 'handled_cached_network_image.dart';
 /// exposes it via [onColorExtracted].
 ///
 /// Wraps [HandledCachedNetworkImage] with an opt-in color extraction
-/// pass using [PaletteGenerator]. Modules can use the extracted color
+/// pass using [PaletteUtilities]. Modules can use the extracted color
 /// for dynamic header tints, gradient backgrounds, or accent styling
 /// without depending on neom_audio_player's ArtworkColorController.
 ///

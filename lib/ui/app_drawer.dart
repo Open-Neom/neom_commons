@@ -345,7 +345,7 @@ class AppDrawer extends StatelessWidget {
               break;
             case AppDrawerMenu.releaseUpload:
               if (kIsWeb && Sint.isRegistered<ReleaseUploadService>()) {
-                Navigator.pop(context);
+                Scaffold.maybeOf(context)?.closeDrawer();
                 Sint.find<ReleaseUploadService>().showUploadModal(context);
               } else {
                 Sint.toNamed(AppRouteConstants.releaseUpload);

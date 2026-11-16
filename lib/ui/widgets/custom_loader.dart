@@ -5,19 +5,14 @@ import 'package:neom_core/utils/platform/core_io.dart';
 import '../theme/app_theme.dart';
 
 class CustomLoader {
-  static CustomLoader _customLoader = CustomLoader();
+  static final CustomLoader _customLoader = CustomLoader._createObject();
 
-  factory CustomLoader() {
-      _customLoader = CustomLoader._createObject();
-      return _customLoader;
-
-  }
+  factory CustomLoader() => _customLoader;
 
   CustomLoader._createObject();
 
-  //static OverlayEntry _overlayEntry;
-  late OverlayState _overlayState; //= new OverlayState();
-  late OverlayEntry _overlayEntry;
+  OverlayState? _overlayState;
+  OverlayEntry? _overlayEntry;
 
   void _buildLoader() {
     _overlayEntry = OverlayEntry(
@@ -31,14 +26,18 @@ class CustomLoader {
   }
 
   void showLoader(BuildContext context) {
-    _overlayState = Overlay.of(context);
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+    _overlayState = Overlay.maybeOf(context);
+    if (_overlayState == null) return;
     _buildLoader();
-    _overlayState.insert(_overlayEntry);
+    _overlayState!.insert(_overlayEntry!);
   }
 
   void hideLoader() {
     try {
-      _overlayEntry.remove();
+      _overlayEntry?.remove();
+      _overlayEntry = null;
     } catch (e, st) {
       NeomErrorLogger.recordError(e, st, module: 'neom_commons', operation: 'hideLoader');
     }
