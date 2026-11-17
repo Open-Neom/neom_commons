@@ -563,7 +563,16 @@ class DeeplinkUtilities {
         return safeId.isNotEmpty ? '$siteUrl/playlist/$safeId' : siteUrl;
       case 'product':
       case 'merch':
-        return safeId.isNotEmpty ? '$siteUrl/shop/$safeId' : siteUrl;
+        return safeId.isNotEmpty
+            ? '$siteUrl${AppRouteConstants.shopProductPath(safeId)}'
+            : siteUrl;
+      case 'founding':
+      case 'fondeo':
+      case 'fondeos':
+        final target = safeSlug.isNotEmpty ? safeSlug : safeId;
+        return target.isNotEmpty
+            ? '$siteUrl${AppRouteConstants.foundingPath(target)}'
+            : '$siteUrl${AppRouteConstants.foundingHome}';
       case 'invite':
         final safeInvite = sanitizeInviteCoupon(id);
         return safeInvite.isNotEmpty ? '$siteUrl/invite/$safeInvite' : siteUrl;

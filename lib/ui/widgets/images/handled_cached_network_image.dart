@@ -31,6 +31,11 @@ class HandledCachedNetworkImage extends StatefulWidget {
   final bool showProgress;
   final Widget? placeholder;
   final Color? backgroundColor;
+  final int? memCacheWidth;
+  final int? memCacheHeight;
+  final int? maxWidthDiskCache;
+  final int? maxHeightDiskCache;
+  final bool useFullResolution;
 
   const HandledCachedNetworkImage(
     this.mediaUrl, {
@@ -44,6 +49,11 @@ class HandledCachedNetworkImage extends StatefulWidget {
     this.showProgress = false,
     this.placeholder,
     this.backgroundColor,
+    this.memCacheWidth,
+    this.memCacheHeight,
+    this.maxWidthDiskCache,
+    this.maxHeightDiskCache,
+    this.useFullResolution = false,
     super.key,
   });
 
@@ -102,11 +112,34 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage> {
         errorWidget: _buildErrorWidget(),
       );
     } else {
+      final dpr = MediaQuery.devicePixelRatioOf(context).clamp(1.0, 2.5);
+      final targetMemWidth = widget.useFullResolution
+          ? null
+          : (widget.memCacheWidth ??
+              ((widget.width != null &&
+                      widget.width!.isFinite &&
+                      widget.width! > 0)
+                  ? (widget.width! * dpr).round().clamp(32, 2048)
+                  : null));
+      final targetMemHeight = widget.useFullResolution
+          ? null
+          : (widget.memCacheHeight ??
+              ((targetMemWidth == null &&
+                      widget.height != null &&
+                      widget.height!.isFinite &&
+                      widget.height! > 0)
+                  ? (widget.height! * dpr).round().clamp(32, 2048)
+                  : null));
+
       content = CachedNetworkImage(
         key: ValueKey('$_effectiveUrl-$_retryCount'),
         imageUrl: _effectiveUrl,
         height: widget.height,
         width: widget.width,
+        memCacheWidth: targetMemWidth,
+        memCacheHeight: targetMemHeight,
+        maxWidthDiskCache: widget.maxWidthDiskCache,
+        maxHeightDiskCache: widget.maxHeightDiskCache,
         fit: widget.fit,
         fadeInDuration: widget.fadeInDuration,
         placeholder: (context, url) => _buildPlaceholder(),

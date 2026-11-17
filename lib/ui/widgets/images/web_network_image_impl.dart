@@ -206,6 +206,7 @@ JSObject _createHtmlImageElement({required bool isSameOrigin}) {
     'img'.toJS,
   );
   img['decoding'] = 'async'.toJS;
+  img['loading'] = 'lazy'.toJS;
   img['referrerPolicy'] = (isSameOrigin
           ? 'strict-origin-when-cross-origin'
           : 'no-referrer')

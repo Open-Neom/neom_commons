@@ -1086,7 +1086,7 @@ class AppFlavour {
       case AppInUse.c:
         return AppReleaseItem();
       case AppInUse.e:
-        return AppMediaItem();
+        return AppReleaseItem();
       case AppInUse.g:
         return AppReleaseItem();
       case AppInUse.o:

@@ -21,8 +21,16 @@ class PaletteUtilities {
     Size size = const Size(80, 80),
     int maximumColorCount = 8,
   }) async {
+    ImageInfo? imageInfo;
     try {
-      final imageInfo = await _getImageInfo(provider);
+      final targetW = size.width.round().clamp(16, 256);
+      final targetH = size.height.round().clamp(16, 256);
+      final resizedProvider = ResizeImage.resizeIfNeeded(
+        targetW,
+        targetH,
+        provider,
+      );
+      imageInfo = await _getImageInfo(resizedProvider);
       final image = imageInfo.image;
       final byteData = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
       if (byteData == null) return const PaletteInfo._({});
@@ -36,6 +44,8 @@ class PaletteUtilities {
       );
     } catch (_) {
       return const PaletteInfo._({});
+    } finally {
+      imageInfo?.dispose();
     }
   }
 
