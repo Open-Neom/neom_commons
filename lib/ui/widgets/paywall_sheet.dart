@@ -38,11 +38,8 @@ class PaywallSheet {
     String benefit = '',
     List<String> perks = const [],
   }) {
-    return showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (ctx) => Container(
+    return Sint.bottomSheet(
+      Container(
         padding: const EdgeInsets.fromLTRB(22, 18, 22, 28),
         decoration: BoxDecoration(
           color: AppColor.scaffold,
@@ -104,7 +101,7 @@ class PaywallSheet {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 onPressed: () {
-                  Navigator.of(ctx).pop();
+                  Sint.pop();
                   Sint.toNamed(AppRouteConstants.subscriptionPlans);
                 },
                 child: const Text('Ver planes',
@@ -114,13 +111,15 @@ class PaywallSheet {
             const SizedBox(height: 8),
             Center(
               child: TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
+                onPressed: () => Sint.pop(),
                 child: Text('Ahora no', style: TextStyle(color: AppColor.textMuted)),
               ),
             ),
           ],
         ),
       ),
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
     );
   }
 }

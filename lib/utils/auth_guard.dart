@@ -11,6 +11,83 @@ class AuthGuard {
   static String? pendingRedirectRoute;
   static dynamic pendingRedirectArgs;
 
+  static const int maxRedirectRouteLength = 512;
+  static const int maxProfileIdLength = 128;
+
+  static final RegExp _unsafeControlOrBidi = RegExp(
+    r'[\x00-\x1F\x7F-\x9F\u061C\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u2069\uFEFF]',
+  );
+  static final RegExp _encodedTraversalOrNull = RegExp(
+    r'(?:^|/)\.\.(?:/|$|\?|#)|%2e%2e|%2e\.|\.%2e|%2f|%5c|%25|%00',
+    caseSensitive: false,
+  );
+  static const Set<String> _forbiddenProfileIds = <String>{
+    '.',
+    '..',
+    '__proto__',
+    'constructor',
+    'prototype',
+  };
+
+  /// Validates that [profileId] is a safe Firestore/route identifier free of
+  /// traversal segments, prototype-pollution keys, separators, or BiDi/controls.
+  static bool isSafeProfileId(String profileId) {
+    if (profileId.isEmpty ||
+        profileId.length > maxProfileIdLength ||
+        profileId != profileId.trim() ||
+        _unsafeControlOrBidi.hasMatch(profileId) ||
+        profileId.contains(RegExp(r'[/\\?#\s]')) ||
+        profileId.contains('..')) {
+      return false;
+    }
+    final lower = profileId.toLowerCase();
+    if (_forbiddenProfileIds.contains(lower) ||
+        (profileId.startsWith('__') && profileId.endsWith('__')) ||
+        lower.contains('%00') ||
+        lower.contains('%2e') ||
+        lower.contains('%2f') ||
+        lower.contains('%5c') ||
+        lower.contains('%25')) {
+      return false;
+    }
+    return true;
+  }
+
+  /// Validates an internal post-login redirect route so external schemes,
+  /// protocol-relative `//host`, dot-segment escapes, and auth-loop routes
+  /// are rejected before storing in [pendingRedirectRoute].
+  static String? sanitizeRedirectRoute(Object? candidate) {
+    if (candidate is! String || _unsafeControlOrBidi.hasMatch(candidate)) {
+      return null;
+    }
+    final trimmed = candidate.trim();
+    if (trimmed.isEmpty ||
+        trimmed.length > maxRedirectRouteLength ||
+        !trimmed.startsWith('/') ||
+        trimmed.startsWith('//') ||
+        trimmed.contains(r'\') ||
+        trimmed.contains('://') ||
+        _unsafeControlOrBidi.hasMatch(trimmed) ||
+        _encodedTraversalOrNull.hasMatch(trimmed)) {
+      return null;
+    }
+    final parsed = Uri.tryParse(trimmed);
+    if (parsed == null || parsed.hasScheme || parsed.hasAuthority) {
+      return null;
+    }
+    var normalizedPath = parsed.path;
+    while (normalizedPath.length > 1 && normalizedPath.endsWith('/')) {
+      normalizedPath = normalizedPath.substring(0, normalizedPath.length - 1);
+    }
+    if (normalizedPath == AppRouteConstants.login ||
+        normalizedPath == AppRouteConstants.signup ||
+        normalizedPath == AppRouteConstants.forgotPassword ||
+        normalizedPath == AppRouteConstants.logout) {
+      return null;
+    }
+    return trimmed;
+  }
+
   /// Opening an author's public profile is a catalogue read in Gigmeout.
   /// The destination revalidates it through publicProfiles; account actions
   /// still go through [protect], including in that public profile page.
@@ -20,11 +97,7 @@ class AuthGuard {
     String currentProfileId = '',
     bool closeOverlay = false,
   }) {
-    if (profileId.isEmpty ||
-        profileId != profileId.trim() ||
-        profileId.contains(RegExp(r'[/\\?#\s]')) ||
-        profileId == '.' ||
-        profileId == '..') {
+    if (!isSafeProfileId(profileId)) {
       return;
     }
 
@@ -59,15 +132,16 @@ class AuthGuard {
       // 1. Usuario Real: Pasa directo a la acción.
       action();
     } else {
+      final safeRedirect = sanitizeRedirectRoute(redirectRoute);
       // Guard redirect route for global session persistence (across onboarding steps)
-      pendingRedirectRoute = redirectRoute;
-      pendingRedirectArgs = arguments;
+      pendingRedirectRoute = safeRedirect;
+      pendingRedirectArgs = safeRedirect != null ? arguments : null;
 
       // 2. Usuario Guest: Se interrumpe la acción y se muestra el modal.
       showGuestModal(
         context,
-        redirectRoute: redirectRoute,
-        arguments: arguments,
+        redirectRoute: safeRedirect,
+        arguments: safeRedirect != null ? arguments : null,
       );
     }
   }
@@ -87,6 +161,8 @@ class AuthGuard {
     String? redirectRoute,
     dynamic arguments,
   }) {
+    final safeRedirect = sanitizeRedirectRoute(redirectRoute);
+    final safeArguments = safeRedirect != null ? arguments : null;
     Sint.dialog(
       AlertDialog(
         backgroundColor: AppColor.scaffold,
@@ -122,7 +198,7 @@ class AuthGuard {
               // 3. Ir al Login llevando la "Promesa" de redirección
               Sint.offAllNamed(
                 AppRouteConstants.login,
-                arguments: {'nextRoute': redirectRoute, 'nextArgs': arguments},
+                arguments: {'nextRoute': safeRedirect, 'nextArgs': safeArguments},
               );
             },
             child: Text(AppTranslationConstants.loginSignup.tr),

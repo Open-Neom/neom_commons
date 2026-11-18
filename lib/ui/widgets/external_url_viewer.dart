@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../theme/app_color.dart';
+
 import '../../utils/external_utilities.dart';
 import '../../utils/url_utilities.dart';
+import '../theme/app_color.dart';
 
 class ExternalUrlViewer extends StatelessWidget {
 
@@ -13,14 +14,18 @@ class ExternalUrlViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isValid = UrlUtilities.isValidExternalDomain(url);
-    return isValid ? Column(
+    final normalizedUrl = UrlUtilities.normalizeSafeExternalUrl(url);
+    if (normalizedUrl == null) {
+      return const SizedBox.shrink();
+    }
+    final parsedHost = Uri.tryParse(normalizedUrl)?.host ?? '';
+    return Column(
       children: [
-        if(showTopDivider) const Divider(),
+        if (showTopDivider) const Divider(),
         Padding(
           padding: const EdgeInsets.only(top: 5.0),
           child: InkWell(
-            onTap: () => ExternalUtilities.launchURL(url),
+            onTap: () => ExternalUtilities.launchURL(normalizedUrl),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -28,8 +33,7 @@ class ExternalUrlViewer extends StatelessWidget {
                 const SizedBox(width: 5),
                 Flexible(
                   child: Text(
-                    (Uri.tryParse(url)?.host.isNotEmpty ?? false)
-                        ? Uri.tryParse(url)!.host : url,
+                    parsedHost.isNotEmpty ? parsedHost : normalizedUrl,
                     style: const TextStyle(
                       color: AppColor.dodgetBlue,
                       fontWeight: FontWeight.bold,
@@ -40,14 +44,18 @@ class ExternalUrlViewer extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 5),
-                Icon(Icons.open_in_new, size: 12, color: AppColor.dodgetBlue.withAlpha(180)),
+                Icon(
+                  Icons.open_in_new,
+                  size: 12,
+                  color: AppColor.dodgetBlue.withAlpha(180),
+                ),
               ],
             ),
           ),
         ),
-        if(showBottomDivider) const Divider(),
+        if (showBottomDivider) const Divider(),
       ],
-    ) : const SizedBox.shrink();
+    );
   }
 
 }

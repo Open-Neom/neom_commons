@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/data/api/app_platform_api.dart';
-import 'package:neom_core/data/firestore/app_media_item_firestore.dart';
 import 'package:neom_core/data/firestore/activity_feed_firestore.dart';
+import 'package:neom_core/data/firestore/app_media_item_firestore.dart';
 import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
 import 'package:neom_core/data/firestore/constants/app_firestore_constants.dart';
 import 'package:neom_core/data/firestore/itemlist_firestore.dart';
@@ -69,7 +69,7 @@ class ContentModerationHelper {
       buttons: [
         DialogButton(
           color: AppColor.bondiBlue75,
-          onPressed: () => Sint.back(),
+          onPressed: () => Sint.pop(),
           child: Text(AppTranslationConstants.cancel.tr,
             style: const TextStyle(fontSize: 15),
           ),
@@ -77,7 +77,7 @@ class ContentModerationHelper {
         DialogButton(
           color: Colors.orange[700]!,
           onPressed: () async {
-            Sint.back();
+            Sint.pop();
             final success = await onConfirm(reason);
             if (success) {
               AppUtilities.showSnackBar(
@@ -100,9 +100,8 @@ class ContentModerationHelper {
     required String contentName,
     required Future<bool> Function() onConfirm,
   }) async {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
+    await Sint.dialog(
+      AlertDialog(
         backgroundColor: AppColor.scaffold,
         title: Text(CommonTranslationConstants.confirmDelete.tr,
           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -113,12 +112,12 @@ class ContentModerationHelper {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () => Sint.pop(),
             child: Text(AppTranslationConstants.cancel.tr),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(ctx);
+              Sint.pop();
               final success = await onConfirm();
               if (success) {
                 AppUtilities.showSnackBar(

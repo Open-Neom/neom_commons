@@ -1,36 +1,147 @@
+import 'dart:async';
+
 import 'package:app_links/app_links.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/data/api/app_release_items.dart';
-import 'package:neom_core/utils/neom_error_logger.dart';
-import 'package:neom_core/utils/constants/app_route_constants.dart';
-import 'package:neom_core/utils/slug_router.dart';
-import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/data/firestore/itemlist_firestore.dart';
+import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/use_cases/audio_player_invoker_service.dart';
+import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
+import 'package:neom_core/utils/neom_error_logger.dart';
+import 'package:neom_core/utils/secure_logger.dart';
+import 'package:neom_core/utils/slug_router.dart';
 import 'package:sint/sint.dart';
-import 'package:neom_commons/app_flavour.dart';
+
+import '../app_flavour.dart';
 
 
 class DeeplinkUtilities {
+  static final RegExp _unsafeDeepLinkChars = RegExp(
+    r'[\x00-\x1F\x7F-\x9F\u0085\u061C\u200B-\u200F\u2028-\u202E\u2060-\u2069\uFEFF]',
+  );
+  static final RegExp _encodedTraversalOrNull = RegExp(
+    r'%(?:00|2e|2f|5c|25|c2%[89][0-9a-f]|d8%9c|e2%80%(?:8[b-f]|a[8-e])|e2%81%a[0-9]|ef%bb%bf)',
+    caseSensitive: false,
+  );
+  static final RegExp _validInviteCouponPattern = RegExp(
+    r'^[A-Za-z0-9_-]{1,64}$',
+  );
+  static final RegExp _safeSchemeSyntax = RegExp(r'^[a-z][a-z0-9+.\-]{0,31}$');
+  static const Set<String> _blockedDeepLinkSchemes = <String>{
+    'javascript',
+    'vbscript',
+    'data',
+    'file',
+    'blob',
+    'about',
+    'chrome',
+    'chrome-extension',
+    'view-source',
+    'ws',
+    'wss',
+    'ftp',
+    'jar',
+    'intent',
+    'ms-msdt',
+    'ms-officecmd',
+    'search-ms',
+    'filesystem',
+    'res',
+    'mk',
+  };
+  static const Set<String> _forbiddenSegmentNames = <String>{
+    '__proto__',
+    'constructor',
+    'prototype',
+  };
 
   /// Invite coupon code captured from an `emxi.org/invite/{code}` link before
   /// the user has an account. Onboarding reads + clears it to auto-apply the
   /// coupon (free month / plan trial) during registration.
   static String pendingInviteCoupon = '';
 
+  @visibleForTesting
+  static bool isAllowedDeepLinkScheme(String rawScheme) {
+    if (rawScheme.isEmpty) return true;
+    if (_unsafeDeepLinkChars.hasMatch(rawScheme)) return false;
+    final lower = rawScheme.trim().toLowerCase();
+    if (!_safeSchemeSyntax.hasMatch(lower)) return false;
+    return !_blockedDeepLinkSchemes.contains(lower);
+  }
+
+  @visibleForTesting
+  static String sanitizeDeepLinkSegment(String raw, {int maxLength = 128}) {
+    if (!maxLength.toDouble().isFinite || maxLength <= 0) return '';
+    if (_encodedTraversalOrNull.hasMatch(raw)) return '';
+    final cleaned = raw
+        .replaceAll(_unsafeDeepLinkChars, '')
+        .replaceAll(RegExp(r'[/\\?&#\s]+'), '')
+        .trim();
+    if (cleaned.isEmpty ||
+        cleaned == '.' ||
+        cleaned == '..' ||
+        cleaned.contains('..') ||
+        _forbiddenSegmentNames.contains(cleaned.toLowerCase()) ||
+        (cleaned.startsWith('__') && cleaned.endsWith('__'))) {
+      return '';
+    }
+    if (cleaned.length <= maxLength) return cleaned;
+    var cut = maxLength;
+    final lastUnit = cleaned.codeUnitAt(cut - 1);
+    if (lastUnit >= 0xD800 && lastUnit <= 0xDBFF) {
+      cut -= 1;
+    }
+    return cut <= 0 ? '' : cleaned.substring(0, cut);
+  }
+
+  @visibleForTesting
+  static String sanitizeInviteCoupon(String raw) {
+    if (_encodedTraversalOrNull.hasMatch(raw)) return '';
+    final trimmed = raw.replaceAll(_unsafeDeepLinkChars, '').trim();
+    if (!_validInviteCouponPattern.hasMatch(trimmed)) return '';
+    if (_forbiddenSegmentNames.contains(trimmed.toLowerCase()) ||
+        (trimmed.startsWith('__') && trimmed.endsWith('__'))) {
+      return '';
+    }
+    return trimmed;
+  }
+
+  static StreamSubscription<Uri>? _uriLinkSubscription;
+
   // Ejemplo conceptual en tu controlador principal o main
   Future<void> initDeepLinks() async {
+    await _uriLinkSubscription?.cancel();
+    _uriLinkSubscription = null;
+
     // Escuchar links entrantes
     final appLinks = AppLinks(); // Usando paquete app_links
 
-    appLinks.uriLinkStream.listen((Uri? uri) {
-      if (uri != null) {
-        AppConfig.logger.d("DeepLink recibido: $uri");
-        handleDeepLink(uri);
-      }
-    });
+    _uriLinkSubscription = appLinks.uriLinkStream.listen(
+      (Uri? uri) {
+        if (uri != null) {
+          AppConfig.logger.d(
+            'DeepLink recibido: ${SecureLogger.sanitize(uri.toString())}',
+          );
+          handleDeepLink(uri);
+        }
+      },
+      onError: (Object e, StackTrace st) {
+        NeomErrorLogger.recordError(
+          e,
+          st,
+          module: 'neom_commons',
+          operation: 'initDeepLinks',
+        );
+      },
+    );
+  }
+
+  static Future<void> disposeDeepLinks() async {
+    await _uriLinkSubscription?.cancel();
+    _uriLinkSubscription = null;
   }
 
   /// Path segments of a link, however it reached the app.
@@ -41,18 +152,37 @@ class DeeplinkUtilities {
   /// first segment, so prefixed addresses silently resolved as something else.
   /// Web links carry the domain as the authority, so it is not prepended.
   static List<String> _addressSegments(Uri uri) {
-    final segments = uri.pathSegments.where((s) => s.isNotEmpty).toList();
+    final rawSegments = uri.pathSegments.where((s) => s.isNotEmpty).toList();
     final isWebLink = uri.scheme == 'http' || uri.scheme == 'https';
     if (!isWebLink && uri.host.isNotEmpty) {
-      segments.insert(0, uri.host);
+      rawSegments.insert(0, uri.host);
     }
-    return segments;
+    final sanitized = <String>[];
+    for (final raw in rawSegments) {
+      if (raw.startsWith('@') && raw.length > 1) {
+        final handle = sanitizeDeepLinkSegment(raw.substring(1), maxLength: 64);
+        if (handle.isNotEmpty) sanitized.add('@$handle');
+      } else {
+        final clean = sanitizeDeepLinkSegment(raw);
+        if (clean.isNotEmpty) sanitized.add(clean);
+      }
+      if (sanitized.length >= 8) break;
+    }
+    return sanitized;
   }
 
   Future<void> handleDeepLink(Uri uri) async {
+    if (uri.toString().length > 2048 || !isAllowedDeepLinkScheme(uri.scheme)) {
+      AppConfig.logger.w('DeepLink rechazado por longitud o esquema inseguro');
+      return;
+    }
     List<String> segments = _addressSegments(uri);
-    String? type = uri.queryParameters['type'];
-    String? id = uri.queryParameters['id'];
+    String? rawType = uri.queryParameters['type'];
+    String? rawId = uri.queryParameters['id'];
+    String? type = rawType != null ? sanitizeDeepLinkSegment(rawType, maxLength: 32) : null;
+    if (type != null && type.isEmpty) type = null;
+    String? id = rawId != null ? sanitizeDeepLinkSegment(rawId) : null;
+    if (id != null && id.isEmpty) id = null;
 
     // Handle vanity URL patterns from web URLs
     if (segments.isNotEmpty) {
@@ -112,20 +242,20 @@ class DeeplinkUtilities {
 
       // ─── /inicio?item={slug/id} → play song in background on Home Page ───
       if (first.toLowerCase() == 'inicio') {
-        final itemIdOrSlug = uri.queryParameters['item'] ?? uri.queryParameters['play'] ?? '';
-        if (itemIdOrSlug.isNotEmpty) {
+        final safeItemIdOrSlug = sanitizeDeepLinkSegment(
+          uri.queryParameters['item'] ?? uri.queryParameters['play'] ?? '',
+        );
+        if (safeItemIdOrSlug.isNotEmpty) {
           if (AppConfig.instance.appInUse == AppInUse.g) {
             Sint.offAllNamed(AppRouteConstants.root);
             Future.delayed(const Duration(milliseconds: 300), () async {
               try {
                 AppReleaseItem? item;
-                final match = await SlugRouter.resolve(itemIdOrSlug);
+                final match = await SlugRouter.resolve(safeItemIdOrSlug);
                 if (match != null && match.type == 'item' && match.entity is AppReleaseItem) {
                   item = match.entity as AppReleaseItem;
                 }
-                if (item == null) {
-                  item = await AppReleaseItems.repository.retrieve(itemIdOrSlug);
-                }
+                item ??= await AppReleaseItems.repository.retrieve(safeItemIdOrSlug);
                 if (item.id.isNotEmpty) {
                   Sint.find<AudioPlayerInvokerService>().init(
                     releaseItems: [item],
@@ -134,7 +264,9 @@ class DeeplinkUtilities {
                   );
                 }
               } catch (e) {
-                AppConfig.logger.e("Error playing item from inicio query param: $e");
+                AppConfig.logger.e(
+                  'Error playing item from inicio query param: ${SecureLogger.sanitize(e.toString())}',
+                );
               }
             });
           }
@@ -161,8 +293,14 @@ class DeeplinkUtilities {
 
       // /invite/{code} → store coupon, go to registration (auto-applied later)
       if (first.toLowerCase() == 'invite' && segments.length > 1) {
-        pendingInviteCoupon = segments[1].trim();
-        AppConfig.logger.i("DeepLink: invite coupon '$pendingInviteCoupon' → register");
+        final safeCoupon = sanitizeInviteCoupon(segments[1]);
+        if (safeCoupon.isNotEmpty) {
+          pendingInviteCoupon = safeCoupon;
+          AppConfig.logger.i('DeepLink: valid invite coupon captured → register');
+        } else {
+          pendingInviteCoupon = '';
+          AppConfig.logger.w('DeepLink: rejected malformed invite coupon');
+        }
         Sint.offAllNamed(AppRouteConstants.login);
         return;
       }
@@ -385,37 +523,59 @@ class DeeplinkUtilities {
   static String generateVanityUrl({required String type, String id = '',
       String slug = '', String ownerSlug = ''}) {
     final siteUrl = AppProperties.getSiteUrl();
+    final safeId = sanitizeDeepLinkSegment(id);
+    final rawProfileToken = slug.isNotEmpty ? slug : id;
+    final cleanProfileToken = rawProfileToken.startsWith('@')
+        ? sanitizeDeepLinkSegment(rawProfileToken.substring(1), maxLength: 64)
+        : sanitizeDeepLinkSegment(rawProfileToken, maxLength: 64);
+    final safeSlug = sanitizeDeepLinkSegment(slug);
+    final safeOwnerSlug = sanitizeDeepLinkSegment(ownerSlug);
+
     switch (type) {
       case 'profile':
-        final profileSlug = slug.isNotEmpty ? slug : id;
-        final formattedSlug = profileSlug.startsWith('@') ? profileSlug : '@$profileSlug';
-        return '$siteUrl/$formattedSlug';
+        if (cleanProfileToken.isEmpty) return siteUrl;
+        return '$siteUrl/@$cleanProfileToken';
       case 'book':
       case 'media':
         // `/a/{ownerSlug}/{slug}` — the artist has to be in the address because
         // a release slug is only unique per artist: two bands may each have a
         // "Piedad", and a bare `/piedad` could not tell them apart.
         // releasePath() falls back to `/item/{id}` when the slugs are missing.
-        return '$siteUrl${AppRouteConstants.releasePath(id, ownerSlug: ownerSlug, slug: slug)}';
-      case 'post':
-        return '$siteUrl/p/$id';
-      case 'blog':
-        return slug.isNotEmpty ? '$siteUrl/blog/$slug' : '$siteUrl/blog/$id';
-      case 'event':
-        return slug.isNotEmpty ? '$siteUrl/$slug' : '$siteUrl/e/$id';
-      case 'collective':
-        return slug.isNotEmpty ? '$siteUrl/$slug' : '$siteUrl/collective/$id';
-      case 'playlist':
-        if (AppConfig.instance.appInUse == AppInUse.g) {
-          final param = slug.isNotEmpty ? slug : 'playlist/$id';
-          return '$siteUrl/$param';
+        if (safeId.isEmpty && (safeOwnerSlug.isEmpty || safeSlug.isEmpty)) {
+          return siteUrl;
         }
-        return '$siteUrl/playlist/$id';
+        return '$siteUrl${AppRouteConstants.releasePath(safeId, ownerSlug: safeOwnerSlug, slug: safeSlug)}';
+      case 'post':
+        return safeId.isNotEmpty ? '$siteUrl/p/$safeId' : siteUrl;
+      case 'blog':
+        if (safeSlug.isNotEmpty) return '$siteUrl/blog/$safeSlug';
+        return safeId.isNotEmpty ? '$siteUrl/blog/$safeId' : siteUrl;
+      case 'event':
+        if (safeSlug.isNotEmpty) return '$siteUrl/$safeSlug';
+        return safeId.isNotEmpty ? '$siteUrl/e/$safeId' : siteUrl;
+      case 'collective':
+        if (safeSlug.isNotEmpty) return '$siteUrl/$safeSlug';
+        return safeId.isNotEmpty ? '$siteUrl/collective/$safeId' : siteUrl;
+      case 'playlist':
+        if (AppConfig.instance.appInUse == AppInUse.g && safeSlug.isNotEmpty) {
+          return '$siteUrl/$safeSlug';
+        }
+        return safeId.isNotEmpty ? '$siteUrl/playlist/$safeId' : siteUrl;
       case 'product':
       case 'merch':
-        return '$siteUrl/shop/$id';
+        return safeId.isNotEmpty
+            ? '$siteUrl${AppRouteConstants.shopProductPath(safeId)}'
+            : siteUrl;
+      case 'founding':
+      case 'fondeo':
+      case 'fondeos':
+        final target = safeSlug.isNotEmpty ? safeSlug : safeId;
+        return target.isNotEmpty
+            ? '$siteUrl${AppRouteConstants.foundingPath(target)}'
+            : '$siteUrl${AppRouteConstants.foundingHome}';
       case 'invite':
-        return '$siteUrl/invite/$id';
+        final safeInvite = sanitizeInviteCoupon(id);
+        return safeInvite.isNotEmpty ? '$siteUrl/invite/$safeInvite' : siteUrl;
       default:
         return siteUrl;
     }
@@ -424,9 +584,17 @@ class DeeplinkUtilities {
   /// @deprecated Use [generateVanityUrl] instead.
   static String generateDeepLink({required String host,
     required String type, required String id}) {
-    String myScheme = AppProperties.getAppName().toLowerCase();
+    final rawScheme = AppProperties.getAppName()
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9+.\-]'), '');
+    final myScheme = rawScheme.isNotEmpty ? rawScheme : 'neom';
     const String myHost = 'share';
-    return "$myScheme://$myHost/$type/$id";
+    final safeType = sanitizeDeepLinkSegment(type, maxLength: 32);
+    final safeId = sanitizeDeepLinkSegment(id);
+    if (safeType.isEmpty || safeId.isEmpty) {
+      return '$myScheme://$myHost';
+    }
+    return '$myScheme://$myHost/$safeType/$safeId';
   }
 
 }

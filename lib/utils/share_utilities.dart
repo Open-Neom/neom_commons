@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart' show rootBundle;
+import 'dart:ui' show Rect;
 import 'package:neom_core/utils/platform/core_io.dart';
 import 'package:intl/intl.dart';
 import 'package:neom_core/app_properties.dart';
@@ -30,7 +31,10 @@ class ShareUtilities {
         '${AppProperties.getLinksUrl()}';
 
     ShareResult shareResult = await SharePlus.instance.share(
-        ShareParams(text: sharedText)
+        ShareParams(
+          text: sharedText,
+          sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
+        )
     );
 
     if(shareResult.status == ShareResultStatus.success && shareResult.raw != "null") {
@@ -38,6 +42,30 @@ class ShareUtilities {
           MessageTranslationConstants.sharedAppMsg.tr,
           snackPosition: SnackPosition.bottom);
     }
+  }
+
+  static Future<void> shareMuseumArtwork({
+    required String artworkId,
+    required String title,
+    required String artistName,
+  }) async {
+    final cleanId = artworkId.trim();
+    final siteUrl = AppProperties.getSiteUrl().isNotEmpty
+        ? AppProperties.getSiteUrl()
+        : 'https://emxi.org';
+    final url = cleanId.isNotEmpty
+        ? '$siteUrl/museum/artwork/$cleanId'
+        : '$siteUrl/museum';
+    final sharedText = artistName.trim().isNotEmpty
+        ? '"$title" de $artistName en el Museo EMXI:\n$url'
+        : '"$title" en el Museo EMXI:\n$url';
+
+    await SharePlus.instance.share(
+      ShareParams(
+        text: sharedText,
+        sharePositionOrigin: const Rect.fromLTWH(0, 0, 100, 100),
+      ),
+    );
   }
 
   static Future<void> shareAppWithPost(Post post) async {
@@ -153,16 +181,30 @@ class ShareUtilities {
     }
   }
 
-  /// Share a BlogEntry with optional thumbnail.
+  /// Share a BlogEntry with clean excerpt and optional thumbnail.
   static Future<void> shareBlogEntry(BlogEntry blogEntry) async {
-
-    // Format the blog content
-    String content = blogEntry.content;
-    String dotsLine = "";
-    for (int i = 0; i < blogEntry.profileName.length; i++) {
-      dotsLine = "$dotsLine.";
+    String cleanExcerpt = blogEntry.content
+        .replaceAllMapped(RegExp(r'!\[([^\]]*)\]\([^)]+\)'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'\*\*([^*]+)\*\*'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'\*([^*]+)\*'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'_([^_]+)_'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'~~([^~]+)~~'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'~([^~]+)~'), (m) => m.group(1) ?? '')
+        .replaceAllMapped(RegExp(r'`([^`]+)`'), (m) => m.group(1) ?? '')
+        .replaceAll(RegExp(r'^(?:#+\s*|>\s*|-\s*|---\s*$)', multiLine: true), '')
+        .replaceAll(RegExp(r'\n+'), ' ')
+        .trim();
+    if (cleanExcerpt.length > 240) {
+      cleanExcerpt = '${cleanExcerpt.substring(0, 237)}...';
     }
-    String formattedContent = "${blogEntry.title}\n\n$content\n\n${blogEntry.profileName}\n$dotsLine";
+
+    String dotsLine = '.' * blogEntry.profileName.length;
+    final header = blogEntry.title.trim().isNotEmpty
+        ? '${blogEntry.title.trim()}\n\n$cleanExcerpt'
+        : cleanExcerpt;
+    String formattedContent = blogEntry.profileName.isNotEmpty
+        ? '$header\n\n${blogEntry.profileName}\n$dotsLine'
+        : header;
 
     // Vanity URL: emxi.org/blog/{slug} or emxi.org/blog/{id}
     String vanityUrl = DeeplinkUtilities.generateVanityUrl(

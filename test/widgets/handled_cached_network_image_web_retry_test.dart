@@ -1,10 +1,9 @@
 @TestOn('browser')
 library;
 
-// ignore_for_file: avoid_web_libraries_in_flutter
 import 'dart:async';
-import 'dart:convert';
-import 'dart:html' as html;
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 
 import 'package:flutter/foundation.dart' show debugPrintSynchronously;
 import 'package:flutter/material.dart';
@@ -12,28 +11,51 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:neom_commons/ui/widgets/images/handled_cached_network_image.dart';
 import 'package:neom_commons/ui/widgets/images/web_network_image_impl.dart';
 
-// Real browser-decodable images, with no HTTP server or external network.
+// Real browser-decodable raster GIF image, with no HTTP server or external network.
 String imageUrl(String name) =>
-    '${Uri.dataFromString('<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2">'
-    '<rect width="2" height="2" fill="red"/></svg>', mimeType: 'image/svg+xml', encoding: utf8)}#$name';
+    'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==#$name';
 
 void phase(String value) =>
     debugPrintSynchronously('Image retry fixture: $value');
 
+JSObject _createDomImg() {
+  final doc = globalContext['document']! as JSObject;
+  return doc.callMethod<JSObject>('createElement'.toJS, 'img'.toJS);
+}
+
+void _dispatchDomEvent(JSObject target, String type) {
+  final eventCtor = globalContext['Event']! as JSFunction;
+  final event = eventCtor.callAsConstructor<JSObject>(type.toJS);
+  target.callMethod<JSBoolean>('dispatchEvent'.toJS, event);
+}
+
+String? _getSrcAttribute(JSObject img) {
+  final raw = img.callMethod<JSAny?>('getAttribute'.toJS, 'src'.toJS);
+  return raw != null && raw.isA<JSString>() ? (raw as JSString).toDart : null;
+}
+
 Future<void> waitForBrowserDecode(
   WidgetTester tester,
-  html.ImageElement image,
+  JSObject image,
 ) async {
   await tester.runAsync(() async {
-    // Create every wait in the real async zone. A DOM future created during
-    // pump/tap can queue its completion in FakeAsync while runAsync waits.
-    // Polling also handles an image that finished before this callback starts.
     final elapsed = Stopwatch()..start();
-    while (image.complete != true || image.naturalWidth == 0) {
+    while (true) {
+      final completeVal = image['complete'];
+      final widthVal = image['naturalWidth'];
+      final complete =
+          completeVal != null &&
+          completeVal.isA<JSBoolean>() &&
+          (completeVal as JSBoolean).toDart;
+      final naturalWidth =
+          widthVal != null && widthVal.isA<JSNumber>()
+          ? (widthVal as JSNumber).toDartInt
+          : 0;
+      if (complete && naturalWidth > 0) break;
       if (elapsed.elapsed >= const Duration(seconds: 5)) {
         throw TestFailure(
           'Browser image did not decode within 5s '
-          '(complete=${image.complete}, naturalWidth=${image.naturalWidth}).',
+          '(complete=$complete, naturalWidth=$naturalWidth).',
         );
       }
       await Future<void>.delayed(const Duration(milliseconds: 20));
@@ -42,20 +64,20 @@ Future<void> waitForBrowserDecode(
 }
 
 void main() {
-  late List<html.ImageElement> probes;
+  late List<JSObject> probes;
   late int errorsRemaining;
 
   setUp(() {
     probes = [];
     errorsRemaining = 1;
     debugWebNetworkImageProbeFactory = () {
-      final image = html.ImageElement();
+      final image = _createDomImg();
       probes.add(image);
       if (errorsRemaining > 0) {
         errorsRemaining--;
         // Model a transient browser error before this valid image's real
         // decode event. A subsequent retry must let the browser load it.
-        scheduleMicrotask(() => image.dispatchEvent(html.Event('error')));
+        scheduleMicrotask(() => _dispatchDomEvent(image, 'error'));
       }
       return image;
     };
@@ -110,7 +132,7 @@ void main() {
         phase('own tap=$ownsTap: Retry delivered');
         expect(probes, hasLength(2));
         expect(
-          probes.map((image) => image.getAttribute('src')),
+          probes.map(_getSrcAttribute),
           everyElement(url),
         );
         expect(ownTaps, 0);
@@ -176,7 +198,7 @@ void main() {
     await tester.pumpWidget(subject(nextUrl));
     await tester.pump();
     expect(probes, hasLength(5));
-    expect(probes.last.getAttribute('src'), nextUrl);
+    expect(_getSrcAttribute(probes.last), nextUrl);
     expect(find.text('Retry (3)'), findsOneWidget);
     await tester.pumpWidget(const SizedBox.shrink());
     phase('budget: completed');
@@ -208,7 +230,7 @@ void main() {
       expect(probes, hasLength(2));
       expect(find.text('Failed to load'), findsOneWidget);
 
-      oldProbe.dispatchEvent(html.Event('load'));
+      _dispatchDomEvent(oldProbe, 'load');
       await tester.pump();
       expect(find.text('Failed to load'), findsOneWidget);
       await tester.pumpWidget(const SizedBox.shrink());

@@ -308,42 +308,97 @@ class _WebCommandPaletteState extends State<WebCommandPalette> {
         onSelect: () => Sint.toNamed(AppRouteConstants.profile),
         keywords: ['perfil', 'cuenta', 'account'],
       ),
+      if (AppFlavour.showBands())
+        CommandPaletteItem(
+          id: 'nav_collectives', label: 'Collectives', section: 'Navigate',
+          icon: Icons.groups_outlined,
+          onSelect: () => Sint.toNamed(AppRouteConstants.collectives),
+          keywords: ['colectivos', 'groups'],
+        ),
+      if (AppFlavour.showGalley())
+        CommandPaletteItem(
+          id: 'nav_museum', label: 'Museum & Gallery', section: 'Navigate',
+          icon: Icons.palette_outlined,
+          onSelect: () => Sint.toNamed(AppRouteConstants.museumHome),
+          keywords: ['museo', 'galeria', 'subastas'],
+        ),
+      if (AppFlavour.showFounding())
+        CommandPaletteItem(
+          id: 'nav_founding', label: 'Crowdfunding', section: 'Navigate',
+          icon: Icons.rocket_launch_outlined,
+          onSelect: () => Sint.toNamed(AppRouteConstants.foundingHome),
+          keywords: ['fondeo', 'fondeos', 'campanas'],
+        ),
       CommandPaletteItem(
-        id: 'nav_collectives', label: 'Collectives', section: 'Navigate',
-        icon: Icons.groups_outlined,
-        onSelect: () => Sint.toNamed(AppRouteConstants.collectives),
-        keywords: ['colectivos', 'groups'],
+        id: 'nav_forum', label: 'Forum', section: 'Navigate',
+        icon: Icons.forum_outlined,
+        onSelect: () => Sint.toNamed('/foro'),
+        keywords: ['foro', 'calpullia', 'hilos', 'comunidad'],
       ),
       CommandPaletteItem(
-        id: 'nav_blog', label: 'Blog', section: 'Navigate',
-        icon: Icons.article_outlined,
-        onSelect: () => Sint.toNamed(AppRouteConstants.blog),
-        keywords: ['articles', 'articulos'],
+        id: 'nav_communities', label: 'Communities', section: 'Navigate',
+        icon: Icons.groups_3_outlined,
+        onSelect: () => Sint.toNamed(AppRouteConstants.communities),
+        keywords: ['comunidades', 'clubes', 'lectura', 'grupos'],
       ),
       CommandPaletteItem(
-        id: 'nav_wallet', label: 'Wallet', section: 'Navigate',
-        icon: Icons.account_balance_wallet_outlined,
-        onSelect: () => Sint.toNamed(AppRouteConstants.wallet),
-        keywords: ['billetera', 'money', 'dinero'],
+        id: 'nav_publisher', label: 'Publisher Studio', section: 'Navigate',
+        icon: Icons.auto_stories_outlined,
+        onSelect: () => Sint.toNamed('/publisher'),
+        keywords: ['editorial', 'maquetacion', 'epub', 'libro', 'estudio'],
       ),
       CommandPaletteItem(
-        id: 'nav_daw', label: 'DAW', section: 'Navigate',
-        icon: Icons.multitrack_audio_outlined,
-        onSelect: () => Sint.toNamed(AppRouteConstants.dawProjects),
-        keywords: ['studio', 'estudio', 'recording', 'grabacion'],
+        id: 'nav_creator_analytics', label: 'Creator Analytics', section: 'Navigate',
+        icon: Icons.insights_outlined,
+        onSelect: () => Sint.toNamed(AppRouteConstants.creatorAnalytics),
+        keywords: ['analiticas', 'autor', 'regalias', 'metricas'],
       ),
       CommandPaletteItem(
-        id: 'nav_learning', label: 'Learning', section: 'Navigate',
-        icon: Icons.school_outlined,
-        onSelect: () => Sint.toNamed(AppRouteConstants.learning),
-        keywords: ['aprender', 'cursos', 'lessons'],
+        id: 'nav_quotation', label: 'Quotation', section: 'Navigate',
+        icon: Icons.calculate_outlined,
+        onSelect: () => Sint.toNamed(AppRouteConstants.cotizacion),
+        keywords: ['cotizador', 'cotizacion', 'libro', 'impresion'],
       ),
+      if (AppFlavour.showBlog())
+        CommandPaletteItem(
+          id: 'nav_blog', label: 'Blog', section: 'Navigate',
+          icon: Icons.article_outlined,
+          onSelect: () => Sint.toNamed(AppRouteConstants.blog),
+          keywords: ['articles', 'articulos'],
+        ),
+      if (AppFlavour.showWallet())
+        CommandPaletteItem(
+          id: 'nav_wallet', label: 'Wallet', section: 'Navigate',
+          icon: Icons.account_balance_wallet_outlined,
+          onSelect: () => Sint.toNamed(AppRouteConstants.wallet),
+          keywords: ['billetera', 'money', 'dinero'],
+        ),
+      if (AppFlavour.showDaw())
+        CommandPaletteItem(
+          id: 'nav_daw', label: 'DAW', section: 'Navigate',
+          icon: Icons.multitrack_audio_outlined,
+          onSelect: () => Sint.toNamed(AppRouteConstants.dawProjects),
+          keywords: ['studio', 'estudio', 'recording', 'grabacion'],
+        ),
+      if (AppFlavour.showLearning())
+        CommandPaletteItem(
+          id: 'nav_learning', label: 'Learning', section: 'Navigate',
+          icon: Icons.school_outlined,
+          onSelect: () => Sint.toNamed(AppRouteConstants.learning),
+          keywords: ['aprender', 'cursos', 'lessons'],
+        ),
       // Actions section
       CommandPaletteItem(
         id: 'act_post', label: 'Create Post', section: 'Actions',
         icon: Icons.add_circle_outline,
-        onSelect: () => Sint.toNamed(AppRouteConstants.post),
+        onSelect: () => Sint.toNamed(AppRouteConstants.createPostText),
         keywords: ['publicar', 'nuevo post'],
+      ),
+      CommandPaletteItem(
+        id: 'act_story', label: 'Create Story', section: 'Actions',
+        icon: Icons.amp_stories_outlined,
+        onSelect: () => Sint.toNamed(AppRouteConstants.storyCreate),
+        keywords: ['historia', 'story', 'efimera'],
       ),
       CommandPaletteItem(
         id: 'act_event', label: 'Create Event', section: 'Actions',

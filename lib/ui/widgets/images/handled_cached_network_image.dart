@@ -3,12 +3,12 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neom_core/app_properties.dart';
-import '../../../app_flavour.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:sint/sint.dart';
 
+import '../../../app_flavour.dart';
 import 'web_network_image_stub.dart'
-    if (dart.library.html) 'web_network_image_impl.dart';
+    if (dart.library.js_interop) 'web_network_image_impl.dart';
 
 /// Enhanced cached network image with skeleton loading, retry mechanism,
 /// and better error handling.
@@ -31,6 +31,11 @@ class HandledCachedNetworkImage extends StatefulWidget {
   final bool showProgress;
   final Widget? placeholder;
   final Color? backgroundColor;
+  final int? memCacheWidth;
+  final int? memCacheHeight;
+  final int? maxWidthDiskCache;
+  final int? maxHeightDiskCache;
+  final bool useFullResolution;
 
   const HandledCachedNetworkImage(
     this.mediaUrl, {
@@ -44,6 +49,11 @@ class HandledCachedNetworkImage extends StatefulWidget {
     this.showProgress = false,
     this.placeholder,
     this.backgroundColor,
+    this.memCacheWidth,
+    this.memCacheHeight,
+    this.maxWidthDiskCache,
+    this.maxHeightDiskCache,
+    this.useFullResolution = false,
     super.key,
   });
 
@@ -52,35 +62,14 @@ class HandledCachedNetworkImage extends StatefulWidget {
       _HandledCachedNetworkImageState();
 }
 
-class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _shimmerController;
-  late Animation<double> _shimmerAnimation;
+class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage> {
   int _retryCount = 0;
   static const int _maxRetries = 3;
-
-  @override
-  void initState() {
-    super.initState();
-    _shimmerController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    )..repeat();
-    _shimmerAnimation = Tween<double>(begin: -2, end: 2).animate(
-      CurvedAnimation(parent: _shimmerController, curve: Curves.easeInOutSine),
-    );
-  }
 
   @override
   void didUpdateWidget(HandledCachedNetworkImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.mediaUrl != widget.mediaUrl) _retryCount = 0;
-  }
-
-  @override
-  void dispose() {
-    _shimmerController.dispose();
-    super.dispose();
   }
 
   void _handleTap() {
@@ -130,11 +119,34 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
         errorWidget: _buildErrorWidget(),
       );
     } else {
+      final dpr = MediaQuery.devicePixelRatioOf(context).clamp(1.0, 2.5);
+      final targetMemWidth = widget.useFullResolution
+          ? null
+          : (widget.memCacheWidth ??
+              ((widget.width != null &&
+                      widget.width!.isFinite &&
+                      widget.width! > 0)
+                  ? (widget.width! * dpr).round().clamp(32, 2048)
+                  : null));
+      final targetMemHeight = widget.useFullResolution
+          ? null
+          : (widget.memCacheHeight ??
+              ((targetMemWidth == null &&
+                      widget.height != null &&
+                      widget.height!.isFinite &&
+                      widget.height! > 0)
+                  ? (widget.height! * dpr).round().clamp(32, 2048)
+                  : null));
+
       content = CachedNetworkImage(
         key: ValueKey('$_effectiveUrl-$_retryCount'),
         imageUrl: _effectiveUrl,
         height: widget.height,
         width: widget.width,
+        memCacheWidth: targetMemWidth,
+        memCacheHeight: targetMemHeight,
+        maxWidthDiskCache: widget.maxWidthDiskCache,
+        maxHeightDiskCache: widget.maxHeightDiskCache,
         fit: widget.fit,
         fadeInDuration: widget.fadeInDuration,
         placeholder: (context, url) => _buildPlaceholder(),
@@ -176,27 +188,11 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
   Widget _buildPlaceholder() {
     if (widget.placeholder != null) return widget.placeholder!;
 
-    return AnimatedBuilder(
-      animation: _shimmerAnimation,
-      builder: (context, child) {
-        return Container(
-          height: widget.height,
-          width: widget.width,
-          decoration: BoxDecoration(
-            borderRadius: widget.borderRadius,
-            gradient: LinearGradient(
-              begin: Alignment(_shimmerAnimation.value - 1, 0),
-              end: Alignment(_shimmerAnimation.value + 1, 0),
-              colors: [
-                widget.backgroundColor ?? Colors.grey[850]!,
-                Colors.grey[700]!,
-                widget.backgroundColor ?? Colors.grey[850]!,
-              ],
-              stops: const [0.0, 0.5, 1.0],
-            ),
-          ),
-        );
-      },
+    return _ShimmerPlaceholder(
+      height: widget.height,
+      width: widget.width,
+      borderRadius: widget.borderRadius,
+      backgroundColor: widget.backgroundColor,
     );
   }
 
@@ -310,6 +306,75 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
                 ),
               ],
             ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ShimmerPlaceholder extends StatefulWidget {
+  final double? height;
+  final double? width;
+  final BorderRadius? borderRadius;
+  final Color? backgroundColor;
+
+  const _ShimmerPlaceholder({
+    this.height,
+    this.width,
+    this.borderRadius,
+    this.backgroundColor,
+  });
+
+  @override
+  State<_ShimmerPlaceholder> createState() => _ShimmerPlaceholderState();
+}
+
+class _ShimmerPlaceholderState extends State<_ShimmerPlaceholder>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _shimmerController;
+  late final Animation<double> _shimmerAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _shimmerController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat();
+    _shimmerAnimation = Tween<double>(begin: -2, end: 2).animate(
+      CurvedAnimation(parent: _shimmerController, curve: Curves.easeInOutSine),
+    );
+  }
+
+  @override
+  void dispose() {
+    _shimmerController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _shimmerAnimation,
+        builder: (context, child) {
+          return Container(
+            height: widget.height,
+            width: widget.width,
+            decoration: BoxDecoration(
+              borderRadius: widget.borderRadius,
+              gradient: LinearGradient(
+                begin: Alignment(_shimmerAnimation.value - 1, 0),
+                end: Alignment(_shimmerAnimation.value + 1, 0),
+                colors: [
+                  widget.backgroundColor ?? Colors.grey[850]!,
+                  Colors.grey[700]!,
+                  widget.backgroundColor ?? Colors.grey[850]!,
+                ],
+                stops: const [0.0, 0.5, 1.0],
+              ),
+            ),
           );
         },
       ),

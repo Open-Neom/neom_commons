@@ -1,12 +1,10 @@
 
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/data/api/app_release_items.dart';
 import 'package:neom_core/data/firestore/public_catalog_read_policy.dart';
-import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
 import 'package:neom_core/domain/model/playable_item.dart';
 import 'package:neom_core/domain/use_cases/audio_player_invoker_service.dart';
@@ -359,6 +357,9 @@ class AppFlavour {
   }
 
   static String getIconPath() {
+    if (AppConfig.instance.appInUse == AppInUse.b) {
+      return 'assets/images/logo.png';
+    }
     return AppAssets.iconWhite;
   }
 
@@ -727,15 +728,24 @@ class AppFlavour {
 
 
   static void gotoSuggestedItem() {
+    final rawUrl = AppConfig.instance.appInfo.suggestedUrl.trim();
+    final bookId = rawUrl.isNotEmpty ? rawUrl : 'suggested';
     AppReleaseItem suggestedItem = AppReleaseItem(
-      previewUrl: AppConfig.instance.appInfo.suggestedUrl,
+      id: bookId,
+      previewUrl: rawUrl,
     );
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c:
         //TODO implement for spiritual core
       case AppInUse.e:
-        Sint.toNamed(AppRouteConstants.readingPath(suggestedItem.id, slug: suggestedItem.slug), arguments: [suggestedItem, true, true]);
+        Sint.toNamed(
+          AppRouteConstants.readingPath(
+            suggestedItem.id.isNotEmpty ? suggestedItem.id : 'suggested',
+            slug: suggestedItem.slug,
+          ),
+          arguments: [suggestedItem, true, true],
+        );
       case AppInUse.g:
         //TODO implement for music core
       case AppInUse.o:
@@ -743,7 +753,6 @@ class AppFlavour {
       default:
         break;
     }
-
   }
 
   static String getSuggestedItemText() {
@@ -905,16 +914,18 @@ class AppFlavour {
     }
   }
 
-  /// Whether this app shows ads. EMXI is exempt (brand sovereignty).
-  /// Cyberneom shows ads to non-subscribers; Gigmeout ads are inactive.
+  /// Whether this app shows contextual ads & internal house ads to non-subscribers.
+  /// Gigmeout has no ads active yet.
   static bool showAds() {
     switch(AppConfig.instance.appInUse) {
-      case AppInUse.c: // Cyberneom
-        return true;
       case AppInUse.g: // Gigmeout — no ads active yet
         return false;
-      case AppInUse.e: // EMXI — ad-free sovereignty
-        return false;
+      case AppInUse.c: // Cyberneom
+      case AppInUse.e: // EMXI
+      case AppInUse.i: // Itzli
+      case AppInUse.b: // Blup
+      case AppInUse.o: // Open Neom
+        return true;
       default:
         return false;
     }
@@ -1075,7 +1086,7 @@ class AppFlavour {
       case AppInUse.c:
         return AppReleaseItem();
       case AppInUse.e:
-        return AppMediaItem();
+        return AppReleaseItem();
       case AppInUse.g:
         return AppReleaseItem();
       case AppInUse.o:
@@ -1302,6 +1313,16 @@ class AppFlavour {
 
   static bool showLevitation() {
     return kDebugMode && AppConfig.instance.appInUse == AppInUse.c;
+  }
+
+  static bool showFounding() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e:
+      case AppInUse.b:
+        return true;
+      default:
+        return false;
+    }
   }
 
   static Size getReleaseShelfItemSize(BuildContext context) {
