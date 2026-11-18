@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:sint/sint.dart';
 
@@ -14,6 +15,22 @@ import '../theme/app_color.dart';
 /// ```
 class PaywallSheet {
   PaywallSheet._();
+
+  static Future<void> showGigMusic(BuildContext context) {
+    final priceAmount = AppProperties.getSubscriptionPrice().amount;
+    final priceLabel = priceAmount > 0 ? priceAmount.toStringAsFixed(0) : '80';
+    return show(
+      context,
+      feature: 'Gig Music · \$$priceLabel MXN / mes',
+      benefit:
+          'Tu ventana de escucha gratuita se completó por ahora. Activa Gig Music para disfrutar música continua sin interrupción de tiempo e impulsar directamente a la escena.',
+      perks: const [
+        'Escucha continua sin interrupción de tiempo en Mobile y Web',
+        'El 50% neto de tu suscripción va directo a los artistas que escuchas (CASETE)',
+        'Sesión Compartida y Jam Sessions ilimitadas con otros oyentes',
+      ],
+    );
+  }
 
   static Future<void> show(
     BuildContext context, {

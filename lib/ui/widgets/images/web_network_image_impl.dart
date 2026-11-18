@@ -1,10 +1,16 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
+import 'dart:async';
 import 'dart:html' as html;
 import 'dart:ui_web' as ui_web;
 
 import 'package:flutter/widgets.dart';
 
 final Set<String> _registeredFactories = {};
+
+/// Creates the load probe. Tests can deliver a transient browser error without
+/// depending on an external image server; displayed images still use <img>.
+@visibleForTesting
+html.ImageElement Function()? debugWebNetworkImageProbeFactory;
 
 /// Optimizes Google user content image URLs for web by appending size parameter.
 /// Reduces bandwidth and avoids HTTP 429 rate limits from Google's CDN.
@@ -23,8 +29,10 @@ String _optimizeGoogleUrl(String url) {
 /// The load outcome is probed in Dart so [placeholder] and [errorWidget] are
 /// actually rendered: the platform view alone can only hide a broken <img>,
 /// which left an empty hole where the fallback should be.
+/// Changing [retryToken] retries a failed URL without changing the URL itself.
 Widget buildWebNativeImage({
   required String imageUrl,
+  int retryToken = 0,
   BoxFit fit = BoxFit.cover,
   double? height,
   double? width,
@@ -38,6 +46,7 @@ Widget buildWebNativeImage({
 
   return _WebNativeImage(
     imageUrl: imageUrl,
+    retryToken: retryToken,
     fit: fit,
     height: height,
     width: width,
@@ -52,6 +61,7 @@ Widget buildWebNativeImage({
 class _WebNativeImage extends StatefulWidget {
   const _WebNativeImage({
     required this.imageUrl,
+    required this.retryToken,
     required this.fit,
     this.height,
     this.width,
@@ -61,6 +71,7 @@ class _WebNativeImage extends StatefulWidget {
   });
 
   final String imageUrl;
+  final int retryToken;
   final BoxFit fit;
   final double? height;
   final double? width;
@@ -82,6 +93,9 @@ class _WebNativeImageState extends State<_WebNativeImage> {
 
   late String _optimizedUrl;
   _LoadState _state = _LoadState.loading;
+  int _loadGeneration = 0;
+  StreamSubscription<html.Event>? _loadSubscription;
+  StreamSubscription<html.Event>? _errorSubscription;
 
   @override
   void initState() {
@@ -92,13 +106,41 @@ class _WebNativeImageState extends State<_WebNativeImage> {
   @override
   void didUpdateWidget(_WebNativeImage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.imageUrl != widget.imageUrl) _resolve();
+    if (oldWidget.imageUrl != widget.imageUrl) {
+      _resolve();
+    } else if (oldWidget.retryToken != widget.retryToken) {
+      _resolve(retry: true);
+    }
   }
 
-  void _resolve() {
-    _optimizedUrl = _optimizeGoogleUrl(widget.imageUrl);
+  @override
+  void dispose() {
+    _loadGeneration++;
+    _cancelProbe();
+    super.dispose();
+  }
 
-    final known = _outcomes[_optimizedUrl];
+  void _cancelProbe() {
+    _loadSubscription?.cancel();
+    _errorSubscription?.cancel();
+    _loadSubscription = null;
+    _errorSubscription = null;
+  }
+
+  void _resolve({bool retry = false}) {
+    final generation = ++_loadGeneration;
+    _cancelProbe();
+    _optimizedUrl = _optimizeGoogleUrl(widget.imageUrl);
+    final url = _optimizedUrl;
+
+    // Only a new, explicit retry invalidates a failed result. Normal rebuilds
+    // and revisits retain the cached outcome, and successful images stay warm.
+    // Keep the URL intact, including any signed query or authorization token.
+    if (retry && _outcomes[url] == _LoadState.failed) {
+      _outcomes.remove(url);
+    }
+
+    final known = _outcomes[url];
     if (known != null && known != _LoadState.loading) {
       _state = known;
       return;
@@ -107,14 +149,19 @@ class _WebNativeImageState extends State<_WebNativeImage> {
     _state = _LoadState.loading;
     // The browser serves this from cache for the <img> the platform view
     // creates, so probing does not cost a second download.
-    final probe = html.ImageElement()..src = _optimizedUrl;
+    final probe =
+        debugWebNetworkImageProbeFactory?.call() ?? html.ImageElement();
     void settle(_LoadState outcome) {
-      _outcomes[_optimizedUrl] = outcome;
-      if (!mounted || _state == outcome) return;
+      if (!mounted || generation != _loadGeneration) return;
+      _cancelProbe();
+      _outcomes[url] = outcome;
+      if (_state == outcome) return;
       setState(() => _state = outcome);
     }
-    probe.onLoad.listen((_) => settle(_LoadState.loaded));
-    probe.onError.listen((_) => settle(_LoadState.failed));
+
+    _loadSubscription = probe.onLoad.listen((_) => settle(_LoadState.loaded));
+    _errorSubscription = probe.onError.listen((_) => settle(_LoadState.failed));
+    probe.src = url;
   }
 
   @override

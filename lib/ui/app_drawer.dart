@@ -59,8 +59,23 @@ class AppDrawer extends StatelessWidget {
                         drawerRowOption(AppDrawerMenu.games, const FaIcon(FontAwesomeIcons.gamepad), context),
                       if(AppFlavour.showBlog())
                         drawerRowOption(AppDrawerMenu.inspiration, const FaIcon(FontAwesomeIcons.filePen), context),
-                      if(AppFlavour.showBands() && controller.appProfile.value?.type == ProfileType.appArtist && controller.user?.userRole != UserRole.subscriber)
+                      if(AppFlavour.showBands() && controller.appProfile.value?.type == ProfileType.appArtist)
                         drawerRowOption(AppDrawerMenu.collectives, const Icon(Icons.people), context),
+                      if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode)
+                        drawerRowOption(AppDrawerMenu.mates, const Icon(Icons.library_music_outlined), context),
+                      if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode)
+                        ((controller.user?.hasApprovedRehearsalRoom ?? false)
+                            || (controller.appProfile.value?.hasApprovedRehearsalRoom ?? false)
+                            || controller.appProfile.value?.type == ProfileType.facilitator)
+                          ? drawerRowOption(AppDrawerMenu.rehearsalHost, const Icon(Icons.meeting_room_outlined), context)
+                          : drawerRowOption(AppDrawerMenu.registerRehearsalRoom, const Icon(Icons.add_business_outlined), context),
+                      if(AppConfig.instance.appInUse == AppInUse.g
+                          && !AppConfig.instance.isGuestMode
+                          && ((controller.user?.hasApprovedRehearsalRoom ?? false)
+                              || controller.appProfile.value?.type == ProfileType.host
+                              || controller.appProfile.value?.type == ProfileType.facilitator
+                              || (controller.user?.userRole.value ?? 0) >= UserRole.erp.value))
+                        drawerRowOption(AppDrawerMenu.pos, const Icon(Icons.qr_code_scanner), context),
                       if(AppFlavour.showVst())
                         drawerRowOption(AppDrawerMenu.vst, const FaIcon(FontAwesomeIcons.guitar), context),
                       if(AppFlavour.showDaw())
@@ -103,7 +118,21 @@ class AppDrawer extends StatelessWidget {
                                 const Divider(),
                               ],
                             ),
-                          if(((controller.userServiceImpl?.profile.verificationLevel.value
+                          if(AppFlavour.showWallet() && !AppConfig.instance.isGuestMode)
+                            drawerRowOption(AppDrawerMenu.wallet, const Icon(Icons.account_balance_wallet_outlined), context),
+                          if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode
+                              && (controller.appProfile.value?.type == ProfileType.appArtist
+                                  || (controller.userServiceImpl?.profile.verificationLevel.value ?? 0) >= VerificationLevel.creator.value
+                                  || (controller.user?.userRole.value ?? 0) >= UserRole.support.value))
+                            Column(
+                              children: [
+                                if(AppFlavour.showReleaseUpload())
+                                  drawerRowOption(AppDrawerMenu.releaseUpload, Icon(AppFlavour.getAppItemIcon()), context),
+                                drawerRowOption(AppDrawerMenu.casete, const Icon(Icons.analytics_outlined), context),
+                                const Divider(),
+                              ],
+                            )
+                          else if(((controller.userServiceImpl?.profile.verificationLevel.value
                               ?? VerificationLevel.none.value) >= VerificationLevel.creator.value
                               || (controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.support.value)
                           ) Column(
@@ -322,10 +351,21 @@ class AppDrawer extends StatelessWidget {
             case AppDrawerMenu.directory:
               Sint.toNamed(AppRouteConstants.directory);
               break;
-          ///DEPRECATED
-          // case AppDrawerMenu.wallet:
-            //   Sint.toNamed(AppRouteConstants.wallet);
-            //   break;
+            case AppDrawerMenu.wallet:
+              Sint.toNamed(AppRouteConstants.wallet);
+              break;
+            case AppDrawerMenu.mates:
+              Sint.toNamed(AppRouteConstants.mates);
+              break;
+            case AppDrawerMenu.rehearsalHost:
+              Sint.toNamed('/booking/host');
+              break;
+            case AppDrawerMenu.registerRehearsalRoom:
+              Sint.toNamed('/booking/register-room');
+              break;
+            case AppDrawerMenu.pos:
+              Sint.toNamed('/pos');
+              break;
             case AppDrawerMenu.settings:
               Sint.toNamed(AppRouteConstants.settingsPrivacy);
               break;
@@ -359,11 +399,13 @@ class AppDrawer extends StatelessWidget {
               break;
             case AppDrawerMenu.inspiration:
               Sint.toNamed(AppRouteConstants.blog);
-            ///DEPRECATED
-            /// case AppDrawerMenu.nupale:
-            ///   Sint.toNamed(AppRouteConstants.nupaleHome);
-            /// case AppDrawerMenu.casete:
-            ///  Sint.toNamed(AppRouteConstants.caseteHome);
+              break;
+            case AppDrawerMenu.nupale:
+              Sint.toNamed(AppRouteConstants.nupaleHome);
+              break;
+            case AppDrawerMenu.casete:
+              Sint.toNamed(AppRouteConstants.caseteHome);
+              break;
             case AppDrawerMenu.games:
               Sint.toNamed(AppRouteConstants.games);
               break;
@@ -383,7 +425,9 @@ class AppDrawer extends StatelessWidget {
               Sint.toNamed(AppRouteConstants.kanbanDashboard);
               break;
             case AppDrawerMenu.dashboard:
-              Sint.toNamed(AppRouteConstants.shopHub);
+              Sint.toNamed(AppConfig.instance.appInUse == AppInUse.g
+                  ? AppRouteConstants.caseteHome
+                  : AppRouteConstants.shopHub);
               break;
           }
         }

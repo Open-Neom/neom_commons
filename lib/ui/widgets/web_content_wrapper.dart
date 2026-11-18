@@ -31,12 +31,14 @@ class WebContentWrapper extends StatelessWidget {
   /// Shows a back button at the top-left on web.
   /// Use for pages that don't have an AppBar.
   final bool showBackButton;
+  final VoidCallback? onBack;
 
   const WebContentWrapper({
     required this.child,
     this.maxWidth = 680,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
     this.showBackButton = false,
+    this.onBack,
     super.key,
   });
 
@@ -54,7 +56,7 @@ class WebContentWrapper extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          const BackButton(),
+          BackButton(onPressed: onBack),
           Expanded(child: child),
         ],
       );

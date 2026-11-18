@@ -126,5 +126,6 @@ class AppPageIdConstants {
   static const String storiesGallery = 'storiesGallery';
 
   static const String saiaRemote = 'saiaRemote';
+  static const String mastering = 'mastering';
 
 }

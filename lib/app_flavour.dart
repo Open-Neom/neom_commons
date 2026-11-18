@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:neom_core/app_config.dart';
-import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
+import 'package:neom_core/data/api/app_release_items.dart';
 import 'package:neom_core/data/firestore/public_catalog_read_policy.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
@@ -502,7 +502,7 @@ class AppFlavour {
       case AppInUse.e:
         return false;
       case AppInUse.g:
-        return true;
+        return false;
       case AppInUse.o:
         return false;
       default:
@@ -771,7 +771,7 @@ class AppFlavour {
       case AppInUse.e:
         return false;
       case AppInUse.g:
-        return false;
+        return true;
       case AppInUse.o:
         return false;
       default:
@@ -906,13 +906,13 @@ class AppFlavour {
   }
 
   /// Whether this app shows ads. EMXI is exempt (brand sovereignty).
-  /// Cyberneom and Gigmeout show ads to non-subscribers.
+  /// Cyberneom shows ads to non-subscribers; Gigmeout ads are inactive.
   static bool showAds() {
     switch(AppConfig.instance.appInUse) {
       case AppInUse.c: // Cyberneom
         return true;
-      case AppInUse.g: // Gigmeout
-        return true;
+      case AppInUse.g: // Gigmeout — no ads active yet
+        return false;
       case AppInUse.e: // EMXI — ad-free sovereignty
         return false;
       default:
@@ -1121,7 +1121,7 @@ class AppFlavour {
     AppReleaseItem? releaseItem = item is AppReleaseItem ? item : null;
     if (item.streamUrl.isEmpty && item.id.isNotEmpty && releaseItem != null) {
       try {
-        final fullItem = await AppReleaseItemFirestore().retrieve(item.id);
+        final fullItem = await AppReleaseItems.repository.retrieve(item.id);
         if (fullItem.id.isNotEmpty) {
           releaseItem = fullItem;
         }
@@ -1174,7 +1174,7 @@ class AppFlavour {
       Sint.delete(tag: AppPageIdConstants.mediaPlayer);
     }
     try {
-      final releaseItem = await AppReleaseItemFirestore().retrieve(referenceId);
+      final releaseItem = await AppReleaseItems.repository.retrieve(referenceId);
       AppConfig.logger.d('navigateToReleaseItem: retrieved id="${releaseItem.id}", '
           'name="${releaseItem.name}", streamUrl=${releaseItem.streamUrl.isNotEmpty ? "SET" : "EMPTY"}, '
           'mediaType=${releaseItem.mediaType?.name ?? "null"}');

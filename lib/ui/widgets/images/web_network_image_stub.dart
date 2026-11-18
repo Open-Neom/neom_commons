@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 /// Stub for non-web platforms — just uses Image.network
 Widget buildWebNativeImage({
   required String imageUrl,
+  int retryToken = 0,
   BoxFit fit = BoxFit.cover,
   double? height,
   double? width,

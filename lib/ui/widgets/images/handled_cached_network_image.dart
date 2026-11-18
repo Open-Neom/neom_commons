@@ -72,6 +72,12 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
   }
 
   @override
+  void didUpdateWidget(HandledCachedNetworkImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.mediaUrl != widget.mediaUrl) _retryCount = 0;
+  }
+
+  @override
   void dispose() {
     _shimmerController.dispose();
     super.dispose();
@@ -116,6 +122,7 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
       // On web, use native HTML <img> via HtmlElementView to bypass CanvasKit CORS
       content = buildWebNativeImage(
         imageUrl: _effectiveUrl,
+        retryToken: _retryCount,
         height: widget.height,
         width: widget.width,
         fit: widget.fit,
@@ -142,36 +149,18 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage>
         ? ClipRRect(borderRadius: widget.borderRadius!, child: content)
         : content;
 
-    // On web, HtmlElementView absorbs pointer events even with
-    // pointerEvents:'none' on the <img>. Always use a Stack overlay
-    // so taps reach either our handler or the parent GestureDetector.
+    // The native image adds its own platform-view overlay. Keep the tap
+    // handler above it in the gesture tree so the error widget's Retry can
+    // win the gesture instead of being covered by a second overlay.
     if (kIsWeb) {
       if (widget.function != null || widget.enableFullScreen) {
-        return Stack(
-          children: [
-            wrappedContent,
-            Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: _handleTap,
-              ),
-            ),
-          ],
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _handleTap,
+          child: wrappedContent,
         );
       }
-      // No own tap handler — block platform view from stealing taps,
-      // let parent GestureDetector receive them instead.
-      return IgnorePointer(
-        ignoring: false,
-        child: Stack(
-          children: [
-            wrappedContent,
-            Positioned.fill(
-              child: Container(color: const Color(0x00000000)),
-            ),
-          ],
-        ),
-      );
+      return wrappedContent;
     }
 
     if (widget.function != null || widget.enableFullScreen) {

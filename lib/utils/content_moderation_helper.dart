@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:neom_core/app_config.dart';
+import 'package:neom_core/data/api/app_platform_api.dart';
 import 'package:neom_core/data/firestore/app_media_item_firestore.dart';
 import 'package:neom_core/data/firestore/activity_feed_firestore.dart';
 import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
@@ -307,6 +308,13 @@ class ContentModerationHelper {
   /// are handled by their own modules.
   static Future<bool> applyChangeApproval(AppRequest request) async {
     AppConfig.logger.d("Applying change approval ${request.id} (${request.changeTargetType})");
+    if (request.changeTargetType == 'bookingVenue') {
+      if (AppPlatformApi.isEnabled) {
+        return RequestFirestore().approveChangeOnPlatform(request.id);
+      }
+      return request.changeTargetId.isNotEmpty;
+    }
+
     final changes = request.changes;
     if (changes.isEmpty) return false;
 

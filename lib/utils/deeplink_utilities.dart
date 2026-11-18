@@ -1,11 +1,11 @@
 import 'package:app_links/app_links.dart';
 import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
+import 'package:neom_core/data/api/app_release_items.dart';
 import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/slug_router.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
-import 'package:neom_core/data/firestore/app_release_item_firestore.dart';
 import 'package:neom_core/data/firestore/itemlist_firestore.dart';
 import 'package:neom_core/domain/use_cases/audio_player_invoker_service.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
@@ -93,7 +93,7 @@ class DeeplinkUtilities {
             Sint.offAllNamed(AppRouteConstants.root);
             Future.delayed(const Duration(milliseconds: 300), () async {
               try {
-                final item = await AppReleaseItemFirestore().getBySlug(fullSlug);
+                final item = await AppReleaseItems.repository.getBySlug(fullSlug);
                 if (item != null && item.id.isNotEmpty) {
                   Sint.find<AudioPlayerInvokerService>().init(
                     releaseItems: [item],
@@ -124,7 +124,7 @@ class DeeplinkUtilities {
                   item = match.entity as AppReleaseItem;
                 }
                 if (item == null) {
-                  item = await AppReleaseItemFirestore().retrieve(itemIdOrSlug);
+                  item = await AppReleaseItems.repository.retrieve(itemIdOrSlug);
                 }
                 if (item.id.isNotEmpty) {
                   Sint.find<AudioPlayerInvokerService>().init(
@@ -224,7 +224,7 @@ class DeeplinkUtilities {
           Sint.offAllNamed(AppRouteConstants.root);
           Future.delayed(const Duration(milliseconds: 300), () async {
             try {
-              final item = await AppReleaseItemFirestore().retrieve(segments[1]);
+              final item = await AppReleaseItems.repository.retrieve(segments[1]);
               if (item.id.isNotEmpty) {
                 Sint.find<AudioPlayerInvokerService>().init(
                   releaseItems: [item],
@@ -277,7 +277,7 @@ class DeeplinkUtilities {
                     try {
                       final item = match.entity is AppReleaseItem
                           ? match.entity as AppReleaseItem
-                          : await AppReleaseItemFirestore().retrieve(match.id);
+                          : await AppReleaseItems.repository.retrieve(match.id);
                       if (item.id.isNotEmpty) {
                         Sint.find<AudioPlayerInvokerService>().init(
                           releaseItems: [item],
