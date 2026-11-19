@@ -3,7 +3,9 @@ import 'dart:js_interop_unsafe';
 import 'dart:ui_web' as ui_web;
 
 import 'package:flutter/widgets.dart';
+import 'package:neom_core/app_config.dart';
 import 'package:neom_core/utils/core_utilities.dart';
+import 'package:neom_core/utils/release_catalog_visibility.dart';
 
 const int _maxOutcomeCacheEntries = 500;
 const int _maxViewTypeCacheEntries = 2000;
@@ -143,6 +145,12 @@ bool isAllowedWebImageUrl(String rawUrl) {
   if (lower.startsWith('http://') || lower.startsWith('https://')) {
     final uri = Uri.tryParse(trimmed);
     if (uri == null || uri.userInfo.isNotEmpty || uri.host.isEmpty) {
+      return false;
+    }
+    if (ReleaseCatalogVisibility.usesUnavailableHost(
+      trimmed,
+      app: AppConfig.instance.appInUse,
+    )) {
       return false;
     }
     // Same-origin local development (`http://localhost:<port>`) stays within

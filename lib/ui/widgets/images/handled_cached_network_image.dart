@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
+import 'package:neom_core/utils/release_catalog_visibility.dart';
 import 'package:sint/sint.dart';
 
 import '../../../app_flavour.dart';
@@ -91,7 +93,12 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage> {
   }
 
   String get _effectiveUrl {
-    if (widget.mediaUrl.isNotEmpty && widget.mediaUrl != 'null') {
+    if (widget.mediaUrl.isNotEmpty &&
+        widget.mediaUrl != 'null' &&
+        !ReleaseCatalogVisibility.usesUnavailableHost(
+          widget.mediaUrl,
+          app: AppConfig.instance.appInUse,
+        )) {
       return widget.mediaUrl;
     }
     final fallback = AppProperties.getAppLogoUrl();

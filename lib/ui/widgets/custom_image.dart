@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:neom_core/app_config.dart';
 import 'package:neom_core/utils/platform/core_io.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:neom_core/utils/release_catalog_visibility.dart';
+import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
@@ -22,6 +24,14 @@ Widget platformNetworkImage({
   Widget? errorWidget,
 }) {
   final optimizedUrl = _optimizeGoogleImageUrl(imageUrl);
+  if (ReleaseCatalogVisibility.usesUnavailableHost(
+    optimizedUrl,
+    app: AppConfig.instance.appInUse,
+  )) {
+    final fallback = errorWidget ?? const Icon(Icons.image_not_supported);
+    if (height == null && width == null) return fallback;
+    return SizedBox(height: height, width: width, child: fallback);
+  }
   if (kIsWeb) {
     return buildWebNativeImage(
       imageUrl: optimizedUrl,
@@ -52,8 +62,23 @@ Widget platformNetworkImage({
 /// On mobile: returns CachedNetworkImageProvider for disk caching.
 /// NOTE: Do NOT use webHtmlElementStrategy: prefer — it loads via HTML <img>
 /// but then fails with EncodingError when extracting pixels for Canvas painting.
+final Uint8List _transparentPlaceholderPng = Uint8List.fromList(const <int>[
+  0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D,
+  0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+  0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4, 0x89, 0x00, 0x00, 0x00,
+  0x0A, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
+  0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00, 0x00, 0x00, 0x00, 0x49,
+  0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
+]);
+
 ImageProvider platformImageProvider(String imageUrl, {int? maxHeight, int? maxWidth}) {
   final optimizedUrl = _optimizeGoogleImageUrl(imageUrl);
+  if (ReleaseCatalogVisibility.usesUnavailableHost(
+    optimizedUrl,
+    app: AppConfig.instance.appInUse,
+  )) {
+    return MemoryImage(_transparentPlaceholderPng);
+  }
   if (kIsWeb) {
     return NetworkImage(optimizedUrl);
   }
