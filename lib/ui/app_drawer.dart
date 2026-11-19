@@ -10,6 +10,7 @@ import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/core_utilities.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
+import 'package:neom_core/utils/enums/itemlist_type.dart';
 import 'package:neom_core/utils/enums/profile_type.dart';
 import 'package:neom_core/utils/enums/subscription_level.dart';
 import 'package:neom_core/utils/enums/user_role.dart';
@@ -64,6 +65,8 @@ class AppDrawer extends StatelessWidget {
                         drawerRowOption(AppDrawerMenu.inspiration, const FaIcon(FontAwesomeIcons.filePen), context),
                       if(AppFlavour.showBands() && controller.appProfile.value?.type == ProfileType.appArtist)
                         drawerRowOption(AppDrawerMenu.collectives, const Icon(Icons.people), context),
+                      if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode)
+                        drawerRowOption(AppDrawerMenu.giglists, const Icon(Icons.queue_music_rounded), context),
                       if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode)
                         drawerRowOption(AppDrawerMenu.mates, const Icon(Icons.library_music_outlined), context),
                       if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode)
@@ -356,6 +359,9 @@ class AppDrawer extends StatelessWidget {
               break;
             case AppDrawerMenu.wallet:
               Sint.toNamed(AppRouteConstants.wallet);
+              break;
+            case AppDrawerMenu.giglists:
+              Sint.toNamed(AppRouteConstants.lists, arguments: [ItemlistType.giglist]);
               break;
             case AppDrawerMenu.mates:
               Sint.toNamed(AppRouteConstants.mates);

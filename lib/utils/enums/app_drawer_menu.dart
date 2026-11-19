@@ -14,6 +14,7 @@ enum AppDrawerMenu {
   booking("booking"),
   directory("directory"),
   wallet("wallet"),
+  giglists("giglists"),
   mates("mates"),
   rehearsalHost("rehearsalHost"),
   registerRehearsalRoom("registerRehearsalRoom"),

@@ -9,18 +9,22 @@ import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/domain/model/app_media_item.dart';
 import 'package:neom_core/domain/model/app_profile.dart';
 import 'package:neom_core/domain/model/app_release_item.dart';
+import 'package:neom_core/domain/model/external_item.dart';
 import 'package:neom_core/domain/model/item_found_in_list.dart';
 import 'package:neom_core/domain/model/item_list.dart';
 import 'package:neom_core/domain/model/playable_item.dart';
 import 'package:neom_core/domain/use_cases/media_player_service.dart';
 import 'package:neom_core/utils/core_utilities.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
+import 'package:neom_core/utils/enums/app_media_source.dart';
+import 'package:neom_core/utils/enums/external_media_source.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/neom_error_logger.dart';
 import 'package:sint/sint.dart';
 
 import '../ui/theme/app_color.dart';
 import '../ui/widgets/custom_image.dart';
+import '../ui/widgets/giglist/giglist_preview_sheet.dart';
 import 'constants/app_constants.dart';
 import 'text_utilities.dart';
 
@@ -218,6 +222,17 @@ class AppUtilities {
         }
       }
 
+      if(!itemAlreadyInList) {
+        for (ExternalItem item in list.externalItems ?? []) {
+          if (item.id == itemId) {
+            itemAlreadyInList = true;
+            itemState = item.state;
+            itemName = item.name;
+            itemImgUrl = item.imgUrl;
+          }
+        }
+      }
+
       if(itemAlreadyInList) {
         listId = list.id;
         listName = list.name;
@@ -268,6 +283,42 @@ class AppUtilities {
 
   static void gotoItemDetails(dynamic item) {
     try {
+      // External YouTube Music repertoire items in Gigmeout NEVER launch full
+      // streaming playback in neom_audio_player — always open the 30s preview
+      // & musician connection sheet.
+      if (AppConfig.instance.appInUse == AppInUse.g) {
+        if (item is ExternalItem) {
+          final ctx = Sint.context;
+          if (ctx != null) {
+            GiglistPreviewSheet.show(ctx, item: item);
+          }
+          return;
+        }
+        if (item is AppMediaItem &&
+            item.mediaSource == AppMediaSource.external &&
+            item.url.isEmpty) {
+          final ctx = Sint.context;
+          if (ctx != null) {
+            GiglistPreviewSheet.show(
+              ctx,
+              item: ExternalItem(
+                id: item.id,
+                name: item.name,
+                ownerName: item.ownerName,
+                ownerId: item.ownerId,
+                album: item.album,
+                duration: item.duration,
+                imgUrl: item.imgUrl,
+                permaUrl: item.permaUrl,
+                state: item.state,
+                source: ExternalSource.youtube,
+              ),
+            );
+          }
+          return;
+        }
+      }
+
       // PlayableItem unified path — works for AppReleaseItem and AppMediaItem
       if (item is PlayableItem) {
         final String itemUrl = item.streamUrl;
