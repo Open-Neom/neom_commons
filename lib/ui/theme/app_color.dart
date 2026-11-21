@@ -11,6 +11,9 @@ class AppColor {
     AppInUse appInUse = AppConfig.instance.appInUse;
     Color mainColor = Colors.white;
     switch(appInUse) {
+      case AppInUse.a:
+        mainColor = const Color(0xFF1E3A5F);
+        break;
       case AppInUse.c:
         mainColor = const Color.fromRGBO(110, 40, 140, 1);
         break;
@@ -46,6 +49,8 @@ class AppColor {
   /// the *source* app's colour.
   static Color getColorForApp(AppInUse appInUse) {
     switch (appInUse) {
+      case AppInUse.a:
+        return const Color(0xFF1E3A5F);
       case AppInUse.c:
         return const Color.fromRGBO(110, 40, 140, 1);
       case AppInUse.d:
@@ -131,6 +136,8 @@ class AppColor {
   /// Release shelf accent colour per app.
   static Color getReleaseShelfColor() {
     switch (AppConfig.instance.appInUse) {
+      case AppInUse.a:
+        return const Color(0xFF0F243F);
       case AppInUse.e:
         return const Color.fromRGBO(15, 30, 80, 1);
       case AppInUse.g:
@@ -153,6 +160,8 @@ class AppColor {
   /// Each app gets its own vibrant accent to match its brand identity.
   static Color getAccentColor() {
     switch (AppConfig.instance.appInUse) {
+      case AppInUse.a:
+        return const Color(0xFF38BDF8); // Admineom executive cyan
       case AppInUse.i:
         return const Color(0xFF00FFFF); // Itzli cyan
       case AppInUse.b:
@@ -178,6 +187,8 @@ class AppColor {
   /// Tint multiplier: dark brand colours need stronger lerp to show through.
   static double get _tintMultiplier {
     switch (AppConfig.instance.appInUse) {
+      case AppInUse.a:
+        return 2.0;
       case AppInUse.g:
         return 2.0;
       case AppInUse.i:
