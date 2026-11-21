@@ -21,6 +21,7 @@ import '../app_flavour.dart';
 import '../utils/app_alerts.dart';
 import '../utils/constants/app_constants.dart';
 import '../utils/constants/app_page_id_constants.dart';
+import '../utils/constants/translations/app_translation_constants.dart';
 import '../utils/constants/translations/common_translation_constants.dart';
 import '../utils/enums/app_drawer_menu.dart';
 import '../utils/text_utilities.dart';
@@ -63,7 +64,7 @@ class AppDrawer extends StatelessWidget {
                         drawerRowOption(AppDrawerMenu.games, const FaIcon(FontAwesomeIcons.gamepad), context),
                       if(AppFlavour.showBlog())
                         drawerRowOption(AppDrawerMenu.inspiration, const FaIcon(FontAwesomeIcons.filePen), context),
-                      if(AppFlavour.showBands() && controller.appProfile.value?.type == ProfileType.appArtist)
+                      if(AppFlavour.showBands())
                         drawerRowOption(AppDrawerMenu.collectives, const Icon(Icons.people), context),
                       if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode)
                         drawerRowOption(AppDrawerMenu.giglists, const Icon(Icons.queue_music_rounded), context),
@@ -446,7 +447,9 @@ class AppDrawer extends StatelessWidget {
           child: icon
       ),
       title: customText(
-        selectedMenu.name.tr,
+        selectedMenu == AppDrawerMenu.collectives
+            ? AppTranslationConstants.collectives.tr
+            : selectedMenu.name.tr,
         textAlign: TextAlign.start,
         style: TextStyle(
           fontSize: 20,

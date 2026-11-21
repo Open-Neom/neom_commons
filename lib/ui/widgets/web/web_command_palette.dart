@@ -4,6 +4,7 @@ import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:sint/sint.dart';
 
 import '../../../app_flavour.dart';
+import '../../../utils/constants/translations/app_translation_constants.dart';
 import '../../theme/app_color.dart';
 
 /// A single command entry in the palette.
@@ -310,10 +311,12 @@ class _WebCommandPaletteState extends State<WebCommandPalette> {
       ),
       if (AppFlavour.showBands())
         CommandPaletteItem(
-          id: 'nav_collectives', label: 'Collectives', section: 'Navigate',
+          id: 'nav_collectives',
+          label: AppTranslationConstants.collectives.tr,
+          section: 'Navigate',
           icon: Icons.groups_outlined,
           onSelect: () => Sint.toNamed(AppRouteConstants.collectives),
-          keywords: ['colectivos', 'groups'],
+          keywords: ['bandas', 'bands', 'colectivos', 'groups'],
         ),
       if (AppFlavour.showGalley())
         CommandPaletteItem(
