@@ -332,18 +332,20 @@ class _WebCommandPaletteState extends State<WebCommandPalette> {
           onSelect: () => Sint.toNamed(AppRouteConstants.foundingHome),
           keywords: ['fondeo', 'fondeos', 'campanas'],
         ),
-      CommandPaletteItem(
-        id: 'nav_forum', label: 'Forum', section: 'Navigate',
-        icon: Icons.forum_outlined,
-        onSelect: () => Sint.toNamed('/foro'),
-        keywords: ['foro', 'calpullia', 'hilos', 'comunidad'],
-      ),
-      CommandPaletteItem(
-        id: 'nav_communities', label: 'Communities', section: 'Navigate',
-        icon: Icons.groups_3_outlined,
-        onSelect: () => Sint.toNamed(AppRouteConstants.communities),
-        keywords: ['comunidades', 'clubes', 'lectura', 'grupos'],
-      ),
+      if (AppFlavour.showForum())
+        CommandPaletteItem(
+          id: 'nav_forum', label: 'Forum', section: 'Navigate',
+          icon: Icons.forum_outlined,
+          onSelect: () => Sint.toNamed('/foro'),
+          keywords: ['foro', 'calpullia', 'hilos', 'comunidad'],
+        ),
+      if (AppFlavour.showCommunities())
+        CommandPaletteItem(
+          id: 'nav_communities', label: 'Communities', section: 'Navigate',
+          icon: Icons.groups_3_outlined,
+          onSelect: () => Sint.toNamed(AppRouteConstants.communities),
+          keywords: ['comunidades', 'clubes', 'lectura', 'grupos'],
+        ),
       CommandPaletteItem(
         id: 'nav_publisher', label: 'Publisher Studio', section: 'Navigate',
         icon: Icons.auto_stories_outlined,

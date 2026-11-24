@@ -849,6 +849,30 @@ class AppFlavour {
     }
   }
 
+  /// Forum (`/foro`, Calpullia) — hidden on EMXI, Cyberneom, and Gigmeout.
+  static bool showForum() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e:
+      case AppInUse.c:
+      case AppInUse.g:
+        return false;
+      default:
+        return false;
+    }
+  }
+
+  /// Standalone Communities directory — hidden on EMXI, Cyberneom, and Gigmeout.
+  static bool showCommunities() {
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.e:
+      case AppInUse.c:
+      case AppInUse.g:
+        return false;
+      default:
+        return false;
+    }
+  }
+
   static bool showVst() {
     if (AppConfig.instance.appInUse != AppInUse.g) return false;
     return kDebugMode || _isAdminOrAbove();
@@ -1328,13 +1352,22 @@ class AppFlavour {
   static Size getReleaseShelfItemSize(BuildContext context) {
     final app = AppConfig.instance.appInUse;
     if (app == AppInUse.e || app == AppInUse.b) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      final isCompact = screenWidth < 900;
-      if (isCompact) {
-        return Size(screenWidth * 0.72, 480.0);
-      } else {
-        return const Size(340.0, 510.0);
+      if (kIsWeb) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        final isCompact = screenWidth < 900;
+        if (isCompact) {
+          return Size(screenWidth * 0.72, 480.0);
+        } else {
+          return const Size(340.0, 510.0);
+        }
       }
+      // Native mobile/tablet: compact vertical book-cover cards (2:3 ratio)
+      // matching the top horizontal launches strip across platforms.
+      final itemHeight = (AppTheme.fullHeight(context) * 0.24).clamp(
+        175.0,
+        240.0,
+      );
+      return Size(itemHeight * 0.67, itemHeight);
     }
     final baseHeight = AppTheme.fullHeight(context) * 0.23;
     // Others: square (1:1 ratio)
@@ -1344,14 +1377,17 @@ class AppFlavour {
   static double getReleaseShelfHeight(BuildContext context) {
     final app = AppConfig.instance.appInUse;
     if (app == AppInUse.e || app == AppInUse.b) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      final isCompact = screenWidth < 900;
-      if (isCompact) {
-        return 540.0;
-      } else {
-        final itemHeight = getReleaseShelfItemSize(context).height;
-        return itemHeight + 60.0;
+      if (kIsWeb) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        final isCompact = screenWidth < 900;
+        if (isCompact) {
+          return 540.0;
+        } else {
+          final itemHeight = getReleaseShelfItemSize(context).height;
+          return itemHeight + 60.0;
+        }
       }
+      return getReleaseShelfItemSize(context).height + 24.0;
     }
     return AppTheme.fullHeight(context) * 0.28;
   }

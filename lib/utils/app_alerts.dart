@@ -44,7 +44,7 @@ class AppAlerts {
                   style: const TextStyle(color: AppColor.white)
               ),
               onPressed: () {
-                Sint.back();
+                Sint.pop();
               },
             ),
           ],
@@ -66,14 +66,14 @@ class AppAlerts {
               AppTranslationConstants.no.tr,
               style: const TextStyle(color: AppColor.white),
             ),
-            onPressed: () => Sint.back(result: false),
+            onPressed: () => Sint.pop(false),
           ),
           TextButton(
             child: Text(
               AppTranslationConstants.yes.tr,
               style: const TextStyle(color: AppColor.white),
             ),
-            onPressed: () => Sint.back(result: true),
+            onPressed: () => Sint.pop(true),
           ),
         ],
       ),
@@ -120,7 +120,7 @@ class AppAlerts {
                                     radius: 60,
                                 ),
                                 onPressed: () async {
-                                  Sint.back();
+                                  Sint.pop();
                                   if(currentProfileId != profile.id) {
                                     Sint.back();
                                     await userServiceImpl.changeProfile(profile);
@@ -135,7 +135,7 @@ class AppAlerts {
                               ),
                               subtitle: Text("${profile.type.name.tr.capitalize} - ${profile.mainFeature.tr.capitalize}"),
                               onTap: () async {
-                                Sint.back();
+                                Sint.pop();
                                 if(currentProfileId != profile.id) {
                                   Sint.back();
                                   await userServiceImpl.changeProfile(profile);
@@ -162,7 +162,7 @@ class AppAlerts {
                         ),
                         subtitle: const Text("Agrega un perfil adicional para manejar distintas cuentas."),
                         onTap: () {
-                          Sint.back();
+                          Sint.pop();
                           Sint.toNamed(AppRouteConstants.introProfile);
                         },
                       ),

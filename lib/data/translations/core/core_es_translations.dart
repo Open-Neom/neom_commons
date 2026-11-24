@@ -84,6 +84,7 @@ class CoreEsTranslations {
     AppTranslationConstants.cover: 'Entrada',
     AppTranslationConstants.creator: 'L\u00e1nzate',
     AppTranslationConstants.culturalCenter: 'Centro Cultural',
+    AppTranslationConstants.dashboard: 'Dashboard',
     AppTranslationConstants.date: 'Fecha',
     AppTranslationConstants.dateOfBirth: 'Fecha de nacimiento',
     AppTranslationConstants.dateTBD: 'Fecha por definir',

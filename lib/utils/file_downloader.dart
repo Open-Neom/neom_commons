@@ -18,7 +18,7 @@ class FileDownloader {
 
   static final RegExp _idnDotHomoglyphs = RegExp(r'[\u3002\uFF0E\uFF61]');
   static final RegExp _rawEncodedTraversalOrNull = RegExp(
-    r'(?:^|/)\.\.(?:/|$|\?|#)|%00|%2e%2e|%2e\.|\.%2e|%2f|%5c|%25',
+    r'(?:^|/|%2f)\.\.(?:/|%2f|$|\?|#)|%00|%2e%2e|%2e\.|\.%2e|%5c|%25(?:00|2e|2f|5c|25)',
     caseSensitive: false,
   );
   static final RegExp _windowsReservedStem = RegExp(
@@ -320,26 +320,48 @@ class FileDownloader {
     final bool ownsClient = client == null;
     final http.Client activeClient = client ?? http.Client();
     try {
-      final request = http.Request('GET', uri)..followRedirects = false;
-      final response =
-          await activeClient.send(request).timeout(_downloadTimeout);
-      if (response.statusCode != 200) {
-        final sub = response.stream.listen((_) {});
-        await sub.cancel();
-        return null;
-      }
-      if (response.contentLength != null &&
-          response.contentLength! > maxDownloadBytes) {
-        final sub = response.stream.listen((_) {});
-        await sub.cancel();
-        throw StateError(
-          'Remote file exceeds maxDownloadBytes (${response.contentLength})',
+      var currentUri = uri;
+      const maxRedirects = 5;
+      for (var hop = 0; hop <= maxRedirects; hop++) {
+        final request = http.Request('GET', currentUri)..followRedirects = false;
+        final response =
+            await activeClient.send(request).timeout(_downloadTimeout);
+        final status = response.statusCode;
+        if (status == 301 ||
+            status == 302 ||
+            status == 303 ||
+            status == 307 ||
+            status == 308) {
+          final location = response.headers['location']?.trim() ?? '';
+          final sub = response.stream.listen((_) {});
+          await sub.cancel();
+          if (location.isEmpty || hop == maxRedirects) return null;
+          final nextUri = currentUri.resolve(location);
+          if (!isSafeRemoteDownloadUrl(nextUri.toString())) {
+            throw ArgumentError('Unsafe remote redirect target');
+          }
+          currentUri = nextUri;
+          continue;
+        }
+        if (status != 200) {
+          final sub = response.stream.listen((_) {});
+          await sub.cancel();
+          return null;
+        }
+        if (response.contentLength != null &&
+            response.contentLength! > maxDownloadBytes) {
+          final sub = response.stream.listen((_) {});
+          await sub.cancel();
+          throw StateError(
+            'Remote file exceeds maxDownloadBytes (${response.contentLength})',
+          );
+        }
+        return await readBoundedResponseStream(
+          response.stream,
+          contentLength: response.contentLength,
         );
       }
-      return await readBoundedResponseStream(
-        response.stream,
-        contentLength: response.contentLength,
-      );
+      return null;
     } finally {
       if (ownsClient) {
         activeClient.close();

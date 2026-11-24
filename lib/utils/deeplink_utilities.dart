@@ -116,8 +116,25 @@ class DeeplinkUtilities {
     await _uriLinkSubscription?.cancel();
     _uriLinkSubscription = null;
 
-    // Escuchar links entrantes
+    // Escuchar links entrantes (incluye arranque en frío desde Neom Watch u otras apps)
     final appLinks = AppLinks(); // Usando paquete app_links
+
+    try {
+      final initialUri = await appLinks.getInitialLink();
+      if (initialUri != null) {
+        AppConfig.logger.d(
+          'DeepLink inicial recibido: ${SecureLogger.sanitize(initialUri.toString())}',
+        );
+        unawaited(handleDeepLink(initialUri));
+      }
+    } catch (e, st) {
+      NeomErrorLogger.recordError(
+        e,
+        st,
+        module: 'neom_commons',
+        operation: 'initDeepLinks.getInitialLink',
+      );
+    }
 
     _uriLinkSubscription = appLinks.uriLinkStream.listen(
       (Uri? uri) {
@@ -171,11 +188,135 @@ class DeeplinkUtilities {
     return sanitized;
   }
 
+  /// Resolves ecosystem direct app routes (such as 1-tap Neom Watch deep links:
+  /// `emxi:///reading/<bookId>?page=42`, `emxi://books/<bookId>/page/42`,
+  /// `gigmeout:///live`, `cyberneom:///chamber`, `emxi:///nupale/home`, etc.)
+  /// to a concrete SINT route path, or `null` when slug/vanity resolution applies.
+  @visibleForTesting
+  static String? resolveDirectRoute(Uri uri) {
+    if (uri.toString().length > 2048 || !isAllowedDeepLinkScheme(uri.scheme)) {
+      return null;
+    }
+    final segments = _addressSegments(uri);
+    if (segments.isEmpty) return null;
+
+    final first = segments.first.toLowerCase();
+    final second = segments.length > 1 ? segments[1] : '';
+    final secondLower = second.toLowerCase();
+
+    int? parsePositiveInt(String? raw) {
+      if (raw == null || raw.isEmpty) return null;
+      final n = int.tryParse(raw.trim());
+      return (n != null && n > 0 && n <= 99999) ? n : null;
+    }
+
+    // EMXI Reader exact page:
+    // - emxi:///reading/<bookId>?page=42
+    // - emxi://reading/<bookId>?page=42
+    // - emxi://lectura/<bookId>?page=42
+    if ((first == 'reading' || first == 'lectura') && second.isNotEmpty) {
+      final page = parsePositiveInt(uri.queryParameters['page']);
+      final base = AppRouteConstants.readingPath(second);
+      return page != null ? '$base?page=$page' : base;
+    }
+
+    // EMXI Book / Reader page path:
+    // - emxi://books/<bookId>/page/42
+    // - emxi:///book/<bookId>/page/42
+    // - emxi:///book/<bookId>
+    if ((first == 'books' || first == 'book') && second.isNotEmpty) {
+      if (segments.length >= 4 && segments[2].toLowerCase() == 'page') {
+        final page = parsePositiveInt(segments[3]);
+        final base = AppRouteConstants.readingPath(second);
+        return page != null ? '$base?page=$page' : base;
+      }
+      final queryPage = parsePositiveInt(uri.queryParameters['page']);
+      if (queryPage != null) {
+        return '${AppRouteConstants.readingPath(second)}?page=$queryPage';
+      }
+      if (first == 'book') {
+        return AppRouteConstants.bookPath(second);
+      }
+    }
+
+    // Gigmeout Live rooms
+    if (first == 'live') {
+      if (secondLower == 'listener') return AppRouteConstants.liveListener;
+      if (secondLower == 'host') return AppRouteConstants.liveHost;
+      if (secondLower == 'setup') return AppRouteConstants.goLive;
+      return AppRouteConstants.liveDiscover;
+    }
+
+    // Cyberneom Chamber & Generator
+    if (first == 'chamber') {
+      if (secondLower == 'presets') return AppRouteConstants.chamberPresets;
+      if (secondLower == 'experiences') {
+        return AppRouteConstants.chamberExperiences;
+      }
+      if (secondLower == 'neuro') return AppRouteConstants.chamberNeuro;
+      return AppRouteConstants.chamber;
+    }
+    if (first == 'generator') {
+      final hz = parsePositiveInt(uri.queryParameters['hz']);
+      return hz != null
+          ? '${AppRouteConstants.generator}?hz=$hz'
+          : AppRouteConstants.generator;
+    }
+
+    // Nupale (EMXI reading royalties) & Casete (Gigmeout audio plays)
+    if (first == 'nupale') {
+      if (secondLower == 'item' && segments.length >= 3) {
+        return AppRouteConstants.nupaleItemPath(segments[2]);
+      }
+      if (secondLower == 'royalties') return AppRouteConstants.nupaleRoyalties;
+      return AppRouteConstants.nupaleHome;
+    }
+    if (first == 'casete') {
+      if (secondLower == 'item' && segments.length >= 3) {
+        return AppRouteConstants.caseteItemPath(segments[2]);
+      }
+      return AppRouteConstants.caseteHome;
+    }
+
+    // Creator analytics, DAW & Inbox / Rooms
+    if (first == 'creator' && secondLower == 'analytics') {
+      return AppRouteConstants.creatorAnalytics;
+    }
+    if (first == 'daw') {
+      if (secondLower == 'editor') return AppRouteConstants.dawEditor;
+      if (secondLower == 'mixer') return AppRouteConstants.dawMixer;
+      return AppRouteConstants.dawProjects;
+    }
+    if (first == 'inbox') {
+      if (secondLower == 'room') return AppRouteConstants.inboxRoom;
+      return AppRouteConstants.inbox;
+    }
+    if (first == 'audioplayer') {
+      if (secondLower == 'nowplaying') {
+        return AppRouteConstants.audioPlayerNowPlaying;
+      }
+      return AppRouteConstants.audioPlayer;
+    }
+
+    return null;
+  }
+
   Future<void> handleDeepLink(Uri uri) async {
     if (uri.toString().length > 2048 || !isAllowedDeepLinkScheme(uri.scheme)) {
       AppConfig.logger.w('DeepLink rechazado por longitud o esquema inseguro');
       return;
     }
+
+    // Direct ecosystem routes (EMXI reading page, Gigmeout Live, Cyberneom Chamber, etc.)
+    final directRoute = resolveDirectRoute(uri);
+    if (directRoute != null) {
+      AppConfig.logger.i(
+        'DeepLink directo -> ${SecureLogger.sanitize(directRoute)}',
+      );
+      navigateWithHomeBehind(directRoute);
+      return;
+    }
+
     List<String> segments = _addressSegments(uri);
     String? rawType = uri.queryParameters['type'];
     String? rawId = uri.queryParameters['id'];

@@ -40,5 +40,64 @@ void main() {
       expect(AppRouteConstants.matePath('m123', slug: 'serzen'), equals('/mate/serzen'));
       expect(AppRouteConstants.collectivePath('c123'), equals('/collective/c123'));
     });
+
+    test('resolveDirectRoute resolves 1-tap Neom Watch ecosystem deep links accurately', () {
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(
+          Uri.parse('emxi:///reading/el-libro-rojo?page=42'),
+        ),
+        equals('/reading/el-libro-rojo?page=42'),
+      );
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(
+          Uri.parse('emxi://reading/book123?page=7'),
+        ),
+        equals('/reading/book123?page=7'),
+      );
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(
+          Uri.parse('emxi://books/book123/page/19'),
+        ),
+        equals('/reading/book123?page=19'),
+      );
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(Uri.parse('emxi:///nupale/home')),
+        equals(AppRouteConstants.nupaleHome),
+      );
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(Uri.parse('gigmeout:///live')),
+        equals(AppRouteConstants.liveDiscover),
+      );
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(Uri.parse('gigmeout:///casete/home')),
+        equals(AppRouteConstants.caseteHome),
+      );
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(Uri.parse('gigmeout:///daw')),
+        equals(AppRouteConstants.dawProjects),
+      );
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(Uri.parse('cyberneom:///chamber')),
+        equals(AppRouteConstants.chamber),
+      );
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(
+          Uri.parse('cyberneom:///chamber/neuro'),
+        ),
+        equals(AppRouteConstants.chamberNeuro),
+      );
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(
+          Uri.parse('cyberneom:///generator?hz=432'),
+        ),
+        equals('/generator?hz=432'),
+      );
+      expect(
+        DeeplinkUtilities.resolveDirectRoute(
+          Uri.parse('javascript:alert(1)'),
+        ),
+        isNull,
+      );
+    });
   });
 }

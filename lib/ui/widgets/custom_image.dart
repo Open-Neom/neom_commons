@@ -11,6 +11,34 @@ import 'package:sint/sint.dart';
 import 'images/web_network_image_stub.dart'
     if (dart.library.js_interop) 'images/web_network_image_impl.dart';
 
+/// Standard HTTP headers for native (Android/iOS/Desktop) image requests.
+/// Some museum/cultural CDNs (e.g. Met Museum, Wikimedia Commons) reject
+/// Dart's default `Dart/3.x (dart:io)` User-Agent with an HTML challenge or
+/// HTTP 403. Never sent on Web so native `<img>` keeps simple CORS requests.
+const Map<String, String> neomImageHttpHeaders = {
+  'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 '
+      '(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+  'Accept': 'image/*,*/*;q=0.8',
+};
+
+/// Returns `true` only when [rawUrl] is a well-formed `http(s)` URL with a
+/// non-empty host that is not blocked as an unavailable legacy host.
+bool isValidNetworkImageUrl(String? rawUrl) {
+  final trimmed = rawUrl?.trim() ?? '';
+  if (trimmed.isEmpty || trimmed == 'null') return false;
+  final uri = Uri.tryParse(trimmed);
+  if (uri == null ||
+      (uri.scheme != 'http' && uri.scheme != 'https') ||
+      uri.host.isEmpty) {
+    return false;
+  }
+  return !ReleaseCatalogVisibility.usesUnavailableHost(
+    trimmed,
+    app: AppConfig.instance.appInUse,
+  );
+}
+
 /// Platform-aware network image widget.
 /// On web: uses native HTML <img> via HtmlElementView to bypass CanvasKit CORS.
 /// On mobile: uses CachedNetworkImage for disk caching + better UX.
@@ -23,11 +51,8 @@ Widget platformNetworkImage({
   Widget? placeholder,
   Widget? errorWidget,
 }) {
-  final optimizedUrl = _optimizeGoogleImageUrl(imageUrl);
-  if (ReleaseCatalogVisibility.usesUnavailableHost(
-    optimizedUrl,
-    app: AppConfig.instance.appInUse,
-  )) {
+  final optimizedUrl = _optimizeGoogleImageUrl(imageUrl.trim());
+  if (!isValidNetworkImageUrl(optimizedUrl)) {
     final fallback = errorWidget ?? const Icon(Icons.image_not_supported);
     if (height == null && width == null) return fallback;
     return SizedBox(height: height, width: width, child: fallback);
@@ -45,6 +70,7 @@ Widget platformNetworkImage({
   return CachedNetworkImage(
     key: key,
     imageUrl: optimizedUrl,
+    httpHeaders: neomImageHttpHeaders,
     fit: fit,
     height: height,
     width: width,
@@ -72,17 +98,19 @@ final Uint8List _transparentPlaceholderPng = Uint8List.fromList(const <int>[
 ]);
 
 ImageProvider platformImageProvider(String imageUrl, {int? maxHeight, int? maxWidth}) {
-  final optimizedUrl = _optimizeGoogleImageUrl(imageUrl);
-  if (ReleaseCatalogVisibility.usesUnavailableHost(
-    optimizedUrl,
-    app: AppConfig.instance.appInUse,
-  )) {
+  final optimizedUrl = _optimizeGoogleImageUrl(imageUrl.trim());
+  if (!isValidNetworkImageUrl(optimizedUrl)) {
     return MemoryImage(_transparentPlaceholderPng);
   }
   if (kIsWeb) {
     return NetworkImage(optimizedUrl);
   }
-  return CachedNetworkImageProvider(optimizedUrl, maxHeight: maxHeight, maxWidth: maxWidth);
+  return CachedNetworkImageProvider(
+    optimizedUrl,
+    headers: neomImageHttpHeaders,
+    maxHeight: maxHeight,
+    maxWidth: maxWidth,
+  );
 }
 
 /// Optimizes Google user content image URLs by appending a size parameter.
@@ -184,7 +212,7 @@ Widget platformCircleAvatar({
 
   if (kIsWeb) {
     final webUrl = imageUrl.trim();
-    if (webUrl.isEmpty || !webUrl.startsWith('http')) {
+    if (!isValidNetworkImageUrl(webUrl)) {
       return CircleAvatar(
         radius: radius,
         backgroundColor: bgColor,
@@ -198,14 +226,18 @@ Widget platformCircleAvatar({
       fallbackChild: fallbackChild,
     );
   }
-  final optimizedUrl = _optimizeGoogleImageUrl(imageUrl);
+  final optimizedUrl = _optimizeGoogleImageUrl(imageUrl.trim());
+  final validUrl = isValidNetworkImageUrl(optimizedUrl);
   return CircleAvatar(
     radius: radius,
     backgroundColor: bgColor,
-    backgroundImage: optimizedUrl.isNotEmpty
-        ? CachedNetworkImageProvider(optimizedUrl)
+    backgroundImage: validUrl
+        ? CachedNetworkImageProvider(
+            optimizedUrl,
+            headers: neomImageHttpHeaders,
+          )
         : null,
-    child: imageUrl.isEmpty ? fallbackChild : child,
+    child: !validUrl ? fallbackChild : child,
   );
 }
 
@@ -221,7 +253,8 @@ BoxDecoration? platformDecorationImage({
   BorderRadius? borderRadius,
   Color? color,
 }) {
-  if (imageUrl.isEmpty) return null;
+  final optimizedUrl = _optimizeGoogleImageUrl(imageUrl.trim());
+  if (!isValidNetworkImageUrl(optimizedUrl)) return null;
   if (kIsWeb) {
     // On web, DecorationImage paints on Canvas → CORS error.
     // Return decoration without image; caller should layer
@@ -232,7 +265,10 @@ BoxDecoration? platformDecorationImage({
     borderRadius: borderRadius,
     color: color,
     image: DecorationImage(
-      image: CachedNetworkImageProvider(_optimizeGoogleImageUrl(imageUrl)),
+      image: CachedNetworkImageProvider(
+        optimizedUrl,
+        headers: neomImageHttpHeaders,
+      ),
       fit: fit,
       colorFilter: colorFilter,
     ),

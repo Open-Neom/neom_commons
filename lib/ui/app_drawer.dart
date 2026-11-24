@@ -449,7 +449,11 @@ class AppDrawer extends StatelessWidget {
       title: customText(
         selectedMenu == AppDrawerMenu.collectives
             ? AppTranslationConstants.collectives.tr
-            : selectedMenu.name.tr,
+            : selectedMenu == AppDrawerMenu.dashboard
+                ? TextUtilities.capitalizeFirstLetter(
+                    AppTranslationConstants.dashboard.tr,
+                  )
+                : selectedMenu.name.tr,
         textAlign: TextAlign.start,
         style: TextStyle(
           fontSize: 20,

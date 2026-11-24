@@ -49,6 +49,7 @@ class NeomBottomAppBarState extends State<NeomBottomAppBar> {
   Widget build(BuildContext context) {
     return BottomAppBar(
       height: widget.height,
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       shape: widget.notchedShape,
       color: widget.backgroundColor,
       notchMargin: 0,
@@ -75,6 +76,7 @@ class NeomBottomAppBarState extends State<NeomBottomAppBar> {
     Color color = currentIndex == index ? widget.selectedColor : widget.color;
     return Expanded(
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () => onPressed!(index),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -82,7 +84,22 @@ class NeomBottomAppBarState extends State<NeomBottomAppBar> {
           children: <Widget>[
             if(item?.animation != null) item!.animation!,
             Icon(item!.iconData, color: color, size: widget.iconSize + (widget.showText ? 0 : 5)),
-            if(widget.showText) Text(item.text, style: TextStyle(color: color, fontSize: widget.fontSize),),
+            if(widget.showText)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: Text(
+                  item.text,
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: widget.fontSize,
+                    height: 1.15,
+                  ),
+                ),
+              ),
           ],
         ),
       ),

@@ -92,6 +92,7 @@ class CoreEnTranslations {
     AppTranslationConstants.cover: 'Cover',
     AppTranslationConstants.creator: 'Launch',
     AppTranslationConstants.culturalCenter: 'Cultural Center',
+    AppTranslationConstants.dashboard: 'Dashboard',
     AppTranslationConstants.date: 'Date',
     AppTranslationConstants.dateOfBirth: 'Date of birth',
     AppTranslationConstants.dateTBD: 'Date TBD',

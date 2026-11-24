@@ -92,6 +92,7 @@ class CoreFrTranslations {
     AppTranslationConstants.cover: 'Couverture',
     AppTranslationConstants.creator: 'Lancement',
     AppTranslationConstants.culturalCenter: 'Centre culturel',
+    AppTranslationConstants.dashboard: 'Dashboard',
     AppTranslationConstants.date: 'Date',
     AppTranslationConstants.dateOfBirth: 'Date de naissance',
     AppTranslationConstants.dateTBD: 'Date à définir',

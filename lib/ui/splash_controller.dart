@@ -39,6 +39,13 @@ class SplashController extends SintController {
           fromRoute = AppRouteConstants.logout;
         } else if (current == AppRouteConstants.forgotPasswordSending) {
           fromRoute = AppRouteConstants.forgotPassword;
+        } else if (current == AppRouteConstants.root || current.isEmpty) {
+          // Embedded inside RootPage while authStatus is resolving
+          // (AuthStatus.waiting / notDetermined / loggingIn). Do NOT navigate
+          // away prematurely — RootPage's reactive Obx(selectRootPage) swaps
+          // to HomePage/LoginPage in-place once LoginController finishes.
+          fromRoute = "";
+          toRoute = "";
         } else {
           fromRoute = AppRouteConstants.home;
           toRoute = AppRouteConstants.home;
@@ -128,12 +135,12 @@ class SplashController extends SintController {
         Sint.offAllNamed(AppRouteConstants.home);
         break;
       case "":
-        AppConfig.logger.t("There is no fromRoute, navigating to home");
-        Sint.offAllNamed(AppRouteConstants.home);
+        AppConfig.logger.t("There is no fromRoute (embedded splash)");
         break;
     }
 
-    if(loginServiceImpl.getAuthStatus() == AuthStatus.loggingIn) {
+    if (fromRoute.isNotEmpty &&
+        loginServiceImpl.getAuthStatus() == AuthStatus.loggingIn) {
       loginServiceImpl.setAuthStatus(AuthStatus.loggedIn);
     }
 

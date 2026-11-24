@@ -89,7 +89,7 @@ class AppUtilities {
                 style: const TextStyle(color: AppColor.white), // White text color
               ),
               onPressed: () {
-                Sint.back(result: false); // Return false when cancelled
+                Sint.pop(false); // Return false when cancelled
               },
             ),
             // Confirm Button
@@ -99,7 +99,7 @@ class AppUtilities {
                 style: const TextStyle(color: AppColor.white), // White text color
               ),
               onPressed: () {
-                Sint.back(result: true); // Return true when confirmed
+                Sint.pop(true); // Return true when confirmed
               },
             ),
           ],

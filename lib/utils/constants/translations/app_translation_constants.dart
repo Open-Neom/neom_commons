@@ -60,6 +60,7 @@ class AppTranslationConstants {
   static const String couponCode = 'couponCode';
   static const String cover = "cover";
   static const String creator = 'creator';
+  static const String dashboard = 'dashboard';
   static const String date = 'date';
   static const String dateOfBirth = 'dateOfBirth';
   static const String dateTBD = "dateTBD";

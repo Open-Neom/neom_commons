@@ -92,6 +92,7 @@ class CoreDeTranslations {
     AppTranslationConstants.cover: 'Umschlag',
     AppTranslationConstants.creator: 'Start',
     AppTranslationConstants.culturalCenter: 'Kulturzentrum',
+    AppTranslationConstants.dashboard: 'Dashboard',
     AppTranslationConstants.date: 'Datum',
     AppTranslationConstants.dateOfBirth: 'Geburtsdatum',
     AppTranslationConstants.dateTBD: 'Datum noch offen',

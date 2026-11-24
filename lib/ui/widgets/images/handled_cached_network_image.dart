@@ -2,13 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:neom_core/app_config.dart';
 import 'package:neom_core/app_properties.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
-import 'package:neom_core/utils/release_catalog_visibility.dart';
 import 'package:sint/sint.dart';
 
 import '../../../app_flavour.dart';
+import '../custom_image.dart' show isValidNetworkImageUrl, neomImageHttpHeaders;
 import 'web_network_image_stub.dart'
     if (dart.library.js_interop) 'web_network_image_impl.dart';
 
@@ -93,31 +92,28 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage> {
   }
 
   String get _effectiveUrl {
-    if (widget.mediaUrl.isNotEmpty &&
-        widget.mediaUrl != 'null' &&
-        !ReleaseCatalogVisibility.usesUnavailableHost(
-          widget.mediaUrl,
-          app: AppConfig.instance.appInUse,
-        )) {
-      return widget.mediaUrl;
+    final trimmed = widget.mediaUrl.trim();
+    if (isValidNetworkImageUrl(trimmed)) {
+      return trimmed;
     }
-    final fallback = AppProperties.getAppLogoUrl();
-    // Validate fallback URL is not null or the literal string "null"
-    if (fallback.isNotEmpty && fallback != 'null' && fallback.startsWith('http')) {
+    final fallback = AppProperties.getAppLogoUrl().trim();
+    if (isValidNetworkImageUrl(fallback)) {
       return fallback;
     }
-    // Return a transparent 1x1 pixel as ultimate fallback to avoid exception
-    return 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Transparent.gif';
+    return '';
   }
 
   @override
   Widget build(BuildContext context) {
+    final effectiveUrl = _effectiveUrl;
     final Widget content;
 
-    if (kIsWeb) {
+    if (effectiveUrl.isEmpty) {
+      content = _buildErrorWidget();
+    } else if (kIsWeb) {
       // On web, use native HTML <img> via HtmlElementView to bypass CanvasKit CORS
       content = buildWebNativeImage(
-        imageUrl: _effectiveUrl,
+        imageUrl: effectiveUrl,
         retryToken: _retryCount,
         height: widget.height,
         width: widget.width,
@@ -146,8 +142,9 @@ class _HandledCachedNetworkImageState extends State<HandledCachedNetworkImage> {
                   : null));
 
       content = CachedNetworkImage(
-        key: ValueKey('$_effectiveUrl-$_retryCount'),
-        imageUrl: _effectiveUrl,
+        key: ValueKey('$effectiveUrl-$_retryCount'),
+        imageUrl: effectiveUrl,
+        httpHeaders: neomImageHttpHeaders,
         height: widget.height,
         width: widget.width,
         memCacheWidth: targetMemWidth,
@@ -406,10 +403,12 @@ class CachedCircleAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use app logo as fallback when no profile image exists
-    final effectiveUrl = imageUrl.isNotEmpty
-        ? imageUrl
-        : AppProperties.getAppLogoUrl();
+    // Use app logo as fallback when no valid profile image exists
+    final trimmed = imageUrl.trim();
+    final fallbackLogo = AppProperties.getAppLogoUrl().trim();
+    final effectiveUrl = isValidNetworkImageUrl(trimmed)
+        ? trimmed
+        : (isValidNetworkImageUrl(fallbackLogo) ? fallbackLogo : '');
 
     if (effectiveUrl.isEmpty) {
       // Use the local app logo asset as last resort
@@ -442,6 +441,7 @@ class CachedCircleAvatar extends StatelessWidget {
 
     return CachedNetworkImage(
       imageUrl: effectiveUrl,
+      httpHeaders: neomImageHttpHeaders,
       imageBuilder: (context, imageProvider) => CircleAvatar(
         radius: radius,
         backgroundImage: imageProvider,
