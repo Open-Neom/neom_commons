@@ -31,6 +31,7 @@ enum AppDrawerMenu {
   learning("learning"),
   vst("vst"),
   daw("daw"),
+  gigMastering("gigMastering"),
   erp("erp"),
   kanban("kanban"),
   dashboard("dashboard");

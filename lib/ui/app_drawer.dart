@@ -87,6 +87,8 @@ class AppDrawer extends StatelessWidget {
                         drawerRowOption(AppDrawerMenu.vst, const FaIcon(FontAwesomeIcons.guitar), context),
                       if(AppFlavour.showDaw())
                         drawerRowOption(AppDrawerMenu.daw, const FaIcon(FontAwesomeIcons.sliders), context),
+                      if(AppConfig.instance.appInUse == AppInUse.g)
+                        drawerRowOption(AppDrawerMenu.gigMastering, const Icon(Icons.auto_awesome_rounded), context),
                       if(AppFlavour.showLearning())
                         drawerRowOption(AppDrawerMenu.learning, const Icon(Icons.school), context),
                       if(AppFlavour.showServices())
@@ -427,6 +429,9 @@ class AppDrawer extends StatelessWidget {
               break;
             case AppDrawerMenu.daw:
               Sint.toNamed(AppRouteConstants.dawProjects);
+              break;
+            case AppDrawerMenu.gigMastering:
+              Sint.toNamed(AppRouteConstants.mastering);
               break;
             case AppDrawerMenu.erp:
               Sint.toNamed(AppRouteConstants.erpHub);

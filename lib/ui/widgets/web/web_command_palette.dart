@@ -385,6 +385,13 @@ class _WebCommandPaletteState extends State<WebCommandPalette> {
           onSelect: () => Sint.toNamed(AppRouteConstants.dawProjects),
           keywords: ['studio', 'estudio', 'recording', 'grabacion'],
         ),
+      if (AppFlavour.showDaw())
+        CommandPaletteItem(
+          id: 'nav_mastering', label: 'Gig Mastering', section: 'Navigate',
+          icon: Icons.auto_awesome_rounded,
+          onSelect: () => Sint.toNamed(AppRouteConstants.mastering),
+          keywords: ['mastering', 'masterizar', 'eq', 'ecualizacion', 'audio'],
+        ),
       if (AppFlavour.showLearning())
         CommandPaletteItem(
           id: 'nav_learning', label: 'Learning', section: 'Navigate',
