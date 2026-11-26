@@ -18,6 +18,7 @@ import 'package:neom_core/utils/enums/verification_level.dart';
 import 'package:sint/sint.dart';
 
 import '../app_flavour.dart';
+import '../utils/admineom_sso_launcher.dart';
 import '../utils/app_alerts.dart';
 import '../utils/constants/app_constants.dart';
 import '../utils/constants/app_page_id_constants.dart';
@@ -60,7 +61,7 @@ class AppDrawer extends StatelessWidget {
                         drawerRowOption(AppDrawerMenu.digitalLibrary, const Icon(Icons.menu_book_outlined), context),
                       if(AppFlavour.showFounding())
                         drawerRowOption(AppDrawerMenu.crowdfunding, const Icon(Icons.rocket_launch_outlined), context),
-                      if(AppFlavour.showBlog())
+                      if(AppFlavour.showGames())
                         drawerRowOption(AppDrawerMenu.games, const FaIcon(FontAwesomeIcons.gamepad), context),
                       if(AppFlavour.showBlog())
                         drawerRowOption(AppDrawerMenu.inspiration, const FaIcon(FontAwesomeIcons.filePen), context),
@@ -79,9 +80,9 @@ class AppDrawer extends StatelessWidget {
                       if(AppConfig.instance.appInUse == AppInUse.g
                           && !AppConfig.instance.isGuestMode
                           && ((controller.user?.hasApprovedRehearsalRoom ?? false)
+                              || (controller.appProfile.value?.hasApprovedRehearsalRoom ?? false)
                               || controller.appProfile.value?.type == ProfileType.host
-                              || controller.appProfile.value?.type == ProfileType.facilitator
-                              || (controller.user?.userRole.value ?? 0) >= UserRole.erp.value))
+                              || controller.appProfile.value?.type == ProfileType.facilitator))
                         drawerRowOption(AppDrawerMenu.pos, const Icon(Icons.qr_code_scanner), context),
                       if(AppFlavour.showVst())
                         drawerRowOption(AppDrawerMenu.vst, const FaIcon(FontAwesomeIcons.guitar), context),
@@ -166,12 +167,36 @@ class AppDrawer extends StatelessWidget {
                       //     const Divider(),
                       //   ],
                       // ),
-                      if((controller.user?.userRole.value ?? UserRole.subscriber.value) >= UserRole.erp.value)
+                      if(AdmineomSsoLauncher.canAccess(minimumRole: UserRole.support))
                         Column(
                           children: [
                             const Divider(),
-                            drawerRowOption(AppDrawerMenu.erp, const Icon(Icons.analytics), context),
-                            drawerRowOption(AppDrawerMenu.kanban, const Icon(Icons.view_kanban), context),
+                            ListTile(
+                              onTap: () {
+                                Scaffold.maybeOf(context)?.closeDrawer();
+                                AdmineomSsoLauncher.open(
+                                  minimumRole: UserRole.support,
+                                );
+                              },
+                              leading: const Padding(
+                                padding: EdgeInsets.only(top: 5),
+                                child: Icon(Icons.admin_panel_settings_outlined),
+                              ),
+                              title: customText(
+                                'Admineom',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: AppColor.lightGrey,
+                                ),
+                                context: context,
+                              ),
+                              trailing: const Icon(
+                                Icons.open_in_new_rounded,
+                                size: 16,
+                                color: Colors.white54,
+                              ),
+                            ),
                           ],
                         ),
                       if(Sint.isRegistered<SettingsService>()) drawerRowOption(AppDrawerMenu.settings, const Icon(Icons.settings), context),
@@ -376,7 +401,23 @@ class AppDrawer extends StatelessWidget {
               Sint.toNamed('/booking/register-room');
               break;
             case AppDrawerMenu.pos:
-              Sint.toNamed('/pos');
+              if (AppConfig.instance.appInUse == AppInUse.g) {
+                final user = Sint.isRegistered<UserService>()
+                    ? Sint.find<UserService>()
+                    : null;
+                final isRoomHost = (user?.user.hasApprovedRehearsalRoom ?? false) ||
+                    (user?.profile.hasApprovedRehearsalRoom ?? false) ||
+                    user?.profile.type == ProfileType.host ||
+                    user?.profile.type == ProfileType.facilitator;
+                if (isRoomHost) {
+                  Sint.toNamed(AppRouteConstants.bookingScanner);
+                  break;
+                }
+              }
+              AdmineomSsoLauncher.open(
+                targetPath: '/pos',
+                minimumRole: UserRole.pos,
+              );
               break;
             case AppDrawerMenu.settings:
               Sint.toNamed(AppRouteConstants.settingsPrivacy);
@@ -434,10 +475,16 @@ class AppDrawer extends StatelessWidget {
               Sint.toNamed(AppRouteConstants.mastering);
               break;
             case AppDrawerMenu.erp:
-              Sint.toNamed(AppRouteConstants.erpHub);
+              AdmineomSsoLauncher.open(
+                targetPath: AppRouteConstants.erp,
+                minimumRole: UserRole.erp,
+              );
               break;
             case AppDrawerMenu.kanban:
-              Sint.toNamed(AppRouteConstants.kanbanDashboard);
+              AdmineomSsoLauncher.open(
+                targetPath: AppRouteConstants.kanbanDashboard,
+                minimumRole: UserRole.support,
+              );
               break;
             case AppDrawerMenu.dashboard:
               Sint.toNamed(AppConfig.instance.appInUse == AppInUse.g

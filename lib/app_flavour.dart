@@ -421,7 +421,9 @@ class AppFlavour {
   static List<ProfileType> getProfileTypes() {
 
     List<ProfileType> profileTypes = List.from(ProfileType.values);
-    profileTypes.removeWhere((type) => type == ProfileType.broadcaster);
+    if (AppConfig.instance.appInUse != AppInUse.c) {
+      profileTypes.removeWhere((type) => type == ProfileType.broadcaster);
+    }
 
     switch(AppConfig.instance.appInUse) {
       case AppInUse.g:
@@ -450,6 +452,8 @@ class AppFlavour {
         profileTypes = [ProfileType.appArtist, ProfileType.facilitator, ProfileType.host, ProfileType.collective, ProfileType.broadcaster];
         break;
       case AppInUse.c:
+        profileTypes = [ProfileType.facilitator, ProfileType.host, ProfileType.broadcaster, ProfileType.researcher];
+        break;
       default:
         profileTypes = [ProfileType.facilitator, ProfileType.host];
         break;
@@ -551,6 +555,7 @@ class AppFlavour {
   static bool alwaysShowHomeAppBar() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.b:
+      case AppInUse.c:
         return true;
       default:
         return false;
@@ -560,6 +565,7 @@ class AppFlavour {
   static bool showBottomBarLabels() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.b:
+      case AppInUse.c:
         return true;
       default:
         return false;
@@ -569,6 +575,7 @@ class AppFlavour {
   static double getBottomBarHeight() {
     switch (AppConfig.instance.appInUse) {
       case AppInUse.b:
+      case AppInUse.c:
         return 60.0;
       default:
         return 55.0;
