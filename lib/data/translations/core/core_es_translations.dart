@@ -300,7 +300,7 @@ class CoreEsTranslations {
     AppTranslationConstants.rehearsalRoom: 'Sala de Ensayo',
     AppTranslationConstants.manager: 'Manager',
     AppTranslationConstants.restore: "Restaurar",
-    AppTranslationConstants.rootFrequency: 'Frequencia Ra\u00edz',
+    AppTranslationConstants.rootFrequency: 'Frecuencia Ra\u00edz',
     AppTranslationConstants.save: 'Guardar',
     AppTranslationConstants.score: 'Puntaje',
     AppTranslationConstants.search: "Buscar",
