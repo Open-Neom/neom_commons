@@ -167,6 +167,58 @@ class AppDrawer extends StatelessWidget {
                       //     const Divider(),
                       //   ],
                       // ),
+                      if (!AppConfig.instance.isGuestMode &&
+                          AppConfig.instance.appInUse == AppInUse.e &&
+                          (controller.user?.userRole.value ??
+                                  UserRole.subscriber.value) >
+                              UserRole.subscriber.value)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Divider(),
+                            const Padding(
+                              padding: EdgeInsets.fromLTRB(16, 6, 16, 2),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.science_outlined,
+                                    size: 15,
+                                    color: Colors.amberAccent,
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    'Experimental',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.6,
+                                      color: Colors.amberAccent,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ListTile(
+                              onTap: () {
+                                Scaffold.maybeOf(context)?.closeDrawer();
+                                Sint.toNamed('/publisher');
+                              },
+                              leading: const Padding(
+                                padding: EdgeInsets.only(top: 5),
+                                child: Icon(Icons.auto_stories_outlined),
+                              ),
+                              title: customText(
+                                'Neom DesignCraft',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: AppColor.lightGrey,
+                                ),
+                                context: context,
+                              ),
+                            ),
+                          ],
+                        ),
                       if(AdmineomSsoLauncher.canAccess(minimumRole: UserRole.support))
                         Column(
                           children: [

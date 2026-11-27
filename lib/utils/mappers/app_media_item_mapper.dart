@@ -54,6 +54,9 @@ class AppMediaItemMapper {
         url: releaseItem.streamUrl.trim().isNotEmpty
             ? releaseItem.streamUrl.trim()
             : releaseItem.previewUrl.trim(),
+        path: releaseItem.localPath?.trim().isNotEmpty == true
+            ? releaseItem.localPath!.trim()
+            : null,
         metaOwner: releaseItem.metaOwner,
         publishedYear: releaseItem.publishedYear,
         releaseDate: releaseItem.createdTime,

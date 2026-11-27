@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:neom_core/app_config.dart';
+import 'package:neom_core/domain/use_cases/user_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
+import 'package:neom_core/utils/enums/app_in_use.dart';
+import 'package:neom_core/utils/enums/user_role.dart';
 import 'package:sint/sint.dart';
 
 import '../../../app_flavour.dart';
@@ -346,12 +350,28 @@ class _WebCommandPaletteState extends State<WebCommandPalette> {
           onSelect: () => Sint.toNamed(AppRouteConstants.communities),
           keywords: ['comunidades', 'clubes', 'lectura', 'grupos'],
         ),
-      CommandPaletteItem(
-        id: 'nav_publisher', label: 'Publisher Studio', section: 'Navigate',
-        icon: Icons.auto_stories_outlined,
-        onSelect: () => Sint.toNamed('/publisher'),
-        keywords: ['editorial', 'maquetacion', 'epub', 'libro', 'estudio'],
-      ),
+      if (!AppConfig.instance.isGuestMode &&
+          AppConfig.instance.appInUse == AppInUse.e &&
+          Sint.isRegistered<UserService>() &&
+          Sint.find<UserService>().user.userRole.value >
+              UserRole.subscriber.value)
+        CommandPaletteItem(
+          id: 'nav_publisher',
+          label: 'Neom DesignCraft',
+          section: 'Experimental',
+          icon: Icons.auto_stories_outlined,
+          onSelect: () => Sint.toNamed('/publisher'),
+          keywords: [
+            'designcraft',
+            'neom designcraft',
+            'experimental',
+            'editorial',
+            'maquetacion',
+            'epub',
+            'libro',
+            'estudio',
+          ],
+        ),
       CommandPaletteItem(
         id: 'nav_creator_analytics', label: 'Creator Analytics', section: 'Navigate',
         icon: Icons.insights_outlined,
