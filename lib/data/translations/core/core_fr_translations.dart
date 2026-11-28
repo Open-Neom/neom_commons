@@ -485,6 +485,8 @@ class CoreFrTranslations {
     AppTranslationConstants.youAre: 'Vous êtes',
     AppTranslationConstants.upgrade: 'Améliorer',
     AppTranslationConstants.upgradeToSupport: 'Améliorez votre forfait pour soutenir vos artistes préférés',
+    'learning': 'Apprentissage',
+    'business': 'Entreprises',
   };
 
 }

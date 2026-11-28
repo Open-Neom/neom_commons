@@ -130,7 +130,9 @@ class ExternalUtilities {
     }
     raw = raw.replaceAll('<phoneNumber>', cleanDigits);
     raw = raw.replaceAll('<message>', encodedMsg);
-    if (!raw.startsWith('https://') && !raw.startsWith('http://')) {
+    if (raw.toLowerCase().startsWith('whatsapp://send?')) {
+      raw = 'https://api.whatsapp.com/send?${raw.substring('whatsapp://send?'.length)}';
+    } else if (!raw.startsWith('https://') && !raw.startsWith('http://')) {
       raw = 'https://$raw';
     } else if (raw.startsWith('http://')) {
       raw = 'https://${raw.substring(7)}';

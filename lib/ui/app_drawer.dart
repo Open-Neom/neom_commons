@@ -69,21 +69,6 @@ class AppDrawer extends StatelessWidget {
                         drawerRowOption(AppDrawerMenu.collectives, const Icon(Icons.people), context),
                       if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode)
                         drawerRowOption(AppDrawerMenu.giglists, const Icon(Icons.queue_music_rounded), context),
-                      if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode)
-                        drawerRowOption(AppDrawerMenu.mates, const Icon(Icons.library_music_outlined), context),
-                      if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode)
-                        ((controller.user?.hasApprovedRehearsalRoom ?? false)
-                            || (controller.appProfile.value?.hasApprovedRehearsalRoom ?? false)
-                            || controller.appProfile.value?.type == ProfileType.facilitator)
-                          ? drawerRowOption(AppDrawerMenu.rehearsalHost, const Icon(Icons.meeting_room_outlined), context)
-                          : drawerRowOption(AppDrawerMenu.registerRehearsalRoom, const Icon(Icons.add_business_outlined), context),
-                      if(AppConfig.instance.appInUse == AppInUse.g
-                          && !AppConfig.instance.isGuestMode
-                          && ((controller.user?.hasApprovedRehearsalRoom ?? false)
-                              || (controller.appProfile.value?.hasApprovedRehearsalRoom ?? false)
-                              || controller.appProfile.value?.type == ProfileType.host
-                              || controller.appProfile.value?.type == ProfileType.facilitator))
-                        drawerRowOption(AppDrawerMenu.pos, const Icon(Icons.qr_code_scanner), context),
                       if(AppFlavour.showVst())
                         drawerRowOption(AppDrawerMenu.vst, const FaIcon(FontAwesomeIcons.guitar), context),
                       if(AppFlavour.showDaw())
@@ -215,6 +200,45 @@ class AppDrawer extends StatelessWidget {
                                   color: AppColor.lightGrey,
                                 ),
                                 context: context,
+                              ),
+                            ),
+                          ],
+                        ),
+                      if(AppConfig.instance.appInUse == AppInUse.g && !AppConfig.instance.isGuestMode)
+                        Column(
+                          children: [
+                            const Divider(),
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                dividerColor: Colors.transparent,
+                              ),
+                              child: ExpansionTile(
+                                tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+                                childrenPadding: const EdgeInsets.only(left: 12),
+                                iconColor: Colors.white70,
+                                collapsedIconColor: Colors.white54,
+                                leading: const Icon(Icons.storefront_outlined, color: Colors.white70),
+                                title: customText(
+                                  'business'.tr,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: AppColor.lightGrey,
+                                  ),
+                                  context: context,
+                                ),
+                                children: [
+                                  ((controller.user?.hasApprovedRehearsalRoom ?? false)
+                                      || (controller.appProfile.value?.hasApprovedRehearsalRoom ?? false)
+                                      || controller.appProfile.value?.type == ProfileType.facilitator)
+                                    ? drawerRowOption(AppDrawerMenu.rehearsalHost, const Icon(Icons.meeting_room_outlined), context)
+                                    : drawerRowOption(AppDrawerMenu.registerRehearsalRoom, const Icon(Icons.add_business_outlined), context),
+                                  if((controller.user?.hasApprovedRehearsalRoom ?? false)
+                                      || (controller.appProfile.value?.hasApprovedRehearsalRoom ?? false)
+                                      || controller.appProfile.value?.type == ProfileType.host
+                                      || controller.appProfile.value?.type == ProfileType.facilitator)
+                                    drawerRowOption(AppDrawerMenu.pos, const Icon(Icons.qr_code_scanner), context),
+                                ],
                               ),
                             ),
                           ],

@@ -202,7 +202,7 @@ class CoreEsTranslations {
     AppTranslationConstants.mealIncluded: 'Comida incluida',
     AppTranslationConstants.meditation: 'Meditaci\u00f3n',
     AppTranslationConstants.meditations: 'Meditaciones',
-    AppTranslationConstants.meetup: 'ReuniónEncuentro',
+    AppTranslationConstants.meetup: 'Encuentro',
     AppTranslationConstants.message: 'Mensaje',
     AppTranslationConstants.messages: 'Mensajes',
     AppTranslationConstants.minutes: "minutos",
@@ -486,6 +486,8 @@ class CoreEsTranslations {
     AppTranslationConstants.wifi: 'Wifi',
     AppTranslationConstants.upgrade: 'Mejorar',
     AppTranslationConstants.upgradeToSupport: 'Mejora tu plan para apoyar a tus artistas favoritos',
+    'learning': 'Aprendizaje',
+    'business': 'Negocios',
   };
 
 

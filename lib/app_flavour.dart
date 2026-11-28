@@ -12,6 +12,7 @@ import 'package:neom_core/domain/use_cases/media_player_service.dart';
 import 'package:neom_core/utils/constants/app_route_constants.dart';
 import 'package:neom_core/utils/enums/app_in_use.dart';
 import 'package:neom_core/utils/enums/app_locale.dart';
+import 'package:neom_core/utils/enums/event_type.dart';
 import 'package:neom_core/utils/enums/itemlist_type.dart';
 import 'package:neom_core/utils/enums/media_item_type.dart';
 import 'package:neom_core/utils/enums/media_search_type.dart';
@@ -460,6 +461,44 @@ class AppFlavour {
     }
 
     return profileTypes;
+  }
+
+  /// Returns the curated [EventType] list for the active [AppInUse].
+  ///
+  /// Gigmeout ([AppInUse.g]) exposes only music-relevant event types
+  /// (Ensayo, Tocada, Jam Session, Festival, Masterclass, Clase), hiding
+  /// non-music types such as Cyberneom's Círculo de unión, meetup, talk,
+  /// bookTour, and virtualMeeting.
+  static List<EventType> getEventTypes({
+    bool forCreation = false,
+    ProfileType? profileType,
+  }) {
+    final List<EventType> eventTypes;
+    switch (AppConfig.instance.appInUse) {
+      case AppInUse.g:
+        eventTypes = [
+          EventType.rehearsal,
+          EventType.gig,
+          EventType.jamming,
+          EventType.festival,
+          EventType.masterclass,
+          EventType.lesson,
+        ];
+      case AppInUse.e:
+        eventTypes = List<EventType>.from(EventType.values);
+      default:
+        eventTypes = List<EventType>.from(EventType.values)
+          ..remove(EventType.bookTour);
+    }
+
+    if (forCreation &&
+        AppConfig.instance.appInUse != AppInUse.e &&
+        profileType != null &&
+        profileType != ProfileType.appArtist) {
+      eventTypes.remove(EventType.rehearsal);
+    }
+
+    return eventTypes;
   }
 
   static bool isNeomApp() {

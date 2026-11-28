@@ -485,6 +485,8 @@ class CoreDeTranslations {
     AppTranslationConstants.youAre: 'Sie sind',
     AppTranslationConstants.upgrade: 'Upgraden',
     AppTranslationConstants.upgradeToSupport: 'Verbessere deinen Plan, um deine Lieblingskünstler zu unterstützen',
+    'learning': 'Lernen',
+    'business': 'Geschäft',
   };
 
 }
